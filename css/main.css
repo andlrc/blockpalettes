@@ -1,0 +1,169 @@
+/* Global */
+@font-face {
+    font-family: tommyMedium;
+    src: url("../fonts/MADE-Tommy-Medium.otf");
+}
+@font-face {
+    font-family: tommyLight;
+    src: url("../fonts/MADE-Tommy-Light.otf");
+}
+@font-face {
+    font-family: tommyBold;
+    src: url("../fonts/MADE-Tommy-Bold.otf");
+}
+body{
+    font-family: tommyLight, sans-serif;
+    background: #F5F6F9;
+}
+
+
+.title{
+    font-family: tommyBold, sans-serif;
+    font-size: 60px;
+    color: black;
+    padding-bottom: 30px;
+}
+
+/* Palette Page */
+.palettes{
+    padding-top: 100px;
+}
+
+.palette-float{
+    padding: 10px 10px 3px 10px;
+    border-radius: 7px;
+    background: white;
+    width: 100%;
+    position: absolute;
+
+}
+.paddingFix{
+    padding-bottom: 300px;
+}
+.block{
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    width: 33%;
+    padding: 0px;
+    margin: 0px;
+    float: left;
+}
+
+.btn-like{
+    padding: 0px;
+    background: none;
+    border: none;
+    margin-top:5px;
+    font-family: tommyMedium, sans-serif;
+}
+
+.time{
+    text-align: right;
+    padding-top:5px;
+    color: gray;
+    font-size: 15px
+    
+}
+.half{
+    float: left;
+    width: 49%;
+}
+.liked{
+    color: #eb3b5a;
+}
+
+
+/* Nav */
+.topbar{
+    height: auto;
+    width: 100%;
+    background: black;
+    padding: 2px;
+    color: white;
+    text-align: center;
+    font-size: 15px;
+    font-family: tommyLight, sans-serif;
+}
+.custom-nav-text .nav-item{
+    font-family: tommyMedium, sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    padding-left: 50px;
+    padding-top: 10px;
+}
+
+.custom-nav-text .nav-link{
+    color: black;
+    border-bottom: 3px transparent solid;
+}
+
+.custom-nav-text .nav-link:hover{
+    color: black;
+    border-bottom: 3px black solid;
+    cursor: pointer;
+}
+
+.custom-header .float-nav{
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    padding-top: 20px;
+}
+.custom-toggler .navbar-toggler-icon{
+    background-image: url('../images/hamburger-solid.svg');
+}
+
+.custom-toggler.navbar-toggler {
+    border-color: transparent;
+} 
+.logo-size{
+    width: 240px;
+}
+
+@media only screen and (max-width: 900px) {
+    .logo-size{
+        width: 240px;
+    }
+    .custom-nav-text .nav-item{
+        padding-left: 0px;
+    }
+}
+@media screen and (max-width:900px){
+    .backgroundChange{
+        background: #00BCE7;
+        position: fixed!important;
+    }
+    .nav-link{
+        margin-bottom: 50px;
+    }
+    
+    .collapsing {
+        position: relative;
+        height: 0;
+        overflow: hidden;
+        transition: height 0s ease-in;
+    }
+    
+    .navbar-nav {
+        height: 100vh !important;
+    }
+    .centeredContent{
+        text-align: center;
+        vertical-align: middle;
+        line-height: 15px; 
+        display: flex;
+        align-items: center;
+        margin-top: 50px;
+    }
+}
+.btn-theme-nav{
+    background: black;
+    border-radius: 7px;
+    width: 100px;
+    padding: 5px;
+    color: white !important;
+}
+

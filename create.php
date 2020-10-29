@@ -1,3 +1,13 @@
+<?php
+
+$dir = "img/block/*.png";
+//get the list of all files with .jpg extension in the directory and safe it in an array named $images
+$images = glob( $dir );
+
+//extract only the name of the file without the extension and save in an array named $find
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,7 +19,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <title>Create Block Palette - Block Palettes</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <script>
+        $(document).ready(function () {
+          $('select').selectize({
+              sortField: 'text'
+          });
+      });
+    </script>
   </head>
   <body>
     <!-- Nav -->
@@ -32,16 +52,16 @@
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="palettes/popular" class="nav-link" id="closeNav" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">Popular Palettes<div class="active"></div></a>
+                            <a href="popular" class="nav-link">Popular Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="palettes/new" class="nav-link" id="closeNav" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">New Palettes</a>
+                            <a href="new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="palettes/saved" class="nav-link" id="closeNav" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">Saved Palettes</a>
+                            <a href="saved" class="nav-link">Saved Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/create" class="nav-link btn btn-theme-nav" id="closeNavWhy" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">Create</a>
+                            <a href="create" class="nav-link btn btn-theme-nav" id="closeNavWhy" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">Create</a>
                         </li>
                     </ul>
                 </div>
@@ -53,95 +73,126 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title">Popular Palettes</div>
+            <div class="title">Create Palette</div>
           </div>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-lg-2"></div>
+          <div class="col-lg-8 col-md-12 paddingFixLarge">
             <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/1.png" class="block">
-                <img src="img/2.png" class="block">
-                <img src="img/3.png" class="block">
-                <img src="img/4.png" class="block">
-                <img src="img/5.png" class="block">
-                <img src="img/6.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form>
-                      <button type="submit" class="btn-like"><i class="far fa-heart"></i> 1,902</button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    10 Hours Ago
-                  </div>
-                </div>
+              <div class="palette-float-large">
+                <img id="image1" src="img/placeholder.png" class="block">
+                <img id="image2" src="img/placeholder.png" class="block">
+                <img id="image3" src="img/placeholder.png" class="block">
+                <img id="image4" src="img/placeholder.png" class="block">
+                <img id="image5" src="img/placeholder.png" class="block">
+                <img id="image6" src="img/placeholder.png" class="block">
               </div>
             </div>
           </div>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/1.png" class="block">
-                <img src="img/2.png" class="block">
-                <img src="img/3.png" class="block">
-                <img src="img/4.png" class="block">
-                <img src="img/5.png" class="block">
-                <img src="img/6.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form>
-                      <button type="submit" class="btn-like"><i class="fas fa-heart liked"></i> 863</button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    1 Month Ago
-                  </div>
+          <div class="col-lg-12 col-md-12 paddingFix">
+            <h2 class="medium-title">Pick Blocks</h2>
+            <form>
+              <div class="row">
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block One
+                  <select id="select-1" name="block-one" class="form-control" placeholder="Select a block..." required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block Two
+                  <select id="select-2" class="form-control" placeholder="Select a block..." name="block-two" required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block Three
+                  <select id="select-3" class="form-control" placeholder="Select a block..." name="block-three" required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block Four
+                  <select id="select-4" class="form-control" placeholder="Select a block..." name="block-four" required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block Five
+                  <select id="select-5" class="form-control" placeholder="Select a block..." name="block-five" required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-12 form-group">
+                  Block Six
+                  <select id="select-6" class="form-control" placeholder="Select a block..." name="block-six" required>
+                    <option value="">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+                        echo $cleanStr . "<br>";
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="img/block/<?=$cleanStr?>.png"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+                <div class="col-xl-12 form-group">
+                  <button type="submit" name="create" class="btn btn-theme-form btn-block">Submit</button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/1.png" class="block">
-                <img src="img/2.png" class="block">
-                <img src="img/3.png" class="block">
-                <img src="img/4.png" class="block">
-                <img src="img/5.png" class="block">
-                <img src="img/6.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form>
-                      <button type="submit" class="btn-like"><i class="far fa-heart"></i> 91</button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    6 Days Ago
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/1.png" class="block">
-                <img src="img/2.png" class="block">
-                <img src="img/3.png" class="block">
-                <img src="img/4.png" class="block">
-                <img src="img/5.png" class="block">
-                <img src="img/6.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form>
-                      <button type="submit" class="btn-like"><i class="fas fa-heart liked"></i> 53</button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    1 Year Ago
-                  </div>
-                </div>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -151,7 +202,7 @@
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
@@ -160,31 +211,47 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
     <script>
-    const $dropdown = $(".dropdown");
-const $dropdownToggle = $(".dropdown-toggle");
-const $dropdownMenu = $(".dropdown-menu");
-const showClass = "show";
+        function set1() {
+            var img = document.getElementById("image1");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-1").onchange = set1;
 
-$(window).on("load resize", function() {
-  if (this.matchMedia("(min-width: 768px)").matches) {
-    $dropdown.hover(
-      function() {
-        const $this = $(this);
-        $this.addClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "true");
-        $this.find($dropdownMenu).addClass(showClass);
-      },
-      function() {
-        const $this = $(this);
-        $this.removeClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "false");
-        $this.find($dropdownMenu).removeClass(showClass);
-      }
-    );
-  } else {
-    $dropdown.off("mouseenter mouseleave");
-  }
-});
-      </script>
+        function set2() {
+            var img = document.getElementById("image2");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-2").onchange = set2;
+
+        function set3() {
+            var img = document.getElementById("image3");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-3").onchange = set3;
+
+        function set4() {
+            var img = document.getElementById("image4");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-4").onchange = set4;
+
+        function set5() {
+            var img = document.getElementById("image5");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-5").onchange = set5;
+
+        function set6() {
+            var img = document.getElementById("image6");
+            img.src = this.value;
+            return false;
+        }
+        document.getElementById("select-6").onchange = set6;
+    </script>
   </body>
 </html>

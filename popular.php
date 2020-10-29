@@ -1,3 +1,10 @@
+<?php 
+require "include/connect.php";
+
+
+
+
+?>
 <!doctype html>
 <html lang="en">
   <head>

@@ -23,7 +23,17 @@ body{
     color: black;
     padding-bottom: 30px;
 }
-
+.medium-title{
+    font-family: tommyBold, sans-serif;
+    font-size: 30px;
+    color: black;
+}
+.small-title{
+    font-family: tommyBold, sans-serif;
+    font-size: 23px;
+    color: black;
+    text-align: left;
+}
 /* Palette Page */
 .palettes{
     padding-top: 100px;
@@ -37,9 +47,76 @@ body{
     position: absolute;
 
 }
+.palette-float-info{
+    padding: 15px;
+    border-radius: 7px;
+    background: white;
+    width: 100%;
+    height: 490px;
+}
+.palette-float-large{
+    padding: 10px 5px 10px 10px;
+    border-radius: 7px;
+    background: white;
+    width: 100%;
+    position: absolute;
+
+}
 .paddingFix{
     padding-bottom: 300px;
 }
+
+.paddingFix-large{
+    padding-bottom: 520px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .paddingFix-large{
+        padding-bottom: 650px;
+    }
+    .paddingFix{
+        padding-bottom: 350px;
+    }
+    .palette-float-info{
+        margin-bottom: 25px;
+    }
+}
+@media only screen and (max-width: 1000px) {
+    .paddingFix-large{
+        padding-bottom: 500px;
+    }
+    .paddingFix{
+        padding-bottom: 275px;
+    }
+    .palette-float-info{
+        margin-bottom: 25px;
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    .paddingFix-large{
+        padding-bottom: 380px;
+    }
+    .paddingFix{
+        padding-bottom: 220px;
+    }
+    .palette-float-info{
+        margin-bottom: 25px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .paddingFix-large{
+        padding-bottom: 285px;
+    }
+    .paddingFix{
+        padding-bottom: 300px;
+    }
+    .palette-float-info{
+        margin-bottom: 45px;
+    }
+}
+
 .block{
     image-rendering: auto;
     image-rendering: crisp-edges;
@@ -74,6 +151,25 @@ body{
 }
 
 
+.blocks .small-title{
+    padding-top: 50px;
+}
+.blocks ul{
+    list-style-type: none;
+    padding-left: 0px;
+}
+.blocks li{
+    padding-bottom: 20px;
+}
+.blocks .smallBlock{
+    width: 32px;
+    border-radius: 5px;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    margin-right: 10px;
+}
+
 /* Nav */
 .topbar{
     height: auto;
@@ -85,6 +181,15 @@ body{
     font-size: 15px;
     font-family: tommyLight, sans-serif;
 }
+
+.nav-item .active{
+    margin-top: 5px;
+    height: 4px;
+    border-radius: 3px;
+    width: 100%;
+    background: black;
+}
+
 .custom-nav-text .nav-item{
     font-family: tommyMedium, sans-serif;
     font-weight: 900;
@@ -100,7 +205,7 @@ body{
 
 .custom-nav-text .nav-link:hover{
     color: black;
-    border-bottom: 3px black solid;
+   
     cursor: pointer;
 }
 
@@ -165,5 +270,17 @@ body{
     width: 100px;
     padding: 5px;
     color: white !important;
+}
+
+.btn-theme-form{
+    background: black;
+    border-radius: 7px;
+    padding: 5px;
+    color: white !important;
+    font-family: tommyMedium, sans-serif;
+}
+.form-control{
+    border-radius: 7px;
+    margin-bottom: 15px;
 }
 

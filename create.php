@@ -47,7 +47,7 @@ $images = glob( $dir );
                     <img src="img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                    <img src="images/hamburger-solid.svg" width="35px">
+                    <img src="img/hamburger.png" width="35px" style="border-radius: 5px">
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">

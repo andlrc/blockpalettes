@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+require "include/connect.php";
+include "include/logic.php";
 
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
@@ -90,7 +94,7 @@ $images = glob( $dir );
           </div>
           <div class="col-lg-12 col-md-12 paddingFix">
             <h2 class="medium-title">Pick Blocks</h2>
-            <form>
+            <form method="post" method="create">
               <div class="row">
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block One
@@ -100,7 +104,6 @@ $images = glob( $dir );
                       foreach( $images as $image ):
                         $extCut = str_replace(".png","","$image");
                         $cleanStr = str_replace("img/block/","","$extCut");
-                        echo $cleanStr . "<br>";
 
                         $blockName = str_replace("_"," ",$cleanStr);
                     ?>

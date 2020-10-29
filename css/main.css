@@ -66,6 +66,11 @@ body{
     padding-bottom: 300px;
 }
 
+.paddingFixLarge{
+    padding-bottom: 540px;
+}
+
+
 .paddingFix-large{
     padding-bottom: 520px;
 }

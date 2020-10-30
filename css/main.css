@@ -13,7 +13,7 @@
 }
 body{
     font-family: tommyLight, sans-serif;
-    background: #F5F6F9;
+    background: #F4F6FB;
 }
 
 
@@ -40,7 +40,7 @@ body{
 }
 
 .palette-float{
-    padding: 10px 10px 3px 10px;
+    padding: 10px 6px 3px 10px;
     border-radius: 7px;
     background: white;
     width: 100%;

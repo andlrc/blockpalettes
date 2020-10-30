@@ -70,24 +70,26 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
           <?php foreach($palette as $p): ?>
           <div class="col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/block/<?=$p['blockOne']?>.png" class="block">
-                <img src="img/block/<?=$p['blockTwo']?>.png" class="block">
-                <img src="img/block/<?=$p['blockThree']?>.png" class="block">
-                <img src="img/block/<?=$p['blockFour']?>.png" class="block">
-                <img src="img/block/<?=$p['blockFive']?>.png" class="block">
-                <img src="img/block/<?=$p['blockSix']?>.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form style="margin-bottom:0px">
-                      <button type="submit" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    <?=time_elapsed_string($p['date'])?>
+              <a href="palette/<?=$p['id']?>">
+                <div class="palette-float">
+                  <img src="img/block/<?=$p['blockOne']?>.png" class="block">
+                  <img src="img/block/<?=$p['blockTwo']?>.png" class="block">
+                  <img src="img/block/<?=$p['blockThree']?>.png" class="block">
+                  <img src="img/block/<?=$p['blockFour']?>.png" class="block">
+                  <img src="img/block/<?=$p['blockFive']?>.png" class="block">
+                  <img src="img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="subtext">
+                    <div class="likes half">
+                      <form style="margin-bottom:0px">
+                        <button type="submit" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
+                      </form>
+                    </div>
+                    <div class="time half">
+                      <?=time_elapsed_string($p['date'])?>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
           <?php endforeach; ?>

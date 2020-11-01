@@ -47,11 +47,36 @@ if(isset($_POST['like'])){
 
     $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
             if ($pdo->query($sql)) {
-                setcookie('likes', $_COOKIE['likes'] . "," . $id, time() + strtotime('+20 years'));
-                header('Location: ../popular');
+                setcookie('likes', $_COOKIE['likes'] . "," . $id, time() + strtotime('+20 years'), '/' );
+                header('Location: https://localhost/blockpalettes/popular');
                 exit;
             } else {
-                header('Location: /profile');
+                exit;
+            }
+            $pdo = null;
+
+}
+
+if(isset($_POST['unlike'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    $palettePull = $pdo->prepare("SELECT likes FROM palette WHERE id = $id");
+    $palettePull->execute();
+    $palette = $palettePull->fetch(PDO::FETCH_ASSOC);
+
+    $likes = $palette['likes'];
+
+    $likes--;
+
+    $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
+            if ($pdo->query($sql)) {
+                $cookie = $_COOKIE['likes'];
+                $cookieMinus = str_replace("," . $id, "", $cookie);
+                setcookie('likes', $cookieMinus, time() + strtotime('+20 years'), '/' );
+                header('Location: https://localhost/blockpalettes/popular');
+                exit;
+            } else {
+                exit;
             }
             $pdo = null;
 

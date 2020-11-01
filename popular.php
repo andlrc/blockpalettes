@@ -4,6 +4,11 @@ require "include/connect.php";
 include "include/logic.php";
 
 
+if(isset($_COOKIE['likes'])) {
+  $data = $_COOKIE['likes'];
+}
+
+
 //pull palettes
 $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY likes DESC");
 $palettePull->execute();
@@ -80,9 +85,20 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
                   <img src="img/block/<?=$p['blockSix']?>.png" class="block">
                   <div class="subtext">
                     <div class="likes half">
-                      <form style="margin-bottom:0px">
-                        <button type="submit" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
+                    <?php 
+                      $id = (string)$p["id"];
+                    ?>
+                    <?php if (strpos($data, $id) == true) {?>
+                      <form method="post" action="popular" style="margin-bottom:0px">
+                        <input type="hidden" name="id" value="<?=$p['id']?>">
+                        <button type="submit" name="unlike" class="btn-like"><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
                       </form>
+                    <?php } else { ?>
+                      <form method="post" action="popular" style="margin-bottom:0px">
+                        <input type="hidden" name="id" value="<?=$p['id']?>">
+                        <button type="submit" name="like" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
+                      </form>
+                    <?php } ?>
                     </div>
                     <div class="time half">
                       <?=time_elapsed_string($p['date'])?>
@@ -109,5 +125,6 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
+
   </body>
 </html>

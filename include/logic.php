@@ -34,6 +34,29 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
+if(isset($_POST['like'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    $palettePull = $pdo->prepare("SELECT likes FROM palette WHERE id = $id");
+    $palettePull->execute();
+    $palette = $palettePull->fetch(PDO::FETCH_ASSOC);
+
+    $likes = $palette['likes'];
+
+    $likes++;
+
+    $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
+            if ($pdo->query($sql)) {
+                setcookie('likes', $_COOKIE['likes'] . "," . $id, time() + strtotime('+20 years'));
+                header('Location: ../popular');
+                exit;
+            } else {
+                header('Location: /profile');
+            }
+            $pdo = null;
+
+}
+
 //New Job
 if(isset($_POST['create'])){
 

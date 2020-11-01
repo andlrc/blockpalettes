@@ -3,12 +3,19 @@ session_start();
 require "include/connect.php";
 include "include/logic.php";
 
+if(isset($_COOKIE['likes'])) {
+  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
+  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
+} else {
+  $data = "";
+}
 
 //pull palettes
 $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
+$i = 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -32,6 +39,17 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
         </div> 
       </div>
     </div>
+    <?php foreach($palette as $c): ?>
+        <?php 
+            $id = (string)$c["id"];
+          
+        ?>
+        <?php if (strpos($data, $id) == true) {?>
+            <?php 
+              $i++ 
+            ?>
+        <?php } else {} ?>
+    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -50,7 +68,7 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
                             <a href="new" class="nav-link">New Palettes<div class="active"></div></a>
                         </li>
                         <li class="nav-item">
-                            <a href="saved" class="nav-link">Saved Palettes</a>
+                            <a href="saved" class="nav-link" id="closeNav" >Saved Palettes <span class="saved"><?=$i?></span></a>
                         </li>
                         <li class="nav-item">
                             <a href="create" class="nav-link btn btn-theme-nav">Create</a>
@@ -81,9 +99,20 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
                 </a>
                 <div class="subtext">
                   <div class="likes half">
-                    <form style="margin-bottom:0px">
-                      <button type="submit" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
-                    </form>
+                    <?php 
+                      $id = (string)$p["id"];
+                    ?>
+                    <?php if (strpos($data, $id) == true) {?>
+                      <form method="post" action="new" style="margin-bottom:0px">
+                        <input type="hidden" name="id" value="<?=$p['id']?>">
+                        <button type="submit" name="unlike" class="btn-like"><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
+                      </form>
+                    <?php } else { ?>
+                      <form method="post" action="new" style="margin-bottom:0px">
+                        <input type="hidden" name="id" value="<?=$p['id']?>">
+                        <button type="submit" name="like" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
+                      </form>
+                    <?php } ?>
                   </div>
                   <div class="time half">
                     <?=time_elapsed_string($p['date'])?>

@@ -1,3 +1,23 @@
+<?php 
+session_start();
+require "include/connect.php";
+include "include/logic.php";
+
+if(isset($_COOKIE['likes'])) {
+  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
+  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
+} else {
+  $data = "";
+}
+
+//pull palettes
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
+$palettePull->execute();
+$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+
+$i = 0;
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -20,6 +40,18 @@
         </div> 
       </div>
     </div>
+
+    <?php foreach($palette as $c): ?>
+        <?php 
+            $id = (string)$c["id"];
+          
+        ?>
+        <?php if (strpos($data, $id) == true) {?>
+            <?php 
+              $i++ 
+            ?>
+        <?php } else {} ?>
+    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -38,7 +70,7 @@
                             <a href="new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="saved" class="nav-link" id="closeNav" >Saved Palettes<div class="active"></div></a>
+                            <a href="saved" class="nav-link" id="closeNav" >Saved Palettes <span class="saved"><?=$i?></span><div class="active"></div></a>
                         </li>
                         <li class="nav-item">
                             <a href="create" class="nav-link btn btn-theme-nav">Create</a>
@@ -53,30 +85,43 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title">Saved Palettes</div>
+            <div class="title" style="padding-bottom:0px">Saved Palettes</div>
+            <p style="padding-bottom:25px">We currently use Cookies to save palettes, so no signup is required.</p>
           </div>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <div class="palette-float">
-                <img src="img/1.png" class="block">
-                <img src="img/2.png" class="block">
-                <img src="img/3.png" class="block">
-                <img src="img/4.png" class="block">
-                <img src="img/5.png" class="block">
-                <img src="img/6.png" class="block">
-                <div class="subtext">
-                  <div class="likes half">
-                    <form>
-                      <button type="submit" class="btn-like"><i class="fas fa-heart liked"></i> 0</button>
-                    </form>
-                  </div>
-                  <div class="time half">
-                    5 Mins Ago
-                  </div>
+          <?php foreach($palette as $p): ?>
+            <?php 
+              $id = (string)$p["id"];
+            ?>
+            <?php if (strpos($data, $id) == true) { ?>
+              <div class="col-lg-4 col-md-6 paddingFix">
+                <div style="position: relative">
+                  <a href="palette/<?=$p['id']?>">
+                    <div class="palette-float">
+                      <img src="img/block/<?=$p['blockOne']?>.png" class="block">
+                      <img src="img/block/<?=$p['blockTwo']?>.png" class="block">
+                      <img src="img/block/<?=$p['blockThree']?>.png" class="block">
+                      <img src="img/block/<?=$p['blockFour']?>.png" class="block">
+                      <img src="img/block/<?=$p['blockFive']?>.png" class="block">
+                      <img src="img/block/<?=$p['blockSix']?>.png" class="block">
+                      <div class="subtext">
+                        <div class="likes half">
+                          <form method="post" action="saved" style="margin-bottom:0px">
+                            <input type="hidden" name="id" value="<?=$p['id']?>">
+                            <button type="submit" name="unlike" class="btn-like"><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
+                          </form>
+                        </div>
+                        <div class="time half">
+                          <?=time_elapsed_string($p['date'])?>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
                 </div>
               </div>
-            </div>
-          </div>
+              <?php } else { ?>
+                
+              <?php } ?>
+          <?php endforeach; ?>
         </div>
       </div>
     </div>

@@ -29,14 +29,16 @@ $i = 0;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
+  	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
+	  <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
   </head>
   <body>
     <!-- Nav -->
     <div class="topbar">
       <div class="container">
         <div class="topbarText">
-          A Message For All To Hear
+          NEW SITE - Click Here To Find Out More
         </div> 
       </div>
     </div>
@@ -69,7 +71,11 @@ $i = 0;
                             <a href="new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="saved" class="nav-link" id="closeNav" >Saved Palettes <span class="saved"><?=$i?></span></a>
+                          <?php if($i == 0) { ?>
+                            <a href="saved" class="nav-link">Saved Palettes</a>
+                          <?php } else { ?>
+                            <a href="saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
+                          <?php } ?>
                         </li>
                         <li class="nav-item">
                             <a href="create" class="nav-link btn btn-theme-nav">Create</a>
@@ -127,6 +133,7 @@ $i = 0;
       </div>
     </div>
 
+    <?php include('include/footer.php') ?>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

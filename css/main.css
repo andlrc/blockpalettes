@@ -22,6 +22,7 @@ body{
     font-size: 60px;
     color: black;
     padding-bottom: 30px;
+    line-height: 60px;
 }
 .medium-title{
     font-family: tommyBold, sans-serif;
@@ -70,6 +71,10 @@ body{
     padding-bottom: 540px;
 }
 
+.paddingFixLargeCreate{
+    padding-bottom: 540px;
+}
+
 
 .paddingFix-large{
     padding-bottom: 520px;
@@ -85,6 +90,10 @@ body{
     .palette-float-info{
         margin-bottom: 25px;
     }
+    .paddingFixLargeCreate{
+        padding-bottom: 300px;
+    }
+    
 }
 @media only screen and (max-width: 1000px) {
     .paddingFix-large{
@@ -299,3 +308,34 @@ body{
     margin-bottom: 15px;
 }
 
+
+.footer{
+    padding-top: 50px;
+    border-bottom: black 25px solid;
+    padding-bottom: 100px;
+}
+.line{
+    height: 1px;
+    width: 100%;
+    background: black;
+    margin-bottom:50px
+}
+.footer ul{
+    list-style-type: none;
+    padding-left: 0px;
+}
+.footer a{
+    color: black;
+}
+.footer-title{
+    font-family: tommyMedium, sans-serif;
+    color: black;
+    font-size: 20px;
+}
+.footerText{
+    line-height:65px;
+}
+.social{
+    color: black;
+    padding-right: 20px;
+}

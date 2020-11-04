@@ -1,8 +1,10 @@
 RewriteEngine On
+DirectoryIndex popular.php
+
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
 RewriteRule ^palette/([0-9a-zA-Z_-]+) palette.php?p=$1 [NC,L]
 
-RewriteRule ^index.php$ popular.php? [L,R=301]
+Redirect /index.php /popular.php

@@ -4,12 +4,24 @@ session_start();
 require "include/connect.php";
 include "include/logic.php";
 
+if(isset($_COOKIE['likes'])) {
+  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
+  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
+} else {
+  $data = "";
+}
+
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
 
 //extract only the name of the file without the extension and save in an array named $find
+//pull palettes
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY likes DESC");
+$palettePull->execute();
+$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
+$i = 0;
 ?>
 
 <!doctype html>
@@ -23,7 +35,9 @@ $images = glob( $dir );
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <title>Create Block Palette - Block Palettes</title>
+    <title>Block Palettes - Create a Minecraft Block Palette</title>
+    <meta name="description" content="Create a Minecraft block palette and share it to the community.">
+  	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
@@ -44,6 +58,17 @@ $images = glob( $dir );
         </div> 
       </div>
     </div>
+    <?php foreach($palette as $c): ?>
+        <?php 
+            $id = (string)$c["id"];
+          
+        ?>
+        <?php if (strpos($data, $id) == true) {?>
+            <?php 
+              $i++ 
+            ?>
+        <?php } else {} ?>
+    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -62,7 +87,11 @@ $images = glob( $dir );
                             <a href="new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
+                          <?php if($i == 0) { ?>
                             <a href="saved" class="nav-link">Saved Palettes</a>
+                          <?php } else { ?>
+                            <a href="saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
+                          <?php } ?>
                         </li>
                         <li class="nav-item">
                             <a href="create" class="nav-link btn btn-theme-nav" id="closeNavWhy" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false">Create</a>
@@ -80,7 +109,7 @@ $images = glob( $dir );
             <div class="title">Create Palette</div>
           </div>
           <div class="col-lg-2"></div>
-          <div class="col-lg-8 col-md-12 paddingFixLarge">
+          <div class="col-lg-8 col-md-12 paddingFixLargeCreate">
             <div style="position: relative">
               <div class="palette-float-large">
                 <img id="image1" src="img/placeholder.png" class="block">
@@ -92,7 +121,7 @@ $images = glob( $dir );
               </div>
             </div>
           </div>
-          <div class="col-lg-12 col-md-12 paddingFix">
+          <div class="col-lg-12 col-md-12" style="padding-bottom:100px">
             <h2 class="medium-title">Pick Blocks</h2>
             <form method="post" method="create">
               <div class="row">
@@ -201,7 +230,7 @@ $images = glob( $dir );
       </div>
     </div>
 
-
+    <?php include('include/footer.php') ?>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->

@@ -2,7 +2,7 @@
 
 
 // Functions
-
+$url = "https://localhost/blockpalettes/";
 
 function time_elapsed_string($datetime, $full = false) {
     date_default_timezone_set("America/New_York");
@@ -37,6 +37,9 @@ function time_elapsed_string($datetime, $full = false) {
 if(isset($_POST['like'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
+    $current_url = $_POST['current_url'];
+
+
     $palettePull = $pdo->prepare("SELECT likes FROM palette WHERE id = $id");
     $palettePull->execute();
     $palette = $palettePull->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +51,7 @@ if(isset($_POST['like'])){
     $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
             if ($pdo->query($sql)) {
                 setcookie('likes', $_COOKIE['likes'] . "," . $id, time() + strtotime('+20 years'), '/' );
-                header('Location: https://localhost/blockpalettes/popular');
+                header('Location: ' . $url . 'popular');
                 exit;
             } else {
                 exit;
@@ -73,7 +76,7 @@ if(isset($_POST['unlike'])){
                 $cookie = $_COOKIE['likes'];
                 $cookieMinus = str_replace("," . $id, "", $cookie);
                 setcookie('likes', $cookieMinus, time() + strtotime('+20 years'), '/' );
-                header('Location: https://localhost/blockpalettes/popular');
+                header('Location: ' . $url . 'popular');
                 exit;
             } else {
                 exit;
@@ -137,7 +140,7 @@ if(isset($_POST['create'])){
     //If successful, returns to user profile
     if($result) {
         $_SESSION['create'] = "New Palette";
-        header('Location: ../popular');
+        header('Location: ' . $url . 'new');
     }
 
  }

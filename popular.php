@@ -9,12 +9,39 @@ if(isset($_COOKIE['likes'])) {
   $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
 } else {
   $data = "";
+
 }
 
+
+//pagination
+$limit = 12;
 //pull palettes
 $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY likes DESC");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+$total_results = $palettePull->rowCount();
+$total_pages = ceil($total_results/$limit);
+    
+if (!isset($_GET['page'])) {
+    $page = 1;
+} else{
+    $page = $_GET['page'];
+}
+
+$start = ($page-1)*$limit;
+
+$stmt = $pdo->prepare("SELECT * FROM palette ORDER BY likes DESC LIMIT $start, $limit");
+$stmt->execute();
+
+// set the resulting array to associative
+$stmt->setFetchMode(PDO::FETCH_OBJ);
+    
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+       
+$conn = null;
+
+// var_dump($results);
+$no = $page > 1 ? $start+1 : 1;
 
 $i = 0;
 ?>
@@ -27,7 +54,7 @@ $i = 0;
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
   	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
@@ -57,28 +84,28 @@ $i = 0;
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img src="img/logotest.png" class="logo-size">
+                    <img src="<?=$url?>img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                    <img src="images/hamburger-solid.svg" width="35px">
+                    <img src="<?=$url?>images/hamburger-solid.svg" width="35px">
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="popular" class="nav-link">Popular Palettes<div class="active"></div></a>
+                            <a href="<?=$url?>popular" class="nav-link">Popular Palettes<div class="active"></div></a>
                         </li>
                         <li class="nav-item">
-                            <a href="new" class="nav-link">New Palettes</a>
+                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
                           <?php if($i == 0) { ?>
-                            <a href="saved" class="nav-link">Saved Palettes</a>
+                            <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
                           <?php } else { ?>
-                            <a href="saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
+                            <a href="<?=$url?>saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
                           <?php } ?>
                         </li>
                         <li class="nav-item">
-                            <a href="create" class="nav-link btn btn-theme-nav">Create</a>
+                            <a href="<?=$url?>create" class="nav-link btn btn-theme-nav">Create</a>
                         </li>
                     </ul>
                 </div>
@@ -90,19 +117,20 @@ $i = 0;
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title">Popular Palettes</div>
+            <div class="title" style="padding-bottom:5px">Popular Palettes</div>
+            <p style="padding-bottom:25px">Total Palettes: <?= $total_results; ?></p>
           </div>
-          <?php foreach($palette as $p): ?>
+          <?php foreach($results as $p): ?>
           <div class="col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
-              <a href="palette/<?=$p['id']?>">
+              <a href="<?=$url?>palette/<?=$p['id']?>">
                 <div class="palette-float">
-                  <img src="img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="img/block/<?=$p['blockSix']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
                   <div class="subtext">
                     <div class="likes half">
                     <?php 
@@ -132,6 +160,17 @@ $i = 0;
         </div>
       </div>
     </div>
+ 
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a href="<?=$url?>popular" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
+            <?php for($p=1; $p<=$total_pages; $p++){?> 
+            <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'popular/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
+            <?php }?>
+            <li class="page-item"><a href="<?=$url?>popular/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
+        </ul> 
+    </nav>
+
 
     <?php include('include/footer.php') ?>
 

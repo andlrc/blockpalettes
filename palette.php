@@ -27,7 +27,7 @@ $blockFive = str_replace("_"," ",$pf['blockFive']);
 $blockSix = str_replace("_"," ",$pf['blockSix']);
 
 //pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY RAND ()  LIMIT 12");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
@@ -85,9 +85,9 @@ $i = 0;
                         </li>
                         <li class="nav-item">
                             <?php if($i == 0) { ?>
-                            <a href="saved" class="nav-link">Saved Palettes</a>
+                            <a href="../saved" class="nav-link">Saved Palettes</a>
                           <?php } else { ?>
-                            <a href="saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
+                            <a href="../saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
                           <?php } ?>
                         </li>
                         <li class="nav-item">

@@ -58,7 +58,8 @@ $i = 0;
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
   	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
-	  <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+  
   </head>
   <body>
     <!-- Nav -->
@@ -137,12 +138,12 @@ $i = 0;
                       $id = (string)$p["id"];
                     ?>
                     <?php if (strpos($data, $id) == true) {?>
-                      <form method="post" action="popular" style="margin-bottom:0px">
+                      <form method="post" action="popular" style="margin-bottom:0px" target="frame">
                         <input type="hidden" name="id" value="<?=$p['id']?>">
-                        <button type="submit" name="unlike" class="btn-like"><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
+                        <button type="submit" name="unlike" class="btn-like" ><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
                       </form>
                     <?php } else { ?>
-                      <form method="post" action="popular" style="margin-bottom:0px">
+                      <form method="post" action="popular" style="margin-bottom:0px" target="frame">
                         <input type="hidden" name="id" value="<?=$p['id']?>">
                         <button type="submit" name="like" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
                       </form>
@@ -173,12 +174,13 @@ $i = 0;
 
 
     <?php include('include/footer.php') ?>
-
+      <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+            
 
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

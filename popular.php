@@ -59,7 +59,26 @@ $i = 0;
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
   	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
-  
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+   
+   <script>
+      $(document).ready(function () {
+          $('#unlike').on('submit', function(e) {
+              e.preventDefault();
+              $.ajax({
+                  url : $(this).attr('action') || window.location.pathname,
+                  type: "GET",
+                  data: $(this).serialize(),
+                  success: function (data) {
+                      $("#form_output").html(data);
+                  },
+                  error: function (jXHR, textStatus, errorThrown) {
+                      alert(errorThrown);
+                  }
+              });
+          });
+      });
+    </script>
   </head>
   <body>
     <!-- Nav -->
@@ -138,7 +157,7 @@ $i = 0;
                       $id = (string)$p["id"];
                     ?>
                     <?php if (strpos($data, $id) == true) {?>
-                      <form method="post" action="popular" style="margin-bottom:0px" target="frame">
+                      <form method="post" action="popular" style="margin-bottom:0px"  id="unlike">
                         <input type="hidden" name="id" value="<?=$p['id']?>">
                         <button type="submit" name="unlike" class="btn-like" ><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
                       </form>
@@ -178,7 +197,6 @@ $i = 0;
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
             
 

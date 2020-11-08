@@ -35,7 +35,8 @@ $i = 0;
     <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
-  	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
+    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>

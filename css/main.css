@@ -160,6 +160,12 @@ iframe{
     
 }
 
+.favbtn{
+    background: #4b7bec;
+    color: white;
+    border-radius: 7px;
+}
+
 .award{
     text-align: left;
     padding-top:5px;

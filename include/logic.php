@@ -1,5 +1,58 @@
 <?php 
 
+require "password.php";
+if(isset($_POST['login'])){
+
+    //Retrieve the field values from our login form.
+    $emailInput = !empty($_POST['email']) ? trim($_POST['email']) : null;
+    $passwordAttemptInput = !empty($_POST['password']) ? trim($_POST['password']) : null;
+
+    $email = htmlspecialchars($emailInput, ENT_QUOTES, 'UTF-8');
+    $passwordAttempt = htmlspecialchars($passwordAttemptInput, ENT_QUOTES, 'UTF-8');
+
+    //Retrieve the user account information for the given username.
+    $sql = "SELECT id, email, password FROM user WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+
+    //Bind value.
+    $stmt->bindValue(':email', $email);
+
+    //Execute.
+    $stmt->execute();
+
+    //Fetch row.
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //If $row is FALSE.
+    if($user === false){
+        //Could not find a user with that username!
+        //PS: You might want to handle this error in a more user-friendly manner!
+        $error = "User doesnt exists!";
+    } else{
+        //User account found. Check to see if the given password matches the
+        //password hash that we stored in our users table.
+
+        //Compare the passwords.
+        $validPassword = password_verify($passwordAttempt, addslashes(htmlspecialchars($user['password'])));
+
+        //If $validPassword is TRUE, the login has been successful.
+        if($validPassword){
+
+            //Provide the user with a login session.
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['logged_in'] = time();
+
+            //Redirect to our protected page, which we called home.php
+            header('Location: ../dashboard');
+            exit;
+
+        } else{
+            //$validPassword was FALSE. Passwords do not match.
+            $error = "Passwords do not match!";
+        }
+    }
+
+}
 
 // Functions
 $url = "https://localhost/blockpalettes/";
@@ -34,56 +87,6 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
-if(isset($_POST['like'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-
-    $current_url = $_POST['current_url'];
-
-
-    $palettePull = $pdo->prepare("SELECT likes FROM palette WHERE id = $id");
-    $palettePull->execute();
-    $palette = $palettePull->fetch(PDO::FETCH_ASSOC);
-
-    $likes = $palette['likes'];
-
-    $likes++;
-
-    $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
-            if ($pdo->query($sql)) {
-                setcookie('likes', $_COOKIE['likes'] . "," . $id, time() + strtotime('+20 years'), '/' );
-                header('Location: ' . $url . 'popular');
-                exit;
-            } else {
-                exit;
-            }
-            $pdo = null;
-
-}
-
-if(isset($_POST['unlike'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-
-    $palettePull = $pdo->prepare("SELECT likes FROM palette WHERE id = $id");
-    $palettePull->execute();
-    $palette = $palettePull->fetch(PDO::FETCH_ASSOC);
-
-    $likes = $palette['likes'];
-
-    $likes--;
-
-    $sql = "UPDATE palette SET likes='$likes'  WHERE id='$id'";
-            if ($pdo->query($sql)) {
-                $cookie = $_COOKIE['likes'];
-                $cookieMinus = str_replace("," . $id, "", $cookie);
-                setcookie('likes', $cookieMinus, time() + strtotime('+20 years'), '/' );
-                header('Location: ' . $url . 'popular');
-                exit;
-            } else {
-                exit;
-            }
-            $pdo = null;
-
-}
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])) {
@@ -163,6 +166,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
 
 }
 //New Job
+if(isset($_POST['unfavorite'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
+    //Updates table
+    $edit = "UPDATE palette SET featured = 0 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard');
+    }  
+}
+
+if(isset($_POST['favorite'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE palette SET featured = 1 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard');
+    }  
+}
 
 ?>

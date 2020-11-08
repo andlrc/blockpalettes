@@ -37,11 +37,21 @@ $i = 0;
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
   	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-81969207-1');
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   </head>
   <body>
     <!-- Nav -->
-    <div class="topbar">
+    <div class="topbar" data-toggle="modal" data-target="#exampleModalCenter">
       <div class="container">
         <div class="topbarText">
           NEW SITE - Click Here To Find Out More
@@ -93,11 +103,11 @@ $i = 0;
                   <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
                   <div class="subtext">
-                    <div class="likes half">
-                    &nbsp;
+                    <div class="award half shine">
+                      <i class="fas fa-award"></i> Staff Pick
                     </div>
                     <div class="time half">
-                      <?=time_elapsed_string($p['date'])?>
+                    &nbsp;
                     </div>
                   </div>
                 </div>
@@ -118,6 +128,30 @@ $i = 0;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
             
 
+    <!-- Modal -->
+    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="medium-title" id="exampleModalLongTitle">Updates</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4 class="small-title">Welcome to the NEW and IMPROVED Block Palettes!</h4>
+            <p>As you can see a few things have changed from the previous site.</p>
+            <ul>
+            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/create">create</a> page and create a beautiful block palette.</li>
+            <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
+            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
+            </ul>
+            <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
+            <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>
+          </div>    
+        </div>
+      </div>
+    </div>
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

@@ -6,14 +6,6 @@ require "include/logic.php";
 $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
 $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
 
-if(isset($_COOKIE['likes'])) {
-    $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
-    $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-} else {
-    $data = "";
-}
-
-
 //pull palette
 $pPull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
 $pPull->execute();
@@ -45,27 +37,28 @@ $i = 0;
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <title>Block Palettes - Trendy Block Palettes</title>
-  </head>
+    <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
+  	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, <?=$blockOne?>, <?=$blockTwo?>, <?=$blockThree?>, <?=$blockFour?>, <?=$blockFive?>, <?=$blockSix?>">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-81969207-1');
+    </script>
+  
+    </head>
   <body>
     <!-- Nav -->
-    <div class="topbar">
+    <div class="topbar" data-toggle="modal" data-target="#exampleModalCenter">
       <div class="container">
         <div class="topbarText">
           NEW SITE - Click Here To Find Out More
         </div> 
       </div>
     </div>
-    <?php foreach($palette as $c): ?>
-        <?php 
-            $id = (string)$c["id"];
-          
-        ?>
-        <?php if (strpos($data, $id) == true) {?>
-            <?php 
-              $i++ 
-            ?>
-        <?php } else {} ?>
-    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -73,7 +66,7 @@ $i = 0;
                     <img src="../img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                    <img src="images/hamburger-solid.svg" width="35px">
+                    <img src="images/hamburger.png" width="35px">
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
@@ -111,11 +104,21 @@ $i = 0;
                     <div class="palette-float-info">
                         <h2 class="medium-title">Palette #<?=$pf['id']?></h2>
                         <div class="subtext">
-                            <div class="time" style="float:left">
-                            <?=time_elapsed_string($pf['date'])?>
+                            <?php if($pf['featured'] == 1) { ?>
+                            <div class="award half">
+                                <i class="fas fa-award"></i> Staff Pick
+                                </div>
+                                <div class="time half">
+                                <?=time_elapsed_string($pf['date'])?>
                             </div>
-                          
+                            <?php } else { ?>
+                            <div class="time" style="float:left">
+                             <?=time_elapsed_string($pf['date'])?>
+                            </div>
+                            <?php } ?>
                         </div>
+        
+                                       
                         <div></div>
                         <div class="blocks">
                             <h4 class="small-title">Blocks Used:</h4>
@@ -142,12 +145,18 @@ $i = 0;
                                 <img src="../img/block/<?=$p['blockFive']?>.png" class="block">
                                 <img src="../img/block/<?=$p['blockSix']?>.png" class="block">
                                 <div class="subtext">
-                                <div class="likes half">
-                                &nbsp;
-                                </div>
-                                <div class="time half">
+                                    <?php if($p['featured'] == 1) { ?>
+                                    <div class="award half">
+                                        <i class="fas fa-award"></i> Staff Pick
+                                        </div>
+                                        <div class="time half">
+                                        <?=time_elapsed_string($p['date'])?>
+                                    </div>
+                                    <?php } else { ?>
+                                    <div class="time" style="float:right">
                                     <?=time_elapsed_string($p['date'])?>
-                                </div>
+                                    </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </a>
@@ -170,32 +179,28 @@ $i = 0;
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
-    <script>
-    const $dropdown = $(".dropdown");
-const $dropdownToggle = $(".dropdown-toggle");
-const $dropdownMenu = $(".dropdown-menu");
-const showClass = "show";
-
-$(window).on("load resize", function() {
-  if (this.matchMedia("(min-width: 768px)").matches) {
-    $dropdown.hover(
-      function() {
-        const $this = $(this);
-        $this.addClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "true");
-        $this.find($dropdownMenu).addClass(showClass);
-      },
-      function() {
-        const $this = $(this);
-        $this.removeClass(showClass);
-        $this.find($dropdownToggle).attr("aria-expanded", "false");
-        $this.find($dropdownMenu).removeClass(showClass);
-      }
-    );
-  } else {
-    $dropdown.off("mouseenter mouseleave");
-  }
-});
-      </script>
+    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="medium-title" id="exampleModalLongTitle">Updates</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4 class="small-title">Welcome to the NEW and IMPROVED Block Palettes!</h4>
+            <p>As you can see a few things have changed from the previous site.</p>
+            <ul>
+            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/create">create</a> page and create a beautiful block palette.</li>
+            <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
+            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
+            </ul>
+            <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
+            <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>
+          </div>    
+        </div>
+      </div>
+    </div>
   </body>
 </html>

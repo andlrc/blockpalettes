@@ -4,22 +4,13 @@ session_start();
 require "include/connect.php";
 include "include/logic.php";
 
-if(isset($_COOKIE['likes'])) {
-  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
-  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-} else {
-  $data = "";
-}
 
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
 
 //extract only the name of the file without the extension and save in an array named $find
-//pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY likes DESC");
-$palettePull->execute();
-$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
 
 $i = 0;
 ?>
@@ -36,6 +27,7 @@ $i = 0;
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <title>Block Palettes - Create a Minecraft Block Palette</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <meta name="description" content="Create a Minecraft block palette and share it to the community.">
   	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -48,6 +40,7 @@ $i = 0;
           });
       });
     </script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lf0ouAZAAAAALdfbXOAQyb9zJ9xKcB0bYjp9KVQ"></script>
     <script>
         grecaptcha.ready(function () {
             grecaptcha.execute('6Lf0ouAZAAAAALdfbXOAQyb9zJ9xKcB0bYjp9KVQ', { action: 'contact' }).then(function (token) {
@@ -76,17 +69,6 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <?php foreach($palette as $c): ?>
-        <?php 
-            $id = (string)$c["id"];
-          
-        ?>
-        <?php if (strpos($data, $id) == true) {?>
-            <?php 
-              $i++ 
-            ?>
-        <?php } else {} ?>
-    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -138,7 +120,7 @@ $i = 0;
               <div class="row">
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block One
-                  <select id="select-1" name="block-one" class="form-control" placeholder="Select a block..." required>
+                  <select id="select-1" name="block-one" class="form-control" placeholder="Search a block..." required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -153,7 +135,7 @@ $i = 0;
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block Two
-                  <select id="select-2" class="form-control" placeholder="Select a block..." name="block-two" required>
+                  <select id="select-2" class="form-control" placeholder="Search a block..." name="block-two" required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -169,7 +151,7 @@ $i = 0;
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block Three
-                  <select id="select-3" class="form-control" placeholder="Select a block..." name="block-three" required>
+                  <select id="select-3" class="form-control" placeholder="Search a block..." name="block-three" required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -185,7 +167,7 @@ $i = 0;
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block Four
-                  <select id="select-4" class="form-control" placeholder="Select a block..." name="block-four" required>
+                  <select id="select-4" class="form-control" placeholder="Search a block..." name="block-four" required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -201,7 +183,7 @@ $i = 0;
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block Five
-                  <select id="select-5" class="form-control" placeholder="Select a block..." name="block-five" required>
+                  <select id="select-5" class="form-control" placeholder="Search a block..." name="block-five" required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -217,7 +199,7 @@ $i = 0;
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-12 form-group">
                   Block Six
-                  <select id="select-6" class="form-control" placeholder="Select a block..." name="block-six" required>
+                  <select id="select-6" class="form-control" placeholder="Search a block..." name="block-six" required>
                     <option value="">Select a block...</option>
                     <?php 
                       foreach( $images as $image ):
@@ -235,7 +217,7 @@ $i = 0;
                   <button type="submit" name="create" class="btn btn-theme-form btn-block">Submit</button>
                 </div>
               </div>
-              <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+              <input type="hidden" name="recaptcha_response" id="recaptchaResponse" style="z-index:999">
             </form>
           </div>
         </div>

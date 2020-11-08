@@ -55,7 +55,9 @@ $i = 0;
     <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="Check out new block palettes submitted by the Minecraft community. Get building inspiration or create and share your own block palettes">
-  	<meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
+    
+    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <title>Block Palettes - New Block Palettes For Minecraft Builders</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>

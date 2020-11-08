@@ -81,7 +81,7 @@ $i = 0;
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="<?=$url?>">
                     <img src="<?=$url?>img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,17 +90,10 @@ $i = 0;
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="<?=$url?>popular" class="nav-link">Popular Palettes</a>
+                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
                             <a href="<?=$url?>new" class="nav-link">New Palettes<div class="active"></div></a>
-                        </li>
-                        <li class="nav-item">
-                          <?php if($i == 0) { ?>
-                            <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
-                          <?php } else { ?>
-                            <a href="<?=$url?>saved" class="nav-link">Saved Palettes <span class="saved"><?=$i?></span></a>
-                          <?php } ?>
                         </li>
                         <li class="nav-item">
                             <a href="<?=$url?>create" class="nav-link btn btn-theme-nav">Create</a>
@@ -131,20 +124,7 @@ $i = 0;
                 </a>
                 <div class="subtext">
                   <div class="likes half">
-                    <?php 
-                      $id = (string)$p["id"];
-                    ?>
-                    <?php if (strpos($data, $id) == true) {?>
-                      <form method="post" action="new" style="margin-bottom:0px">
-                        <input type="hidden" name="id" value="<?=$p['id']?>">
-                        <button type="submit" name="unlike" class="btn-like"><i class="fas fa-heart liked"></i> <?=$p['likes']?></button>
-                      </form>
-                    <?php } else { ?>
-                      <form method="post" action="new" style="margin-bottom:0px">
-                        <input type="hidden" name="id" value="<?=$p['id']?>">
-                        <button type="submit" name="like" class="btn-like"><i class="far fa-heart"></i> <?=$p['likes']?></button>
-                      </form>
-                    <?php } ?>
+                  &nbsp;
                   </div>
                   <div class="time half">
                     <?=time_elapsed_string($p['date'])?>

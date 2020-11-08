@@ -1,5 +1,5 @@
 RewriteEngine On
-DirectoryIndex popular.php
+DirectoryIndex featured.php
 
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -11,4 +11,4 @@ RewriteRule ^popular/([0-9a-zA-Z_-]+) popular.php?page=$1 [NC,L]
 RewriteRule ^new/([0-9a-zA-Z_-]+) new.php?page=$1 [NC,L]
 
 
-Redirect /index.php /popular
+Redirect /index.php /featured

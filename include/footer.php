@@ -24,7 +24,7 @@ $pFooter = $paletteFooter->fetchAll(PDO::FETCH_ASSOC);
                 <ul>
                     <li class="footerText"><a href="<?=$url?>popular">Popular</a></li>
                     <li class="footerText"><a href="<?=$url?>new">New</a></li>
-                    <li class="footerText"><a href="<?=$url?>create">Create</a></li>
+                    <li class="footerText"><a href="<?=$url?>submit">Submit</a></li>
                 </ul>
             </div>
             <div class="col-lg-4" style=" padding-top:50px; padding-bottom:100px">

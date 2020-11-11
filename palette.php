@@ -67,7 +67,7 @@ $i = 0;
                     <img src="../img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                    <img src="images/hamburger.png" width="35px">
+                <i class="fas fa-bars fa-2x"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
@@ -78,7 +78,7 @@ $i = 0;
                             <a href="<?=$url?>new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>create" class="nav-link btn btn-theme-nav">Create</a>
+                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav">Submit</a>
                         </li>
                     </ul>
                 </div>
@@ -193,7 +193,7 @@ $i = 0;
             <h4 class="small-title">Welcome to the NEW and IMPROVED Block Palettes!</h4>
             <p>As you can see a few things have changed from the previous site.</p>
             <ul>
-            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/create">create</a> page and create a beautiful block palette.</li>
+            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/submit">create</a> page and create a beautiful block palette.</li>
             <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
             <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
             </ul>

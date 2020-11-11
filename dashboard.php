@@ -92,7 +92,7 @@ session_start();
                     <img src="<?=$url?>img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                    <img src="<?=$url?>images/hamburger-solid.svg" width="35px">
+                <i class="fas fa-bars fa-2x"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">

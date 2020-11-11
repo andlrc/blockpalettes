@@ -55,10 +55,10 @@ if(isset($_POST['login'])){
 }
 
 // Functions
-$url = "https://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 function time_elapsed_string($datetime, $full = false) {
-    date_default_timezone_set("America/New_York");
+    date_default_timezone_set("America/Los_Angeles");
     $now = new DateTime;
     $ago = new DateTime($datetime);
     $diff = $now->diff($ago);

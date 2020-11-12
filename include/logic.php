@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
 
     // Build POST request:
     $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-    $recaptcha_secret = 'XXXXXXXXXXXXXXXXXXXX';
+    $recaptcha_secret = '6Lf0ouAZAAAAAIk1Rkh-sda3QaTDN0lVXETByFWr';
     $recaptcha_response = $_POST['recaptcha_response'];
 
     // Make and decode POST request:
@@ -138,26 +138,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
         
             $sixCut = str_replace(".png","","$six");
             $sixCleanStr = str_replace("img/block/","","$sixCut");
-        
-            //Preparing insert statement
-            $sql = "INSERT INTO palette (blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+
+
+    
+
+
+                //Checking if the supplied username already exists
+            //Preparing SQL statement
+            $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
+                                            AND blockTwo LIKE '$twoCleanStr' 
+                                            AND blockThree LIKE '$threeCleanStr' 
+                                            AND blockFour LIKE '$fourCleanStr' 
+                                            AND blockFive LIKE '$fiveCleanStr' 
+                                            AND blockSix LIKE '$sixCleanStr'";
             $stmt = $pdo->prepare($sql);
-            //Bind varibles
-            $stmt->bindValue(':blockOne', $oneCleanStr);
-            $stmt->bindValue(':blockTwo', $twoCleanStr);
-            $stmt->bindValue(':blockThree', $threeCleanStr);
-            $stmt->bindValue(':blockFour', $fourCleanStr);
-            $stmt->bindValue(':blockFive', $fiveCleanStr);
-            $stmt->bindValue(':blockSix', $sixCleanStr);
-        
-            //Execute the statement
-            $result = $stmt->execute();
-        
-            //If successful, returns to user profile
-            if($result) {
-                $_SESSION['create'] = "New Palette";
-                header('Location: ' . $url . 'new');
+            $stmt->bindValue(':title', $title);
+            $stmt->execute();
+            //Fetch the row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            //Username already exists error
+            if($row['num'] > 0){
+                session_start();
+                $_SESSION['error'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
             }
+        
+                //Preparing insert statement
+                $sql = "INSERT INTO palette (blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+                $stmt = $pdo->prepare($sql);
+                //Bind varibles
+                $stmt->bindValue(':blockOne', $oneCleanStr);
+                $stmt->bindValue(':blockTwo', $twoCleanStr);
+                $stmt->bindValue(':blockThree', $threeCleanStr);
+                $stmt->bindValue(':blockFour', $fourCleanStr);
+                $stmt->bindValue(':blockFive', $fiveCleanStr);
+                $stmt->bindValue(':blockSix', $sixCleanStr);
+            
+                //Execute the statement
+                $result = $stmt->execute();
+            
+                //If successful, returns to user profile
+                if($result) {
+                    $_SESSION['create'] = "New Palette";
+                    header('Location: ' . $url . 'new');
+                }
         
          }
     } else {
@@ -165,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
     }
 
 }
-//New Job
+//unfavorite
 if(isset($_POST['unfavorite'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
@@ -194,6 +220,22 @@ if(isset($_POST['favorite'])){
     if($result) {
         header('Location: ' . $url . 'dashboard');
     }  
+}
+
+ // Delete
+ if(isset($_POST['delete'])){
+    $id = $_POST['id'];
+    $delete = "DELETE FROM palette WHERE id = :id";
+    $stmt = $pdo->prepare($delete);
+    //Bind varibles
+    $stmt->bindValue(':id', $id);
+
+    $result = $stmt->execute();
+
+    //If follow was successful
+    if($result) {
+        header('Location: ' . $url . 'dashboard');
+    }
 }
 
 ?>

@@ -10,8 +10,12 @@ $dir = "img/block/*.png";
 $images = glob( $dir );
 
 //extract only the name of the file without the extension and save in an array named $find
-
-
+if(isset($_SESSION['error'])) {
+  $error = "This palette already exists!";
+  unset($_SESSION['error']);
+} else {
+  $error = "";
+}
 $i = 0;
 ?>
 
@@ -99,7 +103,13 @@ $i = 0;
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title">Submit Palette</div>
+            <div class="title" style="padding-bottom:15px">Submit Palette</div>
+              <?php if($error != null) { ?>
+                <div class="delete-tag" style="margin-bottom:25px"><?=$error?></div>
+                
+              <?php } else {?>
+                <div style="margin-bottom:10px"></div>
+              <?php } ?>
           </div>
           <div class="col-lg-2"></div>
           <div class="col-lg-8 col-md-12 paddingFixLargeCreate">

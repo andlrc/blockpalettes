@@ -119,7 +119,7 @@ session_start();
                                 <th scope="col">ID</th>
                                 <th scope="col"></th>
                                 <th scope="col">link</th>
-                                <th scope="col">Favorite</th>
+                                <th scope="col">Unfavorite</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -160,6 +160,7 @@ session_start();
                                 <th scope="col"></th>
                                 <th scope="col">link</th>
                                 <th scope="col">Favorite</th>
+                                <th scope="col">Delete Palette</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -185,6 +186,12 @@ session_start();
                                     <form action="dashboard" method="post">
                                         <input type="hidden" name="id" value="<?=$p['id']?>">
                                         <button type="submit" name="favorite" class="btn favbtn"><i class="fas fa-star"></i></button>
+                                    </form>
+                                </td>
+                                <td class="align-middle">
+                                    <form action="dashboard" method="post">
+                                        <input type="hidden" name="id" value="<?=$p['id']?>">
+                                        <button type="submit" name="delete" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

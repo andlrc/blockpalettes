@@ -41,6 +41,7 @@ iframe{
 /* Palette Page */
 .palettes{
     padding-top: 100px;
+    min-height: 80vh;
 }
 
 .palette-float{
@@ -197,7 +198,7 @@ iframe{
     padding: 1px 10px;
     border-radius: 4px;
  
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .favbtn{

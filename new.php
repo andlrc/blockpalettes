@@ -17,7 +17,8 @@ $limit = 12;
 
 
 if(isset($_GET['filter'])){
-  $block = $_GET['filter'];
+  $dataInput = !empty($_GET['filter']) ? trim($_GET['filter']) : null;
+  $block = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
 
   $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
                                OR blockTwo LIKE '$block' 
@@ -147,7 +148,7 @@ $images = glob( $dir );
       <div class="container">
         <div class="row">
           <div class="col-md-9">
-            <div class="title" style="padding-bottom:10px">New Palettes</div>
+            <div class="title" style="padding-bottom:15px">New Palettes</div>
             <?php if(isset($_GET['filter'])){ ?>
               <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
               <span class="filter-tag"><?=ucwords($blockName)?></span>
@@ -162,7 +163,7 @@ $images = glob( $dir );
           </div>
           <div class="col-md-3">
             Filter By Block
-            <form method="get" >
+            <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
             <div class="input-group">
                 <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
                 <option value="" class="cursor">Select a block...</option>

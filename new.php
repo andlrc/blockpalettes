@@ -11,37 +11,65 @@ if(isset($_COOKIE['likes'])) {
 }
 
 
+
 //pagination
 $limit = 12;
-//pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
-$palettePull->execute();
-$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-$total_results = $palettePull->rowCount();
-$total_pages = ceil($total_results/$limit);
-    
-if (!isset($_GET['page'])) {
-    $page = 1;
-} else{
-    $page = $_GET['page'];
+
+
+if(isset($_GET['filter'])){
+  $block = $_GET['filter'];
+
+  $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
+                               OR blockTwo LIKE '$block' 
+                               OR blockThree LIKE '$block' 
+                               OR blockFour LIKE '$block' 
+                               OR blockFive LIKE '$block' 
+                               OR blockSix LIKE '$block'");
+  $palettePull->execute();
+  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+
+} else {
+  $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
+  $palettePull->execute();
+  $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+  $total_results = $palettePull->rowCount();
+  $total_pages = ceil($total_results/$limit);
+      
+  if (!isset($_GET['page'])) {
+      $page = 1;
+  } else{
+      $page = $_GET['page'];
+  }
+
+  $start = ($page-1)*$limit;
+
+  $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT $start, $limit");
+  $stmt->execute();
+
+  // set the resulting array to associative
+  $stmt->setFetchMode(PDO::FETCH_OBJ);
+      
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+  $conn = null;
+
+  // var_dump($results);
+  $no = $page > 1 ? $start+1 : 1;
+
+  $i = 0;
 }
 
-$start = ($page-1)*$limit;
+if(isset($_GET['removeFilter'])){
+  header('Location: new');
+}
+//pull palettes
 
-$stmt = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT $start, $limit");
-$stmt->execute();
+$dir = "img/block/*.png";
+//get the list of all files with .jpg extension in the directory and safe it in an array named $images
+$images = glob( $dir );
 
-// set the resulting array to associative
-$stmt->setFetchMode(PDO::FETCH_OBJ);
-    
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-       
-$conn = null;
-
-// var_dump($results);
-$no = $page > 1 ? $start+1 : 1;
-
-$i = 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -55,10 +83,20 @@ $i = 0;
     <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="Check out new block palettes submitted by the Minecraft community. Get building inspiration or create and share your own block palettes">
-    
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <title>Block Palettes - New Block Palettes For Minecraft Builders</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <script>
+        $(document).ready(function () {
+          $('select').selectize({
+              sortField: 'text'
+          });
+      });
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -79,17 +117,6 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <?php foreach($palette as $c): ?>
-        <?php 
-            $id = (string)$c["id"];
-          
-        ?>
-        <?php if (strpos($data, $id) == true) {?>
-            <?php 
-              $i++ 
-            ?>
-        <?php } else {} ?>
-    <?php endforeach; ?>
     <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -119,9 +146,48 @@ $i = 0;
     <div class="palettes">
       <div class="container">
         <div class="row">
-          <div class="col-md-12">
-            <div class="title">New Palettes</div>
+          <div class="col-md-9">
+            <div class="title" style="padding-bottom:10px">New Palettes</div>
+            <?php if(isset($_GET['filter'])){ ?>
+              <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
+              <span class="filter-tag"><?=ucwords($blockName)?></span>
+              <form style="display: inline-block;">
+              <button class="delete-tag btn" type="submit" name="removeFilter">
+                <i class="fas fa-times"></i>
+              </button>
+            </form>
+            <?php } else { ?>  
+              <div style="padding-bottom:15px"></div> 
+            <?php } ?>
           </div>
+          <div class="col-md-3">
+            Filter By Block
+            <form method="get" >
+            <div class="input-group">
+                <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
+                <option value="" class="cursor">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
+            </div>
+            </form>
+          </div>
+          <?php if($results == null){ ?>
+            <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
+            <div class="col-md-12" style="padding-bottom:200px">
+              <h4 class="medium-title">Oh No!</h4>
+              There are currently no palettes that contain <?=ucwords($blockName)?>.<br>
+              Create your own <a href="submit">here</a>.
+            </div>
+          <?php } else { ?>
           <?php foreach($results as $p): ?>
           <div class="col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
@@ -152,10 +218,12 @@ $i = 0;
             </div>
           </div>
           <?php endforeach; ?>
+          <?php } ?>
         </div>
       </div>
     </div>
-
+<?php if(isset($_GET['filter'])){ ?>
+<?php } else { ?>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item"><a href="<?=$url?>new" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
@@ -166,11 +234,12 @@ $i = 0;
         </ul> 
     </nav>
 
+<?php } ?>
+
     <?php include('include/footer.php') ?>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

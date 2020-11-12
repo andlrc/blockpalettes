@@ -55,7 +55,7 @@ if(isset($_POST['login'])){
 }
 
 // Functions
-$url = "https://www.blockpalettes.com/";
+$url = "http://localhost/blockpalettes/";
 
 function time_elapsed_string($datetime, $full = false) {
     date_default_timezone_set("America/Los_Angeles");

@@ -11,6 +11,11 @@ $pPull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
 $pPull->execute();
 $pf = $pPull->fetch(PDO::FETCH_ASSOC);
 
+if($pf == null){
+  header('Location: ../new');
+  exit;
+}
+
 $blockOne = str_replace("_"," ",$pf['blockOne']);
 $blockTwo = str_replace("_"," ",$pf['blockTwo']);
 $blockThree = str_replace("_"," ",$pf['blockThree']);

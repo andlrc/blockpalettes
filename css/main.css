@@ -363,6 +363,14 @@ iframe{
     color: white !important;
 }
 
+.btn-theme{
+    background: black;
+    border-radius: 7px;
+    padding: 5px;
+    color: white !important;
+    font-family: tommyMedium, sans-serif;
+}
+
 .btn-theme-form{
     background: black;
     border-radius: 7px;
@@ -416,4 +424,48 @@ iframe{
 
 .page-link{
     color: black;
+}
+
+
+.fImage{
+    width: 100%;
+    object-fit: cover;
+    height: 325px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.fullImage{
+    width: 100%;
+    object-fit: cover;
+    height: 500px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.article{
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    margin-bottom:25px
+}
+
+.update-pill{
+    background: #e74c3c;
+    padding: 5px 10px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+    font-family: tommyMedium, sans-serif;
+}
+
+.subText{
+    margin-top: -5px;
+    color: gray;
+    font-size: 15px;
 }

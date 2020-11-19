@@ -4,24 +4,12 @@ require "include/connect.php";
 require "include/logic.php";
 
 
-if(isset($_COOKIE['likes'])) {
-  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
-  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-} else {
-  $data = "";
-
-}
-
-
-//pagination
-$limit = 12;
 //pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
-$palettePull->execute();
-$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+$blogPull = $pdo->prepare("SELECT * FROM blog");
+$blogPull->execute();
+$blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
 
 
-$i = 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -34,10 +22,10 @@ $i = 0;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
-    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
+    <meta name="description" content="Read about how to build better in Minecraft, builder showcases, block palettes tips and tricks, and community run contests!">
+    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary, building contest, blog, how to build in minecraft, minecraft building">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <title>Block Palettes - Blog</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -71,13 +59,13 @@ $i = 0;
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes<div class="active"></div></a>
+                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
                             <a href="<?=$url?>new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>blog" class="nav-link">Blog</a>
+                            <a href="<?=$url?>blog" class="nav-link">Blog<div class="active"></div></a>
                         </li>
                         <li class="nav-item">
                             <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav">Submit</a>
@@ -92,33 +80,30 @@ $i = 0;
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title" style="padding-bottom:5px">Featured Palettes</div>
-            <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
+            <div class="title" style="padding-bottom:5px">Blog</div>
+            <p style="padding-bottom:25px">Articles talking Minecraft building, showcasing builds, and offering tips and tricks!</p>
           </div>
-          <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <a href="<?=$url?>palette/<?=$p['id']?>">
-                <div class="palette-float">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                  <div class="subtext">
-                    <div class="award half shine">
-                      <i class="fas fa-award"></i> Staff Pick
-                    </div>
-                    <div class="time half">
-                    &nbsp;
-                    </div>
-                  </div>
-                </div>
-              </a>
+          <?php if ($blog == null) { ?>
+            <div class="col-md-12">
+                <h4 class="medium-title">Oh No!</h4>
+                There are currently no blog articles :C
             </div>
-          </div>
-          <?php endforeach; ?>
+          <?php } else { ?>
+            <?php foreach($blog as $b): ?>
+                <div class="col-md-6">
+                    <div class="image">
+                        <span class="update-pill">Site Update</span>
+                        <img class="fImage" src="<?=$b['image']?>">
+                    </div>
+                    <div class="article">
+                        <h3 class="small-title"><?=ucwords($b['title'])?></h3>
+                        <p><?=custom_echo($b['article'], 250);?></p>
+                        <?php $url = str_replace(' ', '_', $b['title']) ?>
+                        <a href="blog/p/<?=$url?>" class="btn btn-theme btn-block">Read More</a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php } ?>
         </div>
       </div>
     </div>

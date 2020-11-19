@@ -62,7 +62,7 @@ $i = 0;
 
     gtag('config', 'UA-81969207-1');
   </script>
-
+<script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   </head>
   <body>
     <!-- Nav -->

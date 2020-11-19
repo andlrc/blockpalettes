@@ -3,25 +3,23 @@ session_start();
 require "include/connect.php";
 require "include/logic.php";
 
+$id = !empty($_GET['p']) ? trim($_GET['p']) : null;
+$pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
 
-if(isset($_COOKIE['likes'])) {
-  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
-  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-} else {
-  $data = "";
+$url = str_replace('_', ' ', $pid);
+//pull palettes
+$blogPull = $pdo->prepare("SELECT * FROM blog WHERE title = '$url'");
+$blogPull->execute();
+$blog = $blogPull->fetch(PDO::FETCH_ASSOC);
 
+if($blog == null){
+    header('Location: blog');
+    exit;
 }
 
+$d = date_create($blog['date']);
+$date = date_format($d,"Y/m/d");
 
-//pagination
-$limit = 12;
-//pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
-$palettePull->execute();
-$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-
-$i = 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -32,12 +30,12 @@ $i = 0;
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?=$url?>css/main.css">
+    <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
-    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
-    <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <meta name="description" content="<?=$blog['meta']?>">
+    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary, building contest, blog, how to build in minecraft, minecraft building">
+    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <title>Block Palettes - <?=ucwords($blog['title'])?></title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -63,7 +61,7 @@ $i = 0;
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="<?=$url?>">
-                    <img src="<?=$url?>img/logotest.png" class="logo-size">
+                    <img src="../../img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                   <i class="fas fa-bars fa-2x"></i>
@@ -71,16 +69,16 @@ $i = 0;
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes<div class="active"></div></a>
+                            <a href="../../" class="nav-link">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
+                            <a href="../../new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>blog" class="nav-link">Blog</a>
+                            <a href="../../blog" class="nav-link">Blog<div class="active"></div></a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav">Submit</a>
+                            <a href="../../submit" class="nav-link btn btn-theme-nav">Submit</a>
                         </li>
                     </ul>
                 </div>
@@ -88,44 +86,25 @@ $i = 0;
         </nav>
     </div>
     <!-- End Nav -->
-    <div class="palettes">
+    <div class="palettes" style="padding-top:50px">
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title" style="padding-bottom:5px">Featured Palettes</div>
-            <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
+            <span class="update-pill">Site Update</span>
+            <img src="<?=$blog['image']?>" class="fullImage">
+            <div class="article">
+                <h3 class="small-title"><?=ucwords($blog['title'])?></h3>
+                <p class="subText"><i class="far fa-calendar-alt"></i> <?=$date?></p>
+                <p><?=$blog['article']?></p>
+             </div>
           </div>
-          <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              <a href="<?=$url?>palette/<?=$p['id']?>">
-                <div class="palette-float">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                  <div class="subtext">
-                    <div class="award half shine">
-                      <i class="fas fa-award"></i> Staff Pick
-                    </div>
-                    <div class="time half">
-                    &nbsp;
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-          <?php endforeach; ?>
         </div>
       </div>
     </div>
 
 
-    <?php include('include/footer.php') ?>
-      <iframe name="frame"></iframe>
+    <?php include('include/footerP.php') ?>
+    <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->

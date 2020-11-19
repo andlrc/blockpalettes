@@ -1,15 +1,15 @@
 RewriteEngine On
 DirectoryIndex featured.php
-ErrorDocument 404 https://www.blockpalettes.com/
+
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
 RewriteRule ^palette/([0-9a-zA-Z_-]+) palette.php?p=$1 [NC,L]
 
+RewriteRule ^blog/p/([0-9a-zA-Z_-]+) p.php?p=$1 [NC,L]
+
 RewriteRule ^popular/([0-9a-zA-Z_-]+) popular.php?page=$1 [NC,L]
 RewriteRule ^new/([0-9a-zA-Z_-]+) new.php?page=$1 [NC,L]
 RewriteRule ^dashboard/([0-9a-zA-Z_-]+) dashboard.php?page=$1 [NC,L]
 
-
-Redirect /index.php /featured

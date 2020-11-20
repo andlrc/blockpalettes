@@ -6,9 +6,9 @@ require "include/logic.php";
 $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
 $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
 
-$url = str_replace('_', ' ', $pid);
+$purl = str_replace('_', ' ', $pid);
 //pull palettes
-$blogPull = $pdo->prepare("SELECT * FROM blog WHERE title = '$url'");
+$blogPull = $pdo->prepare("SELECT * FROM blog WHERE title = '$purl'");
 $blogPull->execute();
 $blog = $blogPull->fetch(PDO::FETCH_ASSOC);
 
@@ -30,11 +30,11 @@ $date = date_format($d,"Y/m/d");
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="<?=$blog['meta']?>">
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary, building contest, blog, how to build in minecraft, minecraft building">
-    <link rel="icon" type="image/png" href="../../img/favicon.png">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
     <title>Block Palettes - <?=ucwords($blog['title'])?></title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
@@ -61,7 +61,7 @@ $date = date_format($d,"Y/m/d");
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="<?=$url?>">
-                    <img src="../../img/logotest.png" class="logo-size">
+                    <img src="../img/logotest.png" class="logo-size">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                   <i class="fas fa-bars fa-2x"></i>
@@ -69,16 +69,16 @@ $date = date_format($d,"Y/m/d");
                 <div class="collapse navbar-collapse" id="navbarsExample05">
                     <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
                       <li class="nav-item">
-                            <a href="../../" class="nav-link">Featured Palettes</a>
+                            <a href="../" class="nav-link">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../new" class="nav-link">New Palettes</a>
+                            <a href="../new" class="nav-link">New Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../blog" class="nav-link">Blog<div class="active"></div></a>
+                            <a href="../blog" class="nav-link">Blog<div class="active"></div></a>
                         </li>
                         <li class="nav-item">
-                            <a href="../../submit" class="nav-link btn btn-theme-nav">Submit</a>
+                            <a href="../submit" class="nav-link btn btn-theme-nav">Submit</a>
                         </li>
                     </ul>
                 </div>

@@ -17,44 +17,45 @@ session_start();
         $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        //featured pull
+        $featurePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
+        $featurePull->execute();
+        $feature = $featurePull->fetchAll(PDO::FETCH_ASSOC);
+
+        //pagination
+        $limit = 15;
+        //pull palettes
+        $palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC");
+        $palettePull->execute();
+        $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+        $total_results = $palettePull->rowCount();
+        $total_pages = ceil($total_results/$limit);
+            
+        if (!isset($_GET['page'])) {
+            $page = 1;
+        } else{
+            $page = $_GET['page'];
+        }
+
+        $start = ($page-1)*$limit;
+
+        $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC LIMIT $start, $limit");
+        $stmt->execute();
+
+        // set the resulting array to associative
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+            
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        $conn = null;
+
+        // var_dump($results);
+        $no = $page > 1 ? $start+1 : 1;
+
+        $i = 0;
     }
 
-    //featured pull
-    $featurePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
-    $featurePull->execute();
-    $feature = $featurePull->fetchAll(PDO::FETCH_ASSOC);
-
-    //pagination
-    $limit = 15;
-    //pull palettes
-    $palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC");
-    $palettePull->execute();
-    $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-    $total_results = $palettePull->rowCount();
-    $total_pages = ceil($total_results/$limit);
-        
-    if (!isset($_GET['page'])) {
-        $page = 1;
-    } else{
-        $page = $_GET['page'];
-    }
-
-    $start = ($page-1)*$limit;
-
-    $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC LIMIT $start, $limit");
-    $stmt->execute();
-
-    // set the resulting array to associative
-    $stmt->setFetchMode(PDO::FETCH_OBJ);
-        
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-    $conn = null;
-
-    // var_dump($results);
-    $no = $page > 1 ? $start+1 : 1;
-
-    $i = 0;
 ?>
 <!doctype html>
 <html lang="en">

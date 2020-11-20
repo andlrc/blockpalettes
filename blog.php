@@ -9,7 +9,6 @@ $blogPull = $pdo->prepare("SELECT * FROM blog");
 $blogPull->execute();
 $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
 
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -98,8 +97,8 @@ $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
                     <div class="article">
                         <h3 class="small-title"><?=ucwords($b['title'])?></h3>
                         <p><?=custom_echo($b['article'], 250);?></p>
-                        <?php $url = str_replace(' ', '_', $b['title']) ?>
-                        <a href="blog/p/<?=$url?>" class="btn btn-theme btn-block">Read More</a>
+                        <?php $urlPost = str_replace(' ', '_', $b['title']) ?>
+                        <a href="blog/<?=$urlPost?>" class="btn btn-theme btn-block">Read More</a>
                     </div>
                 </div>
             <?php endforeach; ?>

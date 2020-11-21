@@ -43,7 +43,7 @@ if(isset($_POST['login'])){
             $_SESSION['logged_in'] = time();
 
             //Redirect to our protected page, which we called home.php
-            header('Location: ../dashboard');
+            header('Location: dashboard');
             exit;
 
         } else{
@@ -237,5 +237,107 @@ if(isset($_POST['favorite'])){
         header('Location: ' . $url . 'dashboard');
     }
 }
+
+
+function custom_echo($x, $length)
+{
+  if(strlen($x)<=$length)
+  {
+    echo $x;
+  }
+  else
+  {
+    $y=substr($x,0,$length) . '...';
+    echo $y;
+  }
+}
+
+
+//Blog post
+if(isset($_POST['blog'])){
+
+    //Sanitizes data
+    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
+    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
+    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
+    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
+    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
+
+
+    $title = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
+    $article = htmlspecialchars($articleIn, ENT_QUOTES, 'UTF-8');
+    $image = htmlspecialchars($imageIn, ENT_QUOTES, 'UTF-8');
+    $meta = htmlspecialchars($metaIn, ENT_QUOTES, 'UTF-8');
+    $type = htmlspecialchars($typeIn, ENT_QUOTES, 'UTF-8');
+    $uid = $_POST['uid'];
+
+    $tLower = strtolower($title);
+
+    //Checking if the supplied username already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(id) AS num FROM blog WHERE title = $tLower";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    //Fetch the row
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Username already exists error
+    if($row['num'] > 0){
+        session_start();
+        $_SESSION['error'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    }
+
+        //Preparing insert statement
+        $sql = "INSERT INTO blog (uid, title, article, image, meta, post_type) VALUES (:uid, :title, :article, :image, :meta, :type)";
+        $stmt = $pdo->prepare($sql);
+        //Bind varibles
+        $stmt->bindValue(':uid', $uid);
+        $stmt->bindValue(':title', $tlower);
+        $stmt->bindValue(':article', $article);
+        $stmt->bindValue(':image', $image);
+        $stmt->bindValue(':meta', $meta);
+        $stmt->bindValue(':type', $type);
+    
+        //Execute the statement
+        $result = $stmt->execute();
+    
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'new');
+        }
+
+ }
+
+ if(isset($_POST['updateBlog'])){
+    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
+    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
+    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
+    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
+    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
+
+
+    $titleTall = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
+    $article = htmlspecialchars($articleIn, ENT_QUOTES, 'UTF-8');
+    $image = htmlspecialchars($imageIn, ENT_QUOTES, 'UTF-8');
+    $meta = htmlspecialchars($metaIn, ENT_QUOTES, 'UTF-8');
+    $type = htmlspecialchars($typeIn, ENT_QUOTES, 'UTF-8');
+    $id = $_POST['id'];
+
+    $title = strtolower($titleTall);
+
+    //Updates table
+    $edit = "UPDATE blog SET title = '$title', article = '$article', image = '$image', meta = '$meta', post_type = '$type' WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/post');
+    }  
+}
+
 
 ?>

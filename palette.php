@@ -11,6 +11,11 @@ $pPull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
 $pPull->execute();
 $pf = $pPull->fetch(PDO::FETCH_ASSOC);
 
+if($pf == null){
+  header('Location: ../new');
+  exit;
+}
+
 $blockOne = str_replace("_"," ",$pf['blockOne']);
 $blockTwo = str_replace("_"," ",$pf['blockTwo']);
 $blockThree = str_replace("_"," ",$pf['blockThree']);
@@ -49,7 +54,7 @@ $i = 0;
 
     gtag('config', 'UA-81969207-1');
     </script>
-  
+    <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     </head>
   <body>
     <!-- Nav -->

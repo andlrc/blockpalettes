@@ -18,9 +18,13 @@
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $blogPull = $pdo->prepare("SELECT * FROM blog");
+        $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
+        $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+
+        $blogPull = $pdo->prepare("SELECT * FROM blog WHERE id = $pid");
         $blogPull->execute();
-        $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
+        $blog = $blogPull->fetch(PDO::FETCH_ASSOC);
+        
     }
 
 
@@ -79,72 +83,48 @@
             <div class="row">
                 <div class="col-md-12">
                     <p style="padding-bottom:0px">Welcome, <?=$user['email']?></p>
-                    <a href="dashboard">Dashboard</a> <a href="#">Blog Posts</a>
+                    <a href="../dashboard">Dashboard</a> <a href="dashboard/post">Blog Posts</a>
                     <div class="title" style="padding-bottom:15px">Dashboard</div>
 
-                    <h5 class="medium-title">Create a Post</h5>
-                    <form action="post" method="post">
+                    <h5 class="medium-title">Edit Post</h5>
+                    <form action="edit" method="post">
                         <div class="row">
                             <div class="col-md-4 form-group">
                                 Article Title
-                                <input type="text" name="title" placeholder="Title" class="form-control">
+                                <input type="text" name="title" placeholder="Title" class="form-control" value="<?=ucwords($blog['title'])?>">
                             </div>
                             <div class="col-md-4 form-group">
                                 Feature Image
-                                <input type="text" name="image" placeholder="Image" class="form-control">
+                                <input type="text" name="image" placeholder="Image" class="form-control" value="<?=$blog['image']?>">
                             </div>
                             <div class="col-md-4 form-group"> 
                                 Post type
                                 <select class="form-control" id="sel1" name="type" required>
-                                    <option value="0">Site Update</option>
-                                    <option value="1">Community</option>
-                                    <option value="2">News</option>
+                                    <option value="0" <?php if($blog['post_type'] == 0){ echo "selected"; } ?>>Site Update</option>
+                                    <option value="1" <?php if($blog['post_type'] == 1){ echo "selected"; } ?>>Community</option>
+                                    <option value="2" <?php if($blog['post_type'] == 2){ echo "selected"; } ?>>News</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 Article
-                                <textarea class="form-control form-theme" name="article" rows="20" placeholder="Article goes here" required></textarea>
+                                <textarea class="form-control form-theme" name="article" rows="20" placeholder="Article goes here" required><?=htmlentities($blog['article'])?></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 Meta Description
-                                <textarea class="form-control form-theme" name="meta" rows="7" placeholder="Meta description goes here" required></textarea>
+                                <textarea class="form-control form-theme" name="meta" rows="7" placeholder="Meta description goes here" required><?=$blog['meta']?></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <input type="submit" name="blog" class="btn btn-theme btn-block" value="Post">
+                            <input type="hidden" name="id" value="<?=$blog['id']?>">
+                                <input type="submit" name="updateBlog" class="btn btn-theme btn-block" value="Update">
                             </div>
                         </div>
                     </form>
-
-                    <h5 class="medium-title" style="padding-top:50px">Blog Posts</h5>
-                    <div class="row">
-                        <?php if ($blog == null) { ?>
-                            <div class="col-md-12">
-                                <h4 class="medium-title">Oh No!</h4>
-                                There are currently no blog articles :C
-                            </div>
-                        <?php } else { ?>
-                            <?php foreach($blog as $b): ?>
-                                <div class="col-md-4">
-                                    <div class="image">
-                                        <span class="update-pill">Site Update</span>
-                                        <img class="fImage" src="<?=$b['image']?>">
-                                    </div>
-                                    <div class="article">
-                                        <h3 class="small-title"><?=ucwords($b['title'])?></h3>
-                                        <p><?=custom_echo($b['article'], 150);?></p>
-                                        <?php $urlPost = str_replace(' ', '_', $b['title']) ?>
-                                        <a href="edit?p=<?=$b['id']?>" class="btn btn-theme btn-block">Edit</a>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php } ?>
-                    </div>
                 </div>
             </div>
         </div>

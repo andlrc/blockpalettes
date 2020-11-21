@@ -111,6 +111,7 @@ session_start();
             <div class="row">
                 <div class="col-md-12">
                     <p style="padding-bottom:0px">Welcome, <?=$user['email']?></p>
+                    <a href="dashboard">Dashboard</a> <a href="dashboard/post">Blog Posts</a>
                     <div class="title" style="padding-bottom:15px">Dashboard</div>
 
                     <h5 class="medium-title">Featured Palettes</h5>

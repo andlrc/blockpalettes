@@ -257,11 +257,11 @@ function custom_echo($x, $length)
 if(isset($_POST['blog'])){
 
     //Sanitizes data
-    $titleIn = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
-    $articleIn = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
-    $imageIn = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
-    $metaIn = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
-    $typeIn = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
+    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
+    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
+    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
+    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
+    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
 
 
     $title = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
@@ -309,6 +309,35 @@ if(isset($_POST['blog'])){
         }
 
  }
+
+ if(isset($_POST['updateBlog'])){
+    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
+    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
+    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
+    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
+    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
+
+
+    $titleTall = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
+    $article = htmlspecialchars($articleIn, ENT_QUOTES, 'UTF-8');
+    $image = htmlspecialchars($imageIn, ENT_QUOTES, 'UTF-8');
+    $meta = htmlspecialchars($metaIn, ENT_QUOTES, 'UTF-8');
+    $type = htmlspecialchars($typeIn, ENT_QUOTES, 'UTF-8');
+    $id = $_POST['id'];
+
+    $title = strtolower($titleTall);
+
+    //Updates table
+    $edit = "UPDATE blog SET title = '$title', article = '$article', image = '$image', meta = '$meta', post_type = '$type' WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/post');
+    }  
+}
 
 
 ?>

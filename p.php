@@ -13,7 +13,7 @@ $blogPull->execute();
 $blog = $blogPull->fetch(PDO::FETCH_ASSOC);
 
 if($blog == null){
-    header('Location: blog');
+    header('Location: ../blog');
     exit;
 }
 

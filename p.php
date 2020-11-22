@@ -95,7 +95,7 @@ $date = date_format($d,"Y/m/d");
             <div class="article">
                 <h3 class="small-title"><?=ucwords($blog['title'])?></h3>
                 <p class="subText"><i class="far fa-calendar-alt"></i> <?=$date?></p>
-                <p><?=$blog['article']?></p>
+                <p><?=nl2br($blog['article'])?></p>
              </div>
           </div>
         </div>

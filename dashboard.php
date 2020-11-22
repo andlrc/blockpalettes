@@ -18,15 +18,10 @@ session_start();
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        //featured pull
-        $featurePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
-        $featurePull->execute();
-        $feature = $featurePull->fetchAll(PDO::FETCH_ASSOC);
-
         //pagination
         $limit = 12;
         //pull palettes
-        $palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC");
+        $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
         $palettePull->execute();
         $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
         $total_results = $palettePull->rowCount();
@@ -40,7 +35,7 @@ session_start();
 
         $start = ($page-1)*$limit;
 
-        $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC LIMIT $start, $limit");
+        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC LIMIT $start, $limit");
         $stmt->execute();
 
         // set the resulting array to associative
@@ -61,10 +56,9 @@ session_start();
         $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
 
         //Pull Users
-        $userPull = $pdo->prepare("SELECT * FROM user");
+        $userPull = $pdo->prepare("SELECT * FROM user LIMIT 10");
         $userPull->execute();
         $userP = $userPull->fetchAll(PDO::FETCH_ASSOC);
-
 
         //count number of palettes
         $countPull = $pdo->prepare("SELECT COUNT(id) AS num FROM palette");
@@ -121,20 +115,11 @@ session_start();
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   </head>
-
-
-
-
-
-
   <body id="page-top">
-
     <!-- Page Wrapper -->
     <div id="wrapper">
-
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
-
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <img src="<?=$url?>img/logotestwhite.png" width="100%">
@@ -158,35 +143,26 @@ session_start();
                 Site Function
             </div>
 
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link" href="dashboard/palettes">
+                    <i class="fas fa-fw fa-th-large"></i>
+                    <span>Palettes</span></a>
+            </li>
+
+
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-fw fa-pencil-alt"></i>
                     <span>Blog</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Blog Components:</h6>
-                        <a class="collapse-item" href="buttons.html">New Post</a>
-                        <a class="collapse-item" href="cards.html">View Posts</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Palettes</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">View Palettes</a>
-                        <a class="collapse-item" href="utilities-border.html">Edit Featured</a>
+                        <a class="collapse-item" href="dashboard/new-post">New Post</a>
+                        <a class="collapse-item" href="dashboard/posts">View Posts</a>
                     </div>
                 </div>
             </li>
@@ -201,29 +177,15 @@ session_start();
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Users</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
+                <a class="nav-link" href="charts.html">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Users</span></a>
             </li>
 
             <!-- Nav Item - Charts -->
             <li class="nav-item">
                 <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-trophy"></i>
                     <span>Contests</span></a>
             </li>
 
@@ -286,8 +248,7 @@ session_start();
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hello, <?=ucwords($user['username'])?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <i class="fas fa-user-circle fa-2x text-primary"></i>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -311,7 +272,9 @@ session_start();
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 medium-title">Dashboard</h1>
+                    </div>
                     <!-- Content Row -->
                     <div class="row">
 
@@ -326,7 +289,7 @@ session_start();
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$totalPalettes['num']?></div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            <i class="fas fa-th-large fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -344,7 +307,7 @@ session_start();
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$fPalettes['num']?></div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fas fa-star fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -362,7 +325,7 @@ session_start();
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$posts['posts']?></div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fas fa-newspaper fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -380,7 +343,7 @@ session_start();
                                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$userC['users']?></div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                            <i class="fas fa-user fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -405,6 +368,14 @@ session_start();
                                     <div class="row">
                                 <?php foreach($results as $p) : ?>
                                     <div class="col-xl-3 col-lg-6 col-sm-6 col-6" style="margin-bottom:15px">
+                                        <?php if($p['featured'] == 1) {?>
+                                            <div class="feature-pill">
+                                                <div class="award shine" style="font-size:12px">
+                                                    <i class="fas fa-award"></i> Staff Pick
+                                                </div>
+                                            </div>
+                                        <?php } else { ?>
+                                        <?php } ?>
                                         <div style="position: relative">
                                             <a href="<?=$url?>palette/<?=$p['id']?>" target="_blank">
                                                 <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block" style="border-top-left-radius: 6px;">
@@ -431,7 +402,7 @@ session_start();
                                     <h6 class="m-0 font-weight-bold text-dark">Recent Blog Posts</h6>
                                 </div>
                                 <!-- Card Body -->
-                                <div class="card-body" style="margin-top:-10px">
+                                <div class="card-body" style="margin-top:-20px">
                                     <?php foreach($blog as $b): ?>
                                         <?php 
                                             $d = date_create($b['date']);
@@ -443,8 +414,9 @@ session_start();
                                         ?>
                                         <a href="dashboard/edit?p=<?=$b['id']?>">
                                             <div class="blogSnip">
-                                                <p class="subText" style="margin-bottom:0px"><i class="fas fa-user"></i> <b><?=ucwords($bUser['uname'])?></b> • <?=$date?></p>
-                                                <h5 class="small-title" style="font-size:18px"><?=ucwords($b['title'])?></h5>
+                                                <span class="role-pill" style="background:#e74c3c">Site Update</span>
+                                                <h5 class="small-title" style="font-size:16px"><?=ucwords($b['title'])?></h5>
+                                                <p class="subText" style="margin-bottom:0px; font-size:12px"><i class="fas fa-user"></i> <b><?=ucwords($bUser['uname'])?></b> • <?=$date?></p>
                                             </div>
                                         </a>
                                     <?php endforeach; ?>
@@ -478,7 +450,7 @@ session_start();
                                                     <div class="role-pill" style="background:#e74c3c">
                                                         Staff
                                                     </div>
-                                                    <p style="margin-bottom:0px"><b><?=ucwords($u['username'])?></b></p>
+                                                    <p style="margin-bottom:8px; line-height: 14px"><b><?=ucwords($u['username'])?></b></p>
                                                     <p style="margin-bottom:0px;" class="subText"><?=$uDate?></p>
                                                 </div>
                                             </div>

@@ -203,7 +203,7 @@ if(isset($_POST['unfavorite'])){
 
     //If successful, returns to user profile
     if($result) {
-        header('Location: ' . $url . 'dashboard');
+        header('Location: ' . $url . 'dashboard/palettes');
     }  
 }
 
@@ -218,7 +218,7 @@ if(isset($_POST['favorite'])){
 
     //If successful, returns to user profile
     if($result) {
-        header('Location: ' . $url . 'dashboard');
+        header('Location: ' . $url . 'dashboard/palettes');
     }  
 }
 
@@ -234,7 +234,7 @@ if(isset($_POST['favorite'])){
 
     //If follow was successful
     if($result) {
-        header('Location: ' . $url . 'dashboard');
+        header('Location: ' . $url . 'dashboard/palettes');
     }
 }
 
@@ -335,7 +335,9 @@ if(isset($_POST['blog'])){
 
     //If successful, returns to user profile
     if($result) {
-        header('Location: ' . $url . 'dashboard/post');
+        $_SESSION['success'] = "success";
+        header('Location: ' . $url . 'dashboard/edit?p=' . $id);
+        exit();
     }  
 }
 

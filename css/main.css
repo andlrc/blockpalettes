@@ -469,3 +469,26 @@ iframe{
     color: gray;
     font-size: 15px;
 }
+
+.blogSnip{
+    padding-bottom: 10px;
+    padding-top:5px;
+    margin-top:15px;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.user-pill{
+    padding: 10px;
+    background: #f8f9fc;
+    border-radius: 6px;
+    border: 1px solid #e3e6f0;
+    color: black;
+}
+
+.role-pill{
+    display: inline-block;
+    color: white;
+    padding: 2px 10px;
+    font-size: 12px;
+    border-radius:4px;
+}

@@ -1,7 +1,14 @@
 <?php
 session_start();
-require "include/connect.php";
 require "include/logic.php";
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+  $uid = $_SESSION['user_id'];
+  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 
 $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
 $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
@@ -65,32 +72,7 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="<?=$url?>">
-                    <img src="../img/logotest.png" class="logo-size">
-                </a>
-                <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars fa-2x"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
-                      <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav">Submit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <!-- End Nav -->
+    <?php include('include/header.php'); ?>
     <div class="palettes">
         <div class="container">
             <div class="row">
@@ -106,15 +88,51 @@ $i = 0;
                         </div>
                     </div>
                 </div>
+                <?php 
+                    $pid = $pf['id'];
+                    $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                    $savePull->execute();
+                    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                    if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                      $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                      $savedCheckPull->execute();
+                      $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                    }
+
+                    
+                  ?>
                 <div class="col-xl-4 col-lg-12">
                     <div class="palette-float-info">
-                        <h2 class="medium-title">Palette #<?=$pf['id']?></h2>
+                    <span class="savesFloat">
+                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                    <?php if ($saved !== false) { ?>
+                          <form method="post" action="palette">
+                            <input type="hidden" name="uid" value="<?=$uid?>">
+                            <input type="hidden" name="pid" value="<?=$pid?>">
+                            <input type="submit" name="unsave" class="btn-unsave" value="Saved" data-toggle="tooltip" data-placement="bottom" title="Click to unsave">
+                          </form>
+                        <?php } else { ?>
+                          <form method="post" action="palette">
+                            <input type="hidden" name="uid" value="<?=$uid?>">
+                            <input type="hidden" name="pid" value="<?=$pid?>">
+                            <input type="submit" name="save" class="btn-save" value="<?=$save['num'];?> Saves" data-toggle="tooltip" data-placement="bottom" title="Click to save">
+                          </form>
+                        <?php } ?>
+                        
+                      <?php } else {?>
+                        <div class="" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                        </div>
+                      <?php } ?>
+
+                    </span>
+                    <h2 class="medium-title">Palette #<?=$pf['id']?></h2>
                         <div class="subtext">
                             <?php if($pf['featured'] == 1) { ?>
                             <div class="award half">
                                 <i class="fas fa-award"></i> Staff Pick
                                 </div>
-                                <div class="time half">
+                                <div class="time right half">
                                 <?=time_elapsed_string($pf['date'])?>
                             </div>
                             <?php } else { ?>
@@ -208,5 +226,11 @@ $i = 0;
         </div>
       </div>
     </div>
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
   </body>
+  
 </html>

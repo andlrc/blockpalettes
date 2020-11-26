@@ -1,61 +1,108 @@
 <?php 
 
 require "password.php";
-if(isset($_POST['login'])){
+require "connect.php";
 
-    //Retrieve the field values from our login form.
-    $emailInput = !empty($_POST['email']) ? trim($_POST['email']) : null;
-    $passwordAttemptInput = !empty($_POST['password']) ? trim($_POST['password']) : null;
+$url = "http://localhost/blockpalettes/";
 
-    $email = htmlspecialchars($emailInput, ENT_QUOTES, 'UTF-8');
-    $passwordAttempt = htmlspecialchars($passwordAttemptInput, ENT_QUOTES, 'UTF-8');
-
-    //Retrieve the user account information for the given username.
-    $sql = "SELECT id, email, password FROM user WHERE email = :email";
+//Register a user
+if(isset($_POST['register'])){
+    $error = "";
+    //Retrieves input data
+    $username = htmlspecialchars(addslashes($_POST['username']));
+    $email = htmlspecialchars(addslashes($_POST['email']));
+    $password = htmlspecialchars(addslashes($_POST['password']));
+    //Checking if the supplied username/email already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(email) AS num FROM user WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-
-    //Bind value.
+    //Bind variables
     $stmt->bindValue(':email', $email);
-
-    //Execute.
     $stmt->execute();
+    //Fetch the row
+    $emailCheck = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //Fetch row.
+    //Username or email alreay exists error
+    if($emailCheck['num'] > 0) {
+        $error = 'That email is already in use!';
+    }
+
+    $sql = "SELECT COUNT(username) AS num FROM user WHERE username = :username";
+    $stmt = $pdo->prepare($sql);
+    //Bind variables
+    $stmt->bindValue(':username', $username);
+    $stmt->execute();
+    //Fetch the row
+    $usernameCheck = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Username or email alreay exists error
+    if($usernameCheck['num'] > 0) {
+        $error = 'That username is already in use!';
+    }
+
+    //Hashing the password
+    $passwordHash = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));
+
+    //Preparing insert statement
+    $sql = "INSERT INTO user (username, email, password) VALUES (:username, :email, :password)";
+    $stmt = $pdo->prepare($sql);
+    //Bind variables
+    $stmt->bindValue(':username', $username);
+    $stmt->bindValue(':email', $email);
+    $stmt->bindValue(':password', $passwordHash);
+    //Execute
+    $result = $stmt->execute();
+
+    //If register was successful
+    if($result) {
+        header('Location: ' . $url . '');
+    }
+}
+
+if(isset($_POST['login'])){
+    $error = '';
+    //Retrieves input data
+    $usernameEmail = htmlspecialchars(addslashes($_POST['email']));
+    $passwordAttempt = htmlspecialchars(addslashes($_POST['password']));
+
+    //Retrieves the user account information for the given username/email.
+    $sql = "SELECT id, email, password FROM user WHERE email = :usernameEmail";
+    $stmt = $pdo->prepare($sql);
+    //Bind variable
+    $stmt->bindValue(':usernameEmail', $usernameEmail);
+    //Execute
+    $stmt->execute();
+    //Fetch row
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //If $row is FALSE.
+    //If username/email was false
     if($user === false){
-        //Could not find a user with that username!
-        //PS: You might want to handle this error in a more user-friendly manner!
-        $error = "User doesnt exists!";
-    } else{
-        //User account found. Check to see if the given password matches the
-        //password hash that we stored in our users table.
+        //No user with that username/email
+        $error = 'We could not find a user with that username or email';
+     } else {
+        //User account found. Check to see if passwords match
 
-        //Compare the passwords.
+        //Compare the passwords
         $validPassword = password_verify($passwordAttempt, addslashes(htmlspecialchars($user['password'])));
 
-        //If $validPassword is TRUE, the login has been successful.
+        //If $validPassword is TRUE, the login is successful
         if($validPassword){
-
-            //Provide the user with a login session.
+            //Provide the user with a LOGIN session.
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['logged_in'] = time();
 
-            //Redirect to our protected page, which we called home.php
-            header('Location: dashboard');
+            //Redirect user
+            header('Location: ' . $url . '');
             exit;
-
-        } else{
-            //$validPassword was FALSE. Passwords do not match.
-            $error = "Passwords do not match!";
+        } else {
+            //$validPassword was FALSE. Passwords didnt match
+            $error = 'Password was incorrect';
         }
     }
-
 }
 
 // Functions
-$url = "http://localhost/blockpalettes/";
+
 
 function time_elapsed_string($datetime, $full = false) {
     date_default_timezone_set("America/Los_Angeles");
@@ -340,6 +387,56 @@ if(isset($_POST['blog'])){
         exit();
     }  
 }
+
+
+if(isset($_POST['save'])){
+    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
+    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
+
+    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+    $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+
+    //Preparing insert statement
+    $sql = "INSERT INTO saved (uid, pid) VALUES (:uid, :pid)";
+    $stmt = $pdo->prepare($sql);
+    //Bind varibles
+    $stmt->bindValue(':uid', $uid);
+    $stmt->bindValue(':pid', $pid);
+
+
+    //Execute the statement
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'palette/' . $pid);
+    }
+}
+
+if(isset($_POST['unsave'])){
+    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
+    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
+
+    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+    $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+
+    //Preparing insert statement
+    $delete = "DELETE FROM saved WHERE uid = :uid AND pid = :pid";
+    $stmt = $pdo->prepare($delete);
+    //Bind varibles
+    $stmt->bindValue(':uid', $uid);
+    $stmt->bindValue(':pid', $pid);
+
+
+    //Execute the statement
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'palette/' . $pid);
+    }
+}
+
 
 
 ?>

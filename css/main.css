@@ -154,7 +154,6 @@ iframe{
 }
 
 .time{
-    text-align: right;
     padding-top:5px;
     color: gray;
     font-size: 15px
@@ -207,8 +206,17 @@ iframe{
     border-radius: 7px;
 }
 
+.right{
+    text-align: right;
+    
+}
+
+.left{
+    text-align: left!important;
+    
+}
+
 .award{
-    text-align: left;
     padding-top:5px;
     color: #4b7bec;
     font-size: 15px;
@@ -557,4 +565,29 @@ iframe{
     background: black;
     right:20px;
     border: none;
+}
+
+.dropdown-toggle::after{
+    content: none;
+}
+
+.btn-save{
+    border: none;
+    background: none;
+    color: gray;
+    font-family: tommyMedium, sans-serif;
+}
+
+.btn-unsave{
+    border: none;
+    background: none;
+    font-family: tommyMedium, sans-serif;
+    color: #2ecc71;
+    padding-left: 0px
+}
+.savesFloat{
+    position: absolute;
+    margin-top:6px;
+    right: 28px;
+    text-align: right;
 }

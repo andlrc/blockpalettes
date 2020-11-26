@@ -36,6 +36,13 @@ $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 $i = 0;
+
+$postUser = $pf['uid'];
+if ($postUser > 0){
+  $userPull = $pdo->prepare("SELECT * FROM user WHERE id = $postUser");
+  $userPull->execute();
+  $userP = $userPull->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -127,6 +134,21 @@ $i = 0;
 
                     </span>
                     <h2 class="medium-title">Palette #<?=$pf['id']?></h2>
+                        <?php if ($postUser > 0){ ?>
+                          <?php 
+                          
+                          $userRank = $userP['rank'];
+                          $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = $userRank");
+                          $rankPull->execute();
+                          $rank = $rankPull->fetch(PDO::FETCH_ASSOC);
+
+                          ?>
+                          <div class="postUser" color="">
+                            <a href="../profile/<?=$userP['username']?>" class="userLink">
+                              By: <?=ucwords($userP['username'])?> <span class="userRank" style="background:<?=$rank['rank_color']?>"><?=ucwords(mb_substr($rank['rank_name'], 0, 1, "UTF-8"))?></span>
+                            </a>
+                          </div>
+                        <?php } ?>
                         <div class="subtext">
                             <?php if($pf['featured'] == 1) { ?>
                             <div class="award half">

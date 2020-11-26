@@ -11,11 +11,29 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
 }
 
 
+$getid = !empty($_GET['p']) ? trim($_GET['p']) : null;
+$username = htmlspecialchars($getid, ENT_QUOTES, 'UTF-8');
+
+$profileGet = $pdo->prepare("SELECT * FROM user WHERE username = '$username'");
+$profileGet->execute();
+$userProfile = $profileGet->fetch(PDO::FETCH_ASSOC);
+
+if ($userProfile == null){
+    header('Location: ' . $url . '');
+}
+
+$rankid = $userProfile['rank'];
+
+$id = $userProfile['id'];
+
+$rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+$rankPull ->execute();
+$rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
 
 //pagination
 $limit = 12;
 //pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
+$palettePull = $pdo->prepare("SELECT * FROM palette WHERE uid = $id");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
@@ -64,21 +82,53 @@ $i = 0;
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="title" style="padding-bottom:5px">Featured Palettes</div>
-            <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
+            <div class="profile-float" >
+                <div class="row align-middle" >
+                    <div class="col-sm-8" >
+                        <span class="fas fa-user-circle fa-5x" style="float:left"></span>
+                        <div class="user-info">
+                            <h2 class="medium-title" style="margin-bottom:0px"><?=ucwords($userProfile['username'])?></h2>
+                            <div class="role-pill" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4" style="padding-top:7px">
+                        <h3 class="small-title" style="font-size:18px; margin-bottom:0px">Awards</h3>
+                        <div class="award-box">
+                            <i class="subText">None to display... For now.</i>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="profile-notes">
+                            <i>No information given.</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+              <?php if($userProfile['id'] == $uid){ ?>
+                <div class="small-title" style="padding-bottom:5px">Your Palettes</div>
+              <?php } else { ?>
+                <div class="small-title" style="padding-bottom:5px"><?=ucwords($userProfile['username']);?>'s Palettes</div>
+              <?php } ?>
+
+              <?php if ($palette == null) { ?>
+                You have not created any palettes yet.
+              <?php }?>
           </div>
           <?php foreach($palette as $p): ?>
           <div class="col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
-            <a href="<?=$url?>palette/<?=$p['id']?>">
+              
                 <div class="palette-float">
+                <a href="<?=$url?>palette/<?=$p['id']?>">
                   <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                  
+                  </a>
                   <?php 
                     $pid = $p['id'];
                     $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
@@ -111,7 +161,6 @@ $i = 0;
                     </div>
                   </div>
                 </div>
-                </a>
             </div>
           </div>
           <?php endforeach; ?>
@@ -154,14 +203,14 @@ $i = 0;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="../js/sb-admin-2.min.js"></script>
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()

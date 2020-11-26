@@ -168,20 +168,41 @@ $i = 0;
                                 <img src="../img/block/<?=$p['blockFour']?>.png" class="block">
                                 <img src="../img/block/<?=$p['blockFive']?>.png" class="block">
                                 <img src="../img/block/<?=$p['blockSix']?>.png" class="block">
+                                <?php 
+                                  $pid2 = $p['id'];
+                                  $savePull2 = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                                  $savePull2->execute();
+                                  $save2 = $savePull2->fetch(PDO::FETCH_ASSOC);
+                                  if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                                    $savedCheckPull2 = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid2 AND uid = $uid");
+                                    $savedCheckPull2->execute();
+                                    $saved2 = $savedCheckPull2->fetch(PDO::FETCH_ASSOC);
+                                  }                                 
+                                ?>
                                 <div class="subtext">
-                                    <?php if($p['featured'] == 1) { ?>
-                                    <div class="award half">
-                                        <i class="fas fa-award"></i> Staff Pick
-                                        </div>
-                                        <div class="time half">
-                                        <?=time_elapsed_string($p['date'])?>
-                                    </div>
-                                    <?php } else { ?>
-                                    <div class="time" style="float:right">
-                                    <?=time_elapsed_string($p['date'])?>
-                                    </div>
+                                  <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                                    <div class="time left half">
+                                      <?php if ($saved2 !== false) { ?>
+                                        <span class="btn-unsave">Saved</span>
+                                      <?php } else { ?>
+                                        <span class="btn-save"><?=$save2['num'];?> Saves</span>
+                                      <?php } ?>
+                                      </div>
+                                    <?php } else {?>
+                                      <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                                        <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save2['num'];?> Saves</span>
+                                      </div>
                                     <?php } ?>
-                                </div>
+                                    <?php if($p['featured'] == 1){ ?>
+                                      <div class="award right half shine">
+                                          <i class="fas fa-award"></i> Staff Pick
+                                      </div>
+                                    <?php } else { ?>
+                                      <div class="time right half">
+                                          <?=time_elapsed_string($p['date'])?>
+                                      </div>
+                                    <?php } ?>       
+                              </div>
                             </div>
                         </a>
                     </div>

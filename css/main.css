@@ -324,7 +324,7 @@ iframe{
     border-color: transparent;
 } 
 .logo-size{
-    width: 240px;
+    width: 200px;
 }
 
 @media only screen and (max-width: 900px) {
@@ -379,6 +379,13 @@ iframe{
     font-family: tommyMedium, sans-serif;
 }
 
+.btn-theme-google{
+    background: #007bff;
+    border-radius: 7px;
+    padding: 5px;
+    color: white !important;
+    font-family: tommyMedium, sans-serif;
+}
 .btn-theme-form{
     background: black;
     border-radius: 7px;
@@ -590,4 +597,26 @@ iframe{
     margin-top:6px;
     right: 28px;
     text-align: right;
+}
+
+.profile-float{
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom:25px
+}
+.user-info{
+    margin-left: 90px;
+    margin-top: 7px;
+}
+
+.profile-notes {
+    border-top: 1px dashed #666;
+    margin: 0 -12px;
+    padding: 12px 12px 0;
+    margin-top:15px;
+    font-size: 15px;
+}
+.award-box{
+    
 }

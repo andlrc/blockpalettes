@@ -176,21 +176,44 @@ $images = glob( $dir );
                   <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
                   <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
                 </a>
-                <div class="subtext">
-                  <?php if($p['featured'] == 1) { ?>
-                  <div class="award half">
-                    <i class="fas fa-award"></i> Staff Pick
+                <?php 
+                    $pid = $p['id'];
+                    $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                    $savePull->execute();
+                    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                    if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                      $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                      $savedCheckPull->execute();
+                      $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                    }
+
+                    
+                  ?>
+                  <div class="subtext">
+                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                      <div class="time left half">
+                        <?php if ($saved !== false) { ?>
+                          <span class="btn-unsave">Saved</span>
+                        <?php } else { ?>
+                          <span class="btn-save"><?=$save['num'];?> Saves</span>
+                        <?php } ?>
+                        </div>
+                      <?php } else {?>
+                        <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                        </div>
+                      <?php } ?>
+                      <?php if($p['featured'] == 1){ ?>
+                        <div class="award right half shine">
+                            <i class="fas fa-award"></i> Staff Pick
+                        </div>
+                      <?php } else { ?>
+                        <div class="time right half">
+                            <?=time_elapsed_string($p['date'])?>
+                        </div>
+                      <?php } ?>
                   </div>
-                  <div class="time half">
-                    <?=time_elapsed_string($p['date'])?>
-                  </div>
-                  <?php } else { ?>
-                  <div class="time" style="float:right">
-                    <?=time_elapsed_string($p['date'])?>
-                  </div>
-                    <?php } ?>
-                  </div>
-              </div>
+                </div>
             </div>
           </div>
           <?php endforeach; ?>

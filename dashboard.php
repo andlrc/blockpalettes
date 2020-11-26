@@ -2,12 +2,11 @@
 
 session_start();
 
-    require "include/connect.php";
     require "include/logic.php";
 
     //Check if user is logged in
     if(!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in'])) {
-        header('Location: login');
+        header('Location:' . $url);
         exit;
     }
 
@@ -17,6 +16,11 @@ session_start();
         $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user['rank'] < 90){
+            header('Location: ' . $url);
+        exit;
+        }
 
         //pagination
         $limit = 12;
@@ -56,7 +60,7 @@ session_start();
         $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
 
         //Pull Users
-        $userPull = $pdo->prepare("SELECT * FROM user LIMIT 10");
+        $userPull = $pdo->prepare("SELECT * FROM user ORDER BY date DESC LIMIT 8");
         $userPull->execute();
         $userP = $userPull->fetchAll(PDO::FETCH_ASSOC);
 
@@ -443,14 +447,20 @@ session_start();
                                         <?php foreach($userP as $u) : ?>
                                             <?php 
                                                 $d = date_create($u['date']);
-                                                $uDate = date_format($d,"Y/m/d");  
+                                                $uDate = date_format($d,"Y/m/d"); 
+                                                
+                                                $rankid = $u['rank'];
+
+                                                $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+                                                $rankPull ->execute();
+                                                $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
                                             ?>
-                                            <div class="col-xl-2">
+                                            <div class="col-xl-3">
                                                 <div class="user-pill">
-                                                    <div class="role-pill" style="background:#e74c3c">
-                                                        Staff
+                                                    <div class="role-pill" style="background:<?=$rank['rank_color']?>">
+                                                        <?=ucwords($rank['rank_name'])?>
                                                     </div>
-                                                    <p style="margin-bottom:8px; line-height: 14px"><b><?=ucwords($u['username'])?></b></p>
+                                                    <p style="margin-bottom:8px; line-height: 20px"; class="small-title"><?=ucwords($u['username'])?></p>
                                                     <p style="margin-bottom:0px;" class="subText"><?=$uDate?></p>
                                                 </div>
                                             </div>

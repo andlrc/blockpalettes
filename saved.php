@@ -1,26 +1,28 @@
 <?php 
 session_start();
+include "include/logic.php";
 
-require "include/logic.php";
-//Check if user is logged in
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $uid = $_SESSION['user_id'];
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else {
+    header('Location:' . $url);
 }
 
 
 
-//pagination
-$limit = 12;
-//pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
-$palettePull->execute();
-$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+$saveCheck = $pdo->prepare("SELECT pid FROM saved WHERE uid = $uid");
+$saveCheck->execute();
+$save = $saveCheck->fetchAll(PDO::FETCH_ASSOC);
 
 
-$i = 0;
+
+$dir = "img/block/*.png";
+//get the list of all files with .jpg extension in the directory and safe it in an array named $images
+ $images = glob( $dir );
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -33,10 +35,21 @@ $i = 0;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="<?=$url?>css/main.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
-    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
+    <meta name="description" content="Check out new block palettes submitted by the Minecraft community. Get building inspiration or create and share your own block palettes">
+    <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
+    <title>Block Palettes - New Block Palettes For Minecraft Builders</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <script>
+        $(document).ready(function () {
+          $('select').selectize({
+              sortField: 'text'
+          });
+      });
+    </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -47,7 +60,7 @@ $i = 0;
       gtag('config', 'UA-81969207-1');
     </script>
     <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
   </head>
   <body>
     <!-- Nav -->
@@ -59,15 +72,23 @@ $i = 0;
       </div>
     </div>
     <?php include('include/header.php'); ?>
-    <!-- End Nav -->
     <div class="palettes">
       <div class="container">
         <div class="row">
-          <div class="col-md-12">
-            <div class="title" style="padding-bottom:5px">Featured Palettes</div>
-            <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
+          <div class="col-md-9">
+            <div class="title" style="padding-bottom:15px">Saved Palettes</div>
+            <div style="padding-bottom:15px"></div> 
           </div>
-          <?php foreach($palette as $p): ?>
+          <?php foreach($save as $s): ?>
+
+            <?php 
+                $pid = $s['pid'];
+                $palettePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+                $palettePull->execute();
+                $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+            ?>
+            <?php foreach($palette as $p): ?>
           <div class="col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
             <a href="<?=$url?>palette/<?=$p['id']?>">
@@ -106,14 +127,21 @@ $i = 0;
                           <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
                         </div>
                       <?php } ?>
-                    <div class="award right half shine">
-                      <i class="fas fa-award"></i> Staff Pick
-                    </div>
+                      <?php if($p['featured'] == 1){ ?>
+                        <div class="award right half shine">
+                            <i class="fas fa-award"></i> Staff Pick
+                        </div>
+                      <?php } else { ?>
+                        <div class="time right half">
+                            <?=time_elapsed_string($p['date'])?>
+                        </div>
+                      <?php } ?>
                   </div>
                 </div>
                 </a>
             </div>
           </div>
+          <?php endforeach; ?>
           <?php endforeach; ?>
         </div>
       </div>
@@ -121,10 +149,11 @@ $i = 0;
 
 
     <?php include('include/footer.php') ?>
-      <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 
-    <!-- Modal -->
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -153,15 +182,6 @@ $i = 0;
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()

@@ -15,6 +15,7 @@ RewriteRule ^new/([0-9a-zA-Z_-]+) new.php?page=$1 [NC,L]
 RewriteRule ^dashboard/palettes/([0-9a-zA-Z_-]+) dashboard/palettes.php?page=$1 [NC,L]
 RewriteRule ^dashboard([0-9a-zA-Z_-]+) dashboard.php?page=$1 [NC,L]
 RewriteRule ^dashboard/post([0-9a-zA-Z_-]+) dashboard/post.php [NC,L]
+RewriteRule ^profile/([0-9a-zA-Z_-]+) profile.php?p=$1 [NC,L]
 
 # Disable Automatic Directory detection
 DirectorySlash Off

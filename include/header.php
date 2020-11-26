@@ -15,6 +15,11 @@
                         <li class="nav-item">
                             <a href="<?=$url?>new" class="nav-link">New Palettes</a>
                         </li>
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                            <li class="nav-item">
+                                <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
+                            </li> 
+                        <?php } else { }?> 
                         <li class="nav-item dropdown ">
                           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             More <i class="fas fa-chevron-down"></i>
@@ -27,7 +32,7 @@
                               <a class="dropdown-item" href="<?=$url?>include/logout.php"><i class="fas fa-lock"></i> Logout</a>
                             <?php } else { ?>
                               <a class="dropdown-item" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
-                              <a class="dropdown-item"  data-toggle="modal" data-target="#registerModal">Register</a>
+                              <a class="dropdown-item"  data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
                             <?php } ?>
                             <div class="dropdown-divider"></div>
                             <div style="padding:.25rem 1.5rem;">
@@ -35,10 +40,10 @@
                             </div>
                           </div>
                         </li>
-                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                          <li class="nav-item">
-                              <a href="<?=$url?>profile" class="nav-link" style="margin-top:-5px" data-toggle="tooltip" data-placement="bottom" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i></a>
-                          </li>
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?> 
+                            <li class="nav-item">
+                                <a href="<?=$url?>profile/<?=$user['username']?>" class="nav-link" style="margin-top:-5px" data-toggle="tooltip" data-placement="bottom" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i></a>
+                            </li>
                         <?php } else { }?>        
                     </ul>
                 </div>
@@ -63,7 +68,7 @@
                 </div>
                 <form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
                     <div class="form-group">
-                        <input type="text" name="username" placeholder="Username" class="form-control" required>
+                        <input type="text" id="username" name="username" placeholder="Username" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email Address" class="form-control" required>
@@ -97,7 +102,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" style="padding: 35px">
+            <div class="modal-body" style="padding: 35px" align="center">
                 <div align="center">
                     <h3 class="medium-title" id="loginModalTitle">Welcome Back!</h3>
                     <p class="text">Sign into your account here.</p>
@@ -111,6 +116,8 @@
                     </div>
                     <button class="btn btn-theme btn-block" type="submit" name="login"><b>Sign in</b></button>
                 </form>
+                or
+                <button class="btn btn-theme-google btn-block" type="submit" name="login"><b>Sign in with Google</b></button>
             </div>
             <div class="modal-footer" align="center" style="display: block">
                 <p>Forgot password? <a href="" data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#resetModal" style="cursor: pointer">Reset</a></p>
@@ -148,3 +155,16 @@
         </div>
     </div>
 </div>
+
+<script>
+
+$("input#username").on({
+  keydown: function(e) {
+    if (e.which === 32)
+      return false;
+  },
+  change: function() {
+    this.value = this.value.replace(/\s/g, "");
+  }
+});
+</script>

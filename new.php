@@ -12,7 +12,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
 
 
 //pagination
-$limit = 12;
+$limit = 18;
 
 
 if(isset($_GET['filter'])){

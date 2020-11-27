@@ -1,8 +1,14 @@
 <?php
 session_start();
 
-require "include/connect.php";
 include "include/logic.php";
+
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+  $uid = $_SESSION['user_id'];
+  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 
 $dir = "img/block/*.png";
@@ -73,32 +79,7 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="<?=$url?>">
-                    <img src="img/logotest.png" class="logo-size">
-                </a>
-                <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars fa-2x"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
-                      <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav" >Submit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <!-- End Nav -->
+    <?php include('include/header.php'); ?>
     <div class="palettes">
       <div class="container">
         <div class="row">
@@ -313,7 +294,11 @@ $i = 0;
         </div>
       </div>
     </div>
-
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
 
   </body>
 </html>

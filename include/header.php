@@ -1,6 +1,6 @@
 <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="<?=$url?>">
                     <img src="<?=$url?>img/logotest.png" class="logo-size">
                 </a>
@@ -20,6 +20,7 @@
                                 <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
                             </li> 
                         <?php } else { }?> 
+
                         <li class="nav-item dropdown ">
                           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             More <i class="fas fa-chevron-down"></i>
@@ -34,11 +35,10 @@
                               <a class="dropdown-item" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
                               <a class="dropdown-item"  data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
                             <?php } ?>
-                            <div class="dropdown-divider"></div>
-                            <div style="padding:.25rem 1.5rem;">
-                              <a href="<?=$url?>submit" class=" btn btn-theme btn-block">Submit</a>
-                            </div>
                           </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?=$url?>submit" class=" btn btn-theme-nav">Submit</a>
                         </li>
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?> 
                             <li class="nav-item">

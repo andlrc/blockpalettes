@@ -11,8 +11,37 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
 
 
 
+$popularPull = $pdo->prepare("SELECT blocks, count(*) total
+                      from 
+                      (
+                        select blockOne as blocks
+                        from palette
+                        union all
+                        select blockTwo
+                        from palette
+                        union all
+                        select blockThree
+                        from palette
+                        union all
+                        select blockFour
+                        from palette
+                        union all
+                        select blockFive
+                        from palette
+                        union all
+                        select blockSix
+                        from palette
+                      ) d
+                      group by blocks
+                      order by total desc LIMIT 9;
+
+");
+$popularPull->execute();
+$t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
+
+
 //pagination
-$limit = 18;
+$limit = 21;
 
 
 if(isset($_GET['filter'])){
@@ -120,10 +149,14 @@ $images = glob( $dir );
     </div>
     <?php include('include/header.php'); ?>
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
-          <div class="col-md-9">
+          <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">New Palettes</div>
+          </div>
+
+          <div class="col-md-12 d-xl-none d-lg-none d-md-block paddingFix" >
+            <h3 class="medium-title">Filters</h3>
             <?php if(isset($_GET['filter'])){ ?>
               <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
               <span class="filter-tag"><?=ucwords($blockName)?></span>
@@ -133,11 +166,9 @@ $images = glob( $dir );
               </button>
             </form>
             <?php } else { ?>  
-              <div style="padding-bottom:15px"></div> 
+              <div style="padding-bottom:0px"></div> 
             <?php } ?>
-          </div>
-          <div class="col-md-3">
-            Filter By Block
+            <p style="margin-bottom:0px">Filter By Block</p>
             <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
             <div class="input-group">
                 <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
@@ -155,7 +186,12 @@ $images = glob( $dir );
                 <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
             </div>
             </form>
+            <div align="center">
+              <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
+            </div>
           </div>
+
+
           <?php if($results == null){ ?>
             <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
             <div class="col-md-12" style="padding-bottom:200px">
@@ -164,17 +200,23 @@ $images = glob( $dir );
               Create your own <a href="submit">here</a>.
             </div>
           <?php } else { ?>
+            <div class="col-xl-9 col-lg-8 col-md-12">
+            <div class="row">
           <?php foreach($results as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
             <div style="position: relative">
               <div class="palette-float">
                 <a href="<?=$url?>palette/<?=$p['id']?>">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  </div>
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  </div>
                 </a>
                 <?php 
                     $pid = $p['id'];
@@ -218,22 +260,68 @@ $images = glob( $dir );
           </div>
           <?php endforeach; ?>
           <?php } ?>
+          </div>
+          <?php if(isset($_GET['filter'])){ ?>
+          <?php } else { ?>
+              <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                      <li class="page-item"><a href="<?=$url?>new" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
+                      <?php for($p=1; $p<=$total_pages; $p++){?> 
+                      <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'new/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
+                      <?php }?>
+                      <li class="page-item"><a href="<?=$url?>new/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
+                  </ul> 
+              </nav>
+
+          <?php } ?>
+          </div>
+          <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
+            <h3 class="medium-title">Filters</h3>
+            <?php if(isset($_GET['filter'])){ ?>
+              <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
+              <span class="filter-tag"><?=ucwords($blockName)?></span>
+              <form style="display: inline-block;">
+              <button class="delete-tag btn" type="submit" name="removeFilter">
+                <i class="fas fa-times"></i>
+              </button>
+            </form>
+            <?php } else { ?>  
+              <div style="padding-bottom:0px"></div> 
+            <?php } ?>
+            <p style="margin-bottom:0px">Filter By Block</p>
+            <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
+            <div class="input-group">
+                <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
+                <option value="" class="cursor">Select a block...</option>
+                    <?php 
+                      foreach( $images as $image ):
+                        $extCut = str_replace(".png","","$image");
+                        $cleanStr = str_replace("img/block/","","$extCut");
+
+                        $blockName = str_replace("_"," ",$cleanStr);
+                    ?>
+                    <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
+            </div>
+            </form>
+            <p style="margin-bottom:0px">Popular Blocks</p>
+              <?php foreach($t as $popular): ?>
+                <?php $block = str_replace("_"," ",$popular['blocks']); ?>
+                <a href="<?=$url?>new?filter=<?=$popular['blocks']?>">
+                  <div class="block-pill">
+                    <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
+                  </div>
+                </a>
+              <?php endforeach; ?>
+              <div align="center" style="padding-top:25px">
+                <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
+              </div>
+          </div>
         </div>
       </div>
     </div>
-<?php if(isset($_GET['filter'])){ ?>
-<?php } else { ?>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a href="<?=$url?>new" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
-            <?php for($p=1; $p<=$total_pages; $p++){?> 
-            <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'new/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
-            <?php }?>
-            <li class="page-item"><a href="<?=$url?>new/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
-        </ul> 
-    </nav>
-
-<?php } ?>
 
     <?php include('include/footer.php') ?>
     <!-- Optional JavaScript; choose one of the two! -->

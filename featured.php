@@ -61,23 +61,27 @@ $i = 0;
     <?php include('include/header.php'); ?>
     <!-- End Nav -->
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:5px">Featured Palettes</div>
             <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
           </div>
           <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
             <a href="<?=$url?>palette/<?=$p['id']?>">
                 <div class="palette-float">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  </div>
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  </div>
                   
                   <?php 
                     $pid = $p['id'];
@@ -121,7 +125,6 @@ $i = 0;
 
 
     <?php include('include/footer.php') ?>
-      <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Modal -->

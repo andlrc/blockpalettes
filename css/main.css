@@ -49,8 +49,6 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
-    position: absolute;
-
 }
 .palette-float-info{
     padding: 15px;
@@ -68,7 +66,7 @@ iframe{
 
 }
 .paddingFix{
-    padding-bottom: 300px;
+    padding-bottom: 35px;
 }
 
 .paddingFixLarge{
@@ -89,7 +87,7 @@ iframe{
         padding-bottom: 650px;
     }
     .paddingFix{
-        padding-bottom: 350px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
@@ -104,7 +102,7 @@ iframe{
         padding-bottom: 500px;
     }
     .paddingFix{
-        padding-bottom: 275px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
@@ -116,7 +114,7 @@ iframe{
         padding-bottom: 380px;
     }
     .paddingFix{
-        padding-bottom: 220px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
@@ -128,7 +126,7 @@ iframe{
         padding-bottom: 285px;
     }
     .paddingFix{
-        padding-bottom: 300px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 45px;
@@ -324,7 +322,7 @@ iframe{
     border-color: transparent;
 } 
 .logo-size{
-    width: 200px;
+    width: 250px;
 }
 
 @media only screen and (max-width: 900px) {
@@ -643,4 +641,32 @@ iframe{
 .userLink:hover{
     color: black;
     text-decoration: none;
+}
+
+
+.flex-thirds{
+    display: flex;
+}
+.subtext{
+    height: 30px;
+}
+
+.block-pill{
+    background: black;
+    color: gray;
+    display: inline-block;
+    padding: 3px 6px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: ease-in-out all .2s;
+}
+
+.block-pill:hover{
+    text-decoration: none;
+    scale: 1.1;
+}
+
+.block-pill b{
+    color: white;
 }

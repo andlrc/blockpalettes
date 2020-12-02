@@ -2,11 +2,16 @@
 session_start();
 include "include/logic.php";
 
-if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+
+
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $uid = $_SESSION['user_id'];
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 
@@ -91,7 +96,7 @@ if(isset($_GET['filter'])){
 }
 
 if(isset($_GET['removeFilter'])){
-  header('Location: new');
+  header('Location: palettes');
 }
 //pull palettes
 
@@ -114,7 +119,7 @@ $images = glob( $dir );
     <meta name="description" content="Check out new block palettes submitted by the Minecraft community. Get building inspiration or create and share your own block palettes">
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - New Block Palettes For Minecraft Builders</title>
+    <title>Block Palettes - Block Palettes For Minecraft Builders</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
@@ -152,7 +157,7 @@ $images = glob( $dir );
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <div class="title" style="padding-bottom:15px">New Palettes</div>
+            <div class="title" style="padding-bottom:15px">Palettes</div>
           </div>
 
           <div class="col-md-12 d-xl-none d-lg-none d-md-block paddingFix" >
@@ -169,7 +174,7 @@ $images = glob( $dir );
               <div style="padding-bottom:0px"></div> 
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
-            <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
+            <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
             <div class="input-group">
                 <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
                 <option value="" class="cursor">Select a block...</option>
@@ -265,11 +270,11 @@ $images = glob( $dir );
           <?php } else { ?>
               <nav aria-label="Page navigation example">
                   <ul class="pagination justify-content-center">
-                      <li class="page-item"><a href="<?=$url?>new" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
+                      <li class="page-item"><a href="<?=$url?>palettes" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
                       <?php for($p=1; $p<=$total_pages; $p++){?> 
-                      <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'new/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
+                      <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'palettes/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
                       <?php }?>
-                      <li class="page-item"><a href="<?=$url?>new/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
+                      <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
                   </ul> 
               </nav>
 
@@ -289,7 +294,7 @@ $images = glob( $dir );
               <div style="padding-bottom:0px"></div> 
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
-            <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
+            <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
             <div class="input-group">
                 <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
                 <option value="" class="cursor">Select a block...</option>
@@ -309,7 +314,7 @@ $images = glob( $dir );
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>
-                <a href="<?=$url?>new?filter=<?=$popular['blocks']?>">
+                <a href="<?=$url?>palettes?filter=<?=$popular['blocks']?>">
                   <div class="block-pill">
                     <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
                   </div>
@@ -344,7 +349,7 @@ $images = glob( $dir );
             <ul>
             <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/submit">create</a> page and create a beautiful block palette.</li>
             <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
-            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
+            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/palettes">new palettes</a> page.</li>
             </ul>
             <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
             <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>

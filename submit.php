@@ -8,6 +8,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 
@@ -81,7 +84,7 @@ $i = 0;
     </div>
     <?php include('include/header.php'); ?>
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Submit Palette</div>
@@ -91,21 +94,24 @@ $i = 0;
               <?php } else {?>
                 <div style="margin-bottom:10px"></div>
               <?php } ?>
-          </div>
-          <div class="col-lg-2"></div>
-          <div class="col-lg-8 col-md-12 paddingFixLargeCreate">
+              </div>
+          <div class="col-xl-6 col-lg-12 col-md-12 paddingFixLargeCreate">
             <div style="position: relative">
               <div class="palette-float-large">
-                <img id="image1" src="img/placeholder.png" class="block">
-                <img id="image2" src="img/placeholder.png" class="block">
-                <img id="image3" src="img/placeholder.png" class="block">
-                <img id="image4" src="img/placeholder.png" class="block">
-                <img id="image5" src="img/placeholder.png" class="block">
-                <img id="image6" src="img/placeholder.png" class="block">
+                <div class="flex-thirds">
+                  <img id="image1" src="img/placeholder.png" class="block">
+                  <img id="image2" src="img/placeholder.png" class="block">
+                  <img id="image3" src="img/placeholder.png" class="block">
+                </div>
+                <div class="flex-thirds">
+                  <img id="image4" src="img/placeholder.png" class="block">
+                  <img id="image5" src="img/placeholder.png" class="block">
+                  <img id="image6" src="img/placeholder.png" class="block">
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-12 col-md-12" style="padding-bottom:100px">
+          <div class="col-xl-6 col-lg-12 col-md-12 insertBlocks" style="padding-bottom:100px">
             <h2 class="medium-title">Pick Blocks</h2>
             <form method="post" method="submit">
               <div class="row">

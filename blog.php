@@ -7,6 +7,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 
@@ -55,7 +58,7 @@ $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
     <?php include('include/header.php'); ?>
     <!-- End Nav -->
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:5px">Blog</div>
@@ -68,7 +71,7 @@ $blog = $blogPull->fetchAll(PDO::FETCH_ASSOC);
             </div>
           <?php } else { ?>
             <?php foreach($blog as $b): ?>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="image">
                         <span class="update-pill">Site Update</span>
                         <img class="fImage" src="<?=$b['image']?>">

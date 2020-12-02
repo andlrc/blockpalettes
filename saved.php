@@ -7,6 +7,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 } else {
     header('Location:' . $url);
 }
@@ -38,7 +41,7 @@ $dir = "img/block/*.png";
     <meta name="description" content="Check out new block palettes submitted by the Minecraft community. Get building inspiration or create and share your own block palettes">
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - New Block Palettes For Minecraft Builders</title>
+    <title>Block Palettes - Saved Palettes</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
@@ -73,9 +76,9 @@ $dir = "img/block/*.png";
     </div>
     <?php include('include/header.php'); ?>
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
-          <div class="col-md-9">
+          <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Saved Palettes</div>
             <div style="padding-bottom:15px"></div> 
           </div>
@@ -89,16 +92,20 @@ $dir = "img/block/*.png";
 
             ?>
             <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
             <a href="<?=$url?>palette/<?=$p['id']?>">
                 <div class="palette-float">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  </div>
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  </div>
                   
                   <?php 
                     $pid = $p['id'];

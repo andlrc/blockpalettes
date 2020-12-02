@@ -8,6 +8,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 
@@ -68,6 +71,7 @@ $date = date_format($d,"Y/m/d");
     <?php include('include/header.php'); ?>
     <div class="palettes" style="padding-top:50px">
       <div class="container">
+      <a href="<?=$url?>blog" class="theme-link"><i class="fas fa-arrow-left"></i> Back To Blog</a>
         <div class="row">
           <div class="col-md-12">
             <span class="update-pill">Site Update</span>
@@ -83,7 +87,7 @@ $date = date_format($d,"Y/m/d");
     </div>
 
 
-    <?php include('include/footerP.php') ?>
+    <?php include('include/footer.php') ?>
     <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 

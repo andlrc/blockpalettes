@@ -8,6 +8,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 
@@ -79,7 +82,7 @@ $i = 0;
     <?php include('include/header.php'); ?>
     <!-- End Nav -->
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="profile-float" >
@@ -87,7 +90,9 @@ $i = 0;
                     <div class="col-sm-8" >
                         <span class="fas fa-user-circle fa-5x" style="float:left"></span>
                         <div class="user-info">
-                            <h2 class="medium-title" style="margin-bottom:0px"><?=ucwords($userProfile['username'])?></h2>
+                            <h2 class="medium-title" style="margin-bottom:0px"><?=ucwords($userProfile['username'])?> 
+                              <?php if($userProfile['id'] == $uid ){ ?><a data-toggle="modal" data-target="#profileModal" style="cursor: pointer" class="btn btn-theme-small"><i class="fas fa-pencil-alt"></i> Edit Profile</a><?php } ?>
+                            </h2>
                             <div class="role-pill" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></div>
                         </div>
                     </div>
@@ -113,21 +118,25 @@ $i = 0;
               <?php } ?>
 
               <?php if ($palette == null) { ?>
-                You have not created any palettes yet.
+                User has not created any palettes yet.
               <?php }?>
           </div>
           <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
               
                 <div class="palette-float">
                 <a href="<?=$url?>palette/<?=$p['id']?>">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  </div>
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  </div>
                   </a>
                   <?php 
                     $pid = $p['id'];

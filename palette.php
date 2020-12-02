@@ -6,6 +6,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
 }
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
@@ -47,7 +50,7 @@ $pPull->execute();
 $pf = $pPull->fetch(PDO::FETCH_ASSOC);
 
 if($pf == null){
-  header('Location: ../new');
+  header('Location: ../palettes');
   exit;
 }
 
@@ -288,7 +291,7 @@ $images = glob( $dir );
             <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
               <h3 class="medium-title">Filter Palettes</h3>
               <p style="margin-bottom:0px">Search Block</p>
-              <form method="get" style="padding-bottom:25px" action="<?=$url?>new">
+              <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
               <div class="input-group">
                   <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
                   <option value="" class="cursor">Search a block...</option>
@@ -308,7 +311,7 @@ $images = glob( $dir );
               <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>
-                <a href="<?=$url?>new?filter=<?=$popular['blocks']?>">
+                <a href="<?=$url?>palettes?filter=<?=$popular['blocks']?>">
                   <div class="block-pill">
                     <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
                   </div>
@@ -347,7 +350,7 @@ $images = glob( $dir );
             <ul>
             <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/submit">create</a> page and create a beautiful block palette.</li>
             <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
-            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
+            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/palettes">new palettes</a> page.</li>
             </ul>
             <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
             <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>

@@ -64,6 +64,7 @@ if(isset($_POST['login'])){
     //Retrieves input data
     $usernameEmail = htmlspecialchars(addslashes($_POST['email']));
     $passwordAttempt = htmlspecialchars(addslashes($_POST['password']));
+    $cookie = $_POST['cookie'];
 
     //Retrieves the user account information for the given username/email.
     $sql = "SELECT id, email, password FROM user WHERE email = :usernameEmail";
@@ -90,7 +91,9 @@ if(isset($_POST['login'])){
             //Provide the user with a LOGIN session.
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['logged_in'] = time();
-
+            if($cookie > 0){
+                setcookie('user_logged', $user['id'], time() + (86400 * 30), "/");
+            }
             //Redirect user
             header('Location: ' . $url . '');
             exit;
@@ -229,12 +232,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
                 //If successful, returns to user profile
                 if($result) {
                     $_SESSION['create'] = "New Palette";
-                    header('Location: ' . $url . 'new');
+                    header('Location: ' . $url . 'palettes');
                 }
         
          }
     } else {
-        header('Location: ' . $url . 'new');
+        header('Location: ' . $url . 'palettes');
     }
 
 }
@@ -352,7 +355,7 @@ if(isset($_POST['blog'])){
     
         //If successful, returns to user profile
         if($result) {
-            header('Location: ' . $url . 'new');
+            header('Location: ' . $url . 'palettes');
         }
 
  }
@@ -436,6 +439,89 @@ if(isset($_POST['unsave'])){
         header('Location: ' . $url . 'palette/' . $pid);
     }
 }
+
+
+
+
+/*
+  Accept email of user whose password is to be reset
+  Send email to user to reset their password
+*/
+if (isset($_POST['reset-password'])) {
+    $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
+    // ensure that the user exists on our system
+    $query = "SELECT email FROM user WHERE email='$email'";
+    $results = $pdo->prepare($query);
+    $results->execute();
+    //Fetch the row
+    $row = $results->fetch(PDO::FETCH_ASSOC);
+  
+    if (empty($email)) {
+      array_push($errors, "Your email is required");
+    }else if($row['num'] > 0) {
+      array_push($errors, "Sorry, no user exists on our system with that email");
+    }
+    // generate a unique random token of length 100
+    $token = bin2hex(random_bytes(50));
+  
+    if (count($errors) == 0) {
+      // store token in the password-reset database table against the user's email
+      $sql = "INSERT INTO password_reset(email, token) VALUES ('$email', '$token')";
+      $insert = $pdo->prepare($sql);
+      $result = $insert->execute();
+  
+      // Send email to user with the token in a link they can click on
+        $to = $email;
+        $subject = "Reset your password on Block Palettes";
+        $msg = "Hi there, click on this <a href=" . $url . "new_password?token=" . $token . ">link</a> to reset your password on our site.";
+        $msg = wordwrap($msg,70);
+        $headers = "From: hello@blockpalettes.com";
+        $headers .= "Organization: Block Palettes\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= 'Content-type: text/html' . "\r\n";
+        $headers .= "Reply-To: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "Return-Path: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "X-Priority: 3\r\n";
+        $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+      mail($to, $subject, $msg, $headers);
+      $_SESSION['email'] = $email;
+      $_SESSION['token'] = $token;
+      header('location: ' . $url . 'pending?email=' . $email);
+    }
+  }
+  
+  // ENTER A NEW PASSWORD
+  if (isset($_POST['new_password'])) {
+    $new_pass = !empty($_POST['new_pass']) ? trim($_POST['new_pass']) : null;
+    $new_pass_c = !empty($_POST['new_pass_c']) ? trim($_POST['new_pass_c']) : null;
+  
+    // Grab to token that came from the email link
+    $token = $_POST['token'];
+    if ($new_pass !== $new_pass_c){
+        array_push($errors, "Password do not match");
+        $_SESSION['error'] = "error";
+        header('Location: ' . $url . 'new_password?token=' . $token);
+        exit();
+    } else {
+      // select email address of user from the password_reset table 
+      $sql = "SELECT email FROM password_reset WHERE token='$token' LIMIT 1";
+      $results = $pdo->prepare($sql);
+      $results->execute();
+    //Fetch the row
+      $emailCheck = $results->fetch(PDO::FETCH_ASSOC);
+      
+        $email = $emailCheck['email'];
+
+      if ($email) {
+        $new_pass = password_hash($new_pass, PASSWORD_BCRYPT, array('cost' => 12));
+        $sql = "UPDATE user SET password='$new_pass' WHERE email='$email'";
+        $results = $pdo->prepare($sql);
+        $results->execute();
+        header('location: ' . $url . '');
+      }
+    }
+  }
 
 
 

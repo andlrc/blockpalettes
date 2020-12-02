@@ -13,7 +13,7 @@
                             <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
+                            <a href="<?=$url?>palettes" class="nav-link">Palettes</a>
                         </li>
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                             <li class="nav-item">
@@ -33,7 +33,7 @@
                               <a class="dropdown-item" href="<?=$url?>include/logout.php"><i class="fas fa-lock"></i> Logout</a>
                             <?php } else { ?>
                               <a class="dropdown-item" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
-                              <a class="dropdown-item"  data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
+                              <a class="dropdown-item" data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
                             <?php } ?>
                           </div>
                         </li>
@@ -114,10 +114,15 @@
                     <div class="form-group">
                         <input type="password" name="password" placeholder="Password" class="form-control" required>
                     </div>
+                    <div class="form-group" style="padding-left:20px"> 
+                        <input class="form-check-input" type="checkbox" name="cookie" id="cookie" value="1">
+                        <label class="form-check-label" for="cookie">
+                            Keep me logged in.
+                        </label>
+                    </div>
                     <button class="btn btn-theme btn-block" type="submit" name="login"><b>Sign in</b></button>
+
                 </form>
-                or
-                <button class="btn btn-theme-google btn-block" type="submit" name="login"><b>Sign in with Google</b></button>
             </div>
             <div class="modal-footer" align="center" style="display: block">
                 <p>Forgot password? <a href="" data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#resetModal" style="cursor: pointer">Reset</a></p>
@@ -142,11 +147,11 @@
                     <h3 class="medium-title" id="resetModalTitle">Reset Password</h3>
                     <p class="text">Enter your email/username below to have a<br>reset link sent via email.</p>
                 </div>
-                <form action="function.php" method="post">
+                <form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
                     <div class="form-group">
-                        <input type="text" name="account" placeholder="Username/Email Address" class="form-control" required>
+                        <input type="text" name="email" placeholder="Email Address" class="form-control" required>
                     </div>
-                    <button class="btn btn-theme btn-block" type="submit" name="reset"><b>Send reset link</b></button>
+                    <button class="btn btn-theme btn-block" type="submit" name="reset-password"><b>Send reset link</b></button>
                 </form>
             </div>
             <div class="modal-footer" align="center" style="display: block">
@@ -168,3 +173,44 @@ $("input#username").on({
   }
 });
 </script>
+
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div align="right" style="padding: 10px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 35px">
+                <div align="center">
+                    <h3 class="medium-title" id="profileModalTitle">Edit Profile</h3>
+                    <p class="text">Sign up to share & collect block palettes</p>
+                </div>
+                <form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
+                    <div class="form-group">
+                        <input type="text" id="username" name="username" placeholder="Username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email Address" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="padding-left:20px"> 
+                        <input class="form-check-input" type="checkbox" name="acceptterms" id="acceptterms" value="yes" required>
+                        <label class="form-check-label" for="acceptterms">
+                            I agree to your <a href="">Terms and Conditions</a> and <a href="">Privacy Policy</a>
+                        </label>
+                    </div>
+                    <button class="btn btn-theme btn-block" type="submit" name="register"><b>Create your free account</b></button>
+                </form>
+            </div>
+            <div class="modal-footer" align="center" style="display: block">
+                <p>Already registered? <a href="" data-dismiss="modal" aria-label="Close" data-toggle="modal" data-target="#profileModal" style="cursor: pointer">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+</div>

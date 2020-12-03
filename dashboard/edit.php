@@ -2,7 +2,6 @@
 
 session_start();
 
-require "../include/connect.php";
 require "../include/logic.php";
 
 //Check if user is logged in
@@ -17,6 +16,11 @@ if (isset($_SESSION['user_id'])) {
     $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user['rank'] < 90){
+        header('Location: ' . $url);
+    exit;
+    }
 
     $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
     $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');

@@ -8,11 +8,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
-}else if(isset($_COOKIE['user_logged'])) { 
-  $_SESSION['user_id'] = $_COOKIE['user_logged'];
-  $_SESSION['logged_in'] = time();
 }
-
 
 $getid = !empty($_GET['p']) ? trim($_GET['p']) : null;
 $username = htmlspecialchars($getid, ENT_QUOTES, 'UTF-8');
@@ -39,6 +35,10 @@ $limit = 12;
 $palettePull = $pdo->prepare("SELECT * FROM palette WHERE uid = $id");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+$profileDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $id");
+$profileDataPull->execute();
+$profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
 
 
 $i = 0;
@@ -69,6 +69,17 @@ $i = 0;
     </script>
     <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script>
+        function countChar(val) {
+            var len = val.value.length;
+            if (len >= 150) {
+                val.value = val.value.substring(0,150);
+            } else {
+                $('#charNum').text(150 - len);
+            }
+        };
+    </script>
+
   </head>
   <body>
     <!-- Nav -->
@@ -104,7 +115,11 @@ $i = 0;
                     </div>
                     <div class="col-sm-12">
                         <div class="profile-notes">
-                            <i>No information given.</i>
+                            <?php if($profileData['bio'] == null){ ?>
+                              <i>No information given.</i>
+                            <?php } else { ?>
+                              <i><?=$profileData['bio']?></i>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -225,5 +240,37 @@ $i = 0;
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div align="right" style="padding: 10px">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding: 35px">
+                    <div align="center">
+                        <h3 class="medium-title" id="profileModalTitle">Edit Profile</h3>
+                        <p class="text">More setting coming soon!</p>
+                    </div>
+                    <form action="<?=$url?>include/logic.php" method="post">
+                        <div class="form-group">
+                          Bio
+                          <textarea maxlength="150" rows="5" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
+                          <div id="charNum" align="right" class="tiny-text" style="margin-bottom: 5px; margin-top: -40px; margin-right: 5px">150</div> 
+                        </div>
+                        <input type="hidden" name="uid" value="<?=$userProfile['id']?>">
+                        <input type="hidden" name="username" value="<?=$userProfile['username']?>">
+                        <button class="btn btn-theme btn-block" type="submit" name="updateprofile"><b>Update</b></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
   </body>
 </html>

@@ -9,11 +9,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
-} else if(isset($_COOKIE['user_logged'])) { 
-  $_SESSION['user_id'] = $_COOKIE['user_logged'];
-  $_SESSION['logged_in'] = time();
-}
-
+} 
 
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
@@ -61,6 +57,7 @@ if(isset($_GET['filter'])){
                                OR blockSix LIKE '$block'");
   $palettePull->execute();
   $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 } else {
@@ -199,69 +196,72 @@ $images = glob( $dir );
 
           <?php if($results == null){ ?>
             <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
-            <div class="col-md-12" style="padding-bottom:200px">
+            <div class="col-xl-9 col-lg-8 col-md-12" style="padding-bottom:200px">
+            <div class="row">
+            <div class="col-lg-12">
               <h4 class="medium-title">Oh No!</h4>
               There are currently no palettes that contain <?=ucwords($blockName)?>.<br>
               Create your own <a href="submit">here</a>.
             </div>
+           
           <?php } else { ?>
             <div class="col-xl-9 col-lg-8 col-md-12">
             <div class="row">
           <?php foreach($results as $p): ?>
           <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
             <div style="position: relative">
-              <div class="palette-float">
-                <a href="<?=$url?>palette/<?=$p['id']?>">
-                  <div class="flex-thirds">
-                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  </div>
-                  <div class="flex-thirds">
-                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                  </div>
-                </a>
-                <?php 
-                    $pid = $p['id'];
-                    $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
-                    $savePull->execute();
-                    $save = $savePull->fetch(PDO::FETCH_ASSOC);
-                    if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
-                      $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
-                      $savedCheckPull->execute();
-                      $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
-                    }
+              <a href="<?=$url?>palette/<?=$p['id']?>">
+                <div class="palette-float">
+                    <div class="flex-thirds">
+                      <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                    </div>
+                    <div class="flex-thirds">
+                      <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                    </div>
+                  <?php 
+                      $pid = $p['id'];
+                      $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                      $savePull->execute();
+                      $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                      if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                        $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                        $savedCheckPull->execute();
+                        $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                      }
 
-                    
-                  ?>
-                  <div class="subtext">
-                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                      <div class="time left half">
-                        <?php if ($saved !== false) { ?>
-                          <span class="btn-unsave">Saved</span>
-                        <?php } else { ?>
-                          <span class="btn-save"><?=$save['num'];?> Saves</span>
+                      
+                    ?>
+                    <div class="subtext">
+                      <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                        <div class="time left half">
+                          <?php if ($saved !== false) { ?>
+                            <span class="btn-unsave">Saved</span>
+                          <?php } else { ?>
+                            <span class="btn-save"><?=$save['num'];?> Saves</span>
+                          <?php } ?>
+                          </div>
+                        <?php } else {?>
+                          <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                            <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                          </div>
                         <?php } ?>
-                        </div>
-                      <?php } else {?>
-                        <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
-                        </div>
-                      <?php } ?>
-                      <?php if($p['featured'] == 1){ ?>
-                        <div class="award right half shine">
-                            <i class="fas fa-award"></i> Staff Pick
-                        </div>
-                      <?php } else { ?>
-                        <div class="time right half">
-                            <?=time_elapsed_string($p['date'])?>
-                        </div>
-                      <?php } ?>
+                        <?php if($p['featured'] == 1){ ?>
+                          <div class="award right half shine">
+                              <i class="fas fa-award"></i> Staff Pick
+                          </div>
+                        <?php } else { ?>
+                          <div class="time right half">
+                              <?=time_elapsed_string($p['date'])?>
+                          </div>
+                        <?php } ?>
+                    </div>
                   </div>
-                </div>
-            </div>
+              </div>
+            </a>
           </div>
           <?php endforeach; ?>
           <?php } ?>
@@ -295,21 +295,21 @@ $images = glob( $dir );
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
             <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
-            <div class="input-group">
-                <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
-                <option value="" class="cursor">Select a block...</option>
-                    <?php 
-                      foreach( $images as $image ):
-                        $extCut = str_replace(".png","","$image");
-                        $cleanStr = str_replace("img/block/","","$extCut");
+              <div class="input-group">
+                  <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
+                  <option value="" class="cursor">Select a block...</option>
+                      <?php 
+                        foreach( $images as $image ):
+                          $extCut = str_replace(".png","","$image");
+                          $cleanStr = str_replace("img/block/","","$extCut");
 
-                        $blockName = str_replace("_"," ",$cleanStr);
-                    ?>
-                    <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
-            </div>
+                          $blockName = str_replace("_"," ",$cleanStr);
+                      ?>
+                      <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
+                      <?php endforeach; ?>
+                  </select>
+                  <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
+              </div>
             </form>
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>

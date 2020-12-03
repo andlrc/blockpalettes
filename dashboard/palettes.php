@@ -2,7 +2,6 @@
 
 session_start();
 
-    require "../include/connect.php";
     require "../include/logic.php";
 
     //Check if user is logged in
@@ -18,6 +17,10 @@ session_start();
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if ($user['rank'] < 90){
+            header('Location: ' . $url);
+        exit;
+        }
         //pagination
         $limit = 24;
         //pull palettes
@@ -96,7 +99,7 @@ session_start();
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="../dashboard">
                 <img src="<?=$url?>img/logotestwhite.png" width="100%">
             </a>
 
@@ -136,7 +139,7 @@ session_start();
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Blog Components:</h6>
                         <a class="collapse-item" href="../dashboard/new-post">New Post</a>
-                        <a class="collapse-item" href="../dashboard/posts">View Posts</a>
+                        <a class="collapse-item" href="../dashboard/all-posts">View Posts</a>
                     </div>
                 </div>
             </li>

@@ -166,7 +166,7 @@ session_start();
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Blog Components:</h6>
                         <a class="collapse-item" href="dashboard/new-post">New Post</a>
-                        <a class="collapse-item" href="dashboard/posts">View Posts</a>
+                        <a class="collapse-item" href="dashboard/all-posts">View Posts</a>
                     </div>
                 </div>
             </li>

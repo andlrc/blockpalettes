@@ -14,7 +14,7 @@ if(isset($_POST['register'])){
     $password = htmlspecialchars(addslashes($_POST['password']));
     //Checking if the supplied username/email already exists
     //Preparing SQL statement
-    $sql = "SELECT COUNT(email) AS num FROM user WHERE email = :email";
+    $sql = "SELECT COUNT(*) AS email FROM user WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     //Bind variables
     $stmt->bindValue(':email', $email);
@@ -23,11 +23,14 @@ if(isset($_POST['register'])){
     $emailCheck = $stmt->fetch(PDO::FETCH_ASSOC);
 
     //Username or email alreay exists error
-    if($emailCheck['num'] > 0) {
+    if($emailCheck['email'] > 0) {
         $error = 'That email is already in use!';
+        $_SESSION['emailError'] = "error";
+        header('Location: ' . $url . '');
+        exit;
     }
 
-    $sql = "SELECT COUNT(username) AS num FROM user WHERE username = :username";
+    $sql = "SELECT COUNT(*) AS user FROM user WHERE username = :username";
     $stmt = $pdo->prepare($sql);
     //Bind variables
     $stmt->bindValue(':username', $username);
@@ -36,8 +39,11 @@ if(isset($_POST['register'])){
     $usernameCheck = $stmt->fetch(PDO::FETCH_ASSOC);
 
     //Username or email alreay exists error
-    if($usernameCheck['num'] > 0) {
+    if($usernameCheck['user'] > 0) {
         $error = 'That username is already in use!';
+        $_SESSION['userError'] = "error";
+        header('Location: ' . $url . '');
+        exit;
     }
 
     //Hashing the password
@@ -55,6 +61,29 @@ if(isset($_POST['register'])){
 
     //If register was successful
     if($result) {
+
+          // Send email to user with the token in a link they can click on
+        $to = $email;
+        $subject = "Welcome to Block Palettes!";
+        $msg = "Hi there, <br>Thank you for creating an account on our website! Create your own block palettes or browse hundreds of community made palettes!<br>- Block Palettes Staff";
+        $msg = wordwrap($msg,70);
+        $headers = "From: hello@blockpalettes.com";
+        $headers .= "Organization: Block Palettes\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= 'Content-type: text/html' . "\r\n";
+        $headers .= "Reply-To: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "Return-Path: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "X-Priority: 3\r\n";
+        $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+        mail($to, $subject, $msg, $headers);
+        $_SESSION['email'] = $email;
+        $_SESSION['token'] = $token;
+        header('location: ' . $url . 'pending?email=' . $email);
+
+
+
+
         header('Location: ' . $url . '');
     }
 }
@@ -523,6 +552,45 @@ if (isset($_POST['reset-password'])) {
     }
   }
 
+if (isset($_POST['updateprofile'])) {
+    $bioIn = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
+    $bio = htmlspecialchars($bioIn, ENT_QUOTES, 'UTF-8');
 
+    $username = $_POST['username'];
+    $uid = $_POST['uid'];
+
+    //Checking if username already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    //Fetch the row
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Username already exists error
+    if($row['num'] > 0){
+        $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
+        $update = $pdo->prepare($bioUpdate);
+        $result = $update->execute();
+        if($result) {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+    } else {
+        $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+        $stmt = $pdo->prepare($sql);
+        //Bind varibles
+        $stmt->bindValue(':uid', $uid);
+        $stmt->bindValue(':bio', $bio);
+    
+        //Execute the statement
+        $result = $stmt->execute();
+    
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+    }
+}
+    
 
 ?>

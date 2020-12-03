@@ -10,7 +10,16 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-
+if(isset($_SESSION['emailError'])) {
+  $error = "email";
+  unset($_SESSION['emailError']);
+} else if(isset($_SESSION['userError'])) {
+  $error = "user";
+  unset($_SESSION['userError']);
+}
+else {
+  $error = "";
+}
 
 //pagination
 $limit = 12;
@@ -60,6 +69,33 @@ $i = 0;
     </div>
     <?php include('include/header.php'); ?>
     <!-- End Nav -->
+    <?php if($error == "email") { ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bs-example"> 
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Warning!</strong> That email is already in use!
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php }else if($error == "user") { ?>
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bs-example"> 
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Warning!</strong> That username is already in use!
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
     <div class="palettes">
       <div class="container-fluid">
         <div class="row">

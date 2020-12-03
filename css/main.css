@@ -708,3 +708,26 @@ iframe{
 .theme-link:hover{
     color: black;
 }
+.tiny-text{
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.bs-example{
+    margin-bottom:-25px;
+    width: 100%;
+}
+
+
+@media only screen and (max-width: 1000px) {
+    .nav-item{
+        width: 100%;
+    }
+    .dropdown .nav-link{
+        margin-bottom: 15px;
+    }
+    .nav-item .btn {
+        margin-top:35px;
+    }
+}
+

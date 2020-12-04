@@ -16,6 +16,9 @@ if(isset($_SESSION['emailError'])) {
 } else if(isset($_SESSION['userError'])) {
   $error = "user";
   unset($_SESSION['userError']);
+} else if(isset($_SESSION['userRegister'])) {
+  $error = "success";
+  unset($_SESSION['userRegister']);
 }
 else {
   $error = "";
@@ -88,6 +91,19 @@ $i = 0;
                 <div class="bs-example"> 
                     <div class="alert alert-danger alert-dismissible fade show">
                         <strong>Warning!</strong> That username is already in use!
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php }else if($error == "success") { ?>
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bs-example"> 
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <strong>Success!</strong> You are now registered. <a data-toggle="modal" data-target="#loginModal" style="cursor: pointer"><b>Click here to login</b></a>
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                     </div>
                 </div>

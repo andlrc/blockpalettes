@@ -33,7 +33,7 @@ $pFooter = $paletteFooter->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-lg-2" style=" padding-top:50px">
                 <h4 class="footer-title">Browse Palettes</h4>
                 <ul>
-                    <li class="footerText"><a href="<?=$url?>popular">Popular</a></li>
+                    <li class="footerText"><a href="<?=$url?>">Featured</a></li>
                     <li class="footerText"><a href="<?=$url?>palettes">All</a></li>
                     <li class="footerText"><a href="<?=$url?>submit">Submit</a></li>
                 </ul>

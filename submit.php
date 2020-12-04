@@ -3,6 +3,7 @@ session_start();
 
 include "include/logic.php";
 
+
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $uid = $_SESSION['user_id'];
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
@@ -68,7 +69,7 @@ $i = 0;
 
     gtag('config', 'UA-81969207-1');
   </script>
-<script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
   </head>
   <body>
     <!-- Nav -->
@@ -208,10 +209,15 @@ $i = 0;
                   </select>
                 </div>
                 <div class="col-xl-12 form-group">
+                  <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                  <input type="hidden" name="uid" value="<?=$uid?>">
+                  <?php } else { ?>
+                  <input type="hidden" name="uid" value="0">
+                  <?php } ?>
                   <button type="submit" name="create" class="btn btn-theme-form btn-block">Submit</button>
                 </div>
               </div>
-              <input type="hidden" name="recaptcha_response" id="recaptchaResponse" style="z-index:999">
+              
             </form>
           </div>
         </div>

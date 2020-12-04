@@ -43,6 +43,20 @@ iframe{
     padding-top: 100px;
     min-height: 80vh;
 }
+.about{
+ background: black;
+ height: auto;
+ width: 100%;
+ color: white!important;
+ padding-bottom: 130px;
+}
+.quickAbout{
+    padding-top:130px
+}
+.aboutTextArea{
+    padding: 100px 0px;
+    min-height: 40vh;
+}
 
 .palette-float{
     padding: 10px 6px 3px 10px;

@@ -11,95 +11,22 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } 
 
+  $palettesCount = $pdo->prepare("SELECT COUNT(*) as num FROM palette");
+  $palettesCount->execute();
+  $pCount = $palettesCount->fetch(PDO::FETCH_ASSOC);
 
-$popularPull = $pdo->prepare("SELECT blocks, count(*) total
-                      from 
-                      (
-                        select blockOne as blocks
-                        from palette
-                        union all
-                        select blockTwo
-                        from palette
-                        union all
-                        select blockThree
-                        from palette
-                        union all
-                        select blockFour
-                        from palette
-                        union all
-                        select blockFive
-                        from palette
-                        union all
-                        select blockSix
-                        from palette
-                      ) d
-                      group by blocks
-                      order by total desc LIMIT 9;
+  $userCount = $pdo->prepare("SELECT COUNT(*) as num FROM user");
+  $userCount->execute();
+  $uCount = $userCount->fetch(PDO::FETCH_ASSOC);
 
-");
-$popularPull->execute();
-$t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
+  $palettesTodayCount = $pdo->prepare("SELECT COUNT(*) as num FROM palette where date(date)=date(now());");
+  $palettesTodayCount->execute();
+  $pTCount = $palettesTodayCount->fetch(PDO::FETCH_ASSOC);
 
+  $userTodayCount = $pdo->prepare("SELECT COUNT(*) as num FROM user where date(date)=date(now());");
+  $userTodayCount->execute();
+  $uTCount = $userTodayCount->fetch(PDO::FETCH_ASSOC);
 
-//pagination
-$limit = 21;
-
-
-if(isset($_GET['filter'])){
-  $dataInput = !empty($_GET['filter']) ? trim($_GET['filter']) : null;
-  $block = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-
-  $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
-                               OR blockTwo LIKE '$block' 
-                               OR blockThree LIKE '$block' 
-                               OR blockFour LIKE '$block' 
-                               OR blockFive LIKE '$block' 
-                               OR blockSix LIKE '$block'");
-  $palettePull->execute();
-  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-
-
-} else {
-  $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
-  $palettePull->execute();
-  $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-  $total_results = $palettePull->rowCount();
-  $total_pages = ceil($total_results/$limit);
-      
-  if (!isset($_GET['page'])) {
-      $page = 1;
-  } else{
-      $page = $_GET['page'];
-  }
-
-  $start = ($page-1)*$limit;
-
-  $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT $start, $limit");
-  $stmt->execute();
-
-  // set the resulting array to associative
-  $stmt->setFetchMode(PDO::FETCH_OBJ);
-      
-  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-  $conn = null;
-
-  // var_dump($results);
-  $no = $page > 1 ? $start+1 : 1;
-
-  $i = 0;
-}
-
-if(isset($_GET['removeFilter'])){
-  header('Location: palettes');
-}
-//pull palettes
-
-$dir = "img/block/*.png";
-//get the list of all files with .jpg extension in the directory and safe it in an array named $images
-$images = glob( $dir );
 
 ?>
 <!doctype html>
@@ -137,7 +64,6 @@ $images = glob( $dir );
 
       gtag('config', 'UA-81969207-1');
     </script>
-    <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
   </head>
   <body>
@@ -150,21 +76,50 @@ $images = glob( $dir );
       </div>
     </div>
     <?php include('include/header.php'); ?>
-    <div class="palettes">
-      <div class="container-fluid">
+    <div class="about">
+      <div class="container-fluid align-middle">
         <div class="row">
-          <div class="col-md-12">
-            <div class="title" style="padding-bottom:15px">About</div>
+          <div class="col-xl-3 col-lg-3 col-md-6 col-6 quickAbout" align="center">
+            <h5 class="medium-title" style="color:white;font-size:40px;margin-bottom:0px"><?=$pCount['num']?></h5>
+            Palettes
           </div>
-          <div class="col-md-12">
-            <div class="quick-stats">
-                
-            </div>
+          <div class="col-xl-3 col-lg-3 col-md-6 col-6 quickAbout" align="center">
+            <h5 class="medium-title" style="color:white;font-size:40px;margin-bottom:0px"><?=$uCount['num']?></h5>
+            Users
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-6 col-6 quickAbout" align="center">
+            <h5 class="medium-title" style="color:white;font-size:40px;margin-bottom:0px"><?=$pTCount['num']?></h5>
+            Palettes Today
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-6 col-6 quickAbout" align="center">
+            <h5 class="medium-title" style="color:white;font-size:40px;margin-bottom:0px"><?=$uTCount['num']?></h5>
+            Registered Today
           </div>
           
         </div>
       </div>
     </div>
+    <div class="aboutTextArea">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xl-10 offset-1">
+            <div class="row">
+              <div class="col-xl-3 col-lg-3 col-md-3" style="padding-bottom:35px">
+                <img src="img/biglogo.png" width="100%">
+              </div>
+              <div class="col-xl-9 col-lg-9 col-md-12">
+                <h2 class="title">Block Palettes</h2>
+                <p>We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with monthly building contest and showcases of the amazing things people build!</p>
+                <p>We are continually expanding our website to create the best experience possible and help people find/share Minecraft building inspiration.</p>
+                <a href="https://twitter.com/ntbol"><p class="small-title" style="font-size:18px">Built by Ntbol</p></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <?php include "include/footer.php" ?>
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
@@ -175,5 +130,6 @@ $images = glob( $dir );
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   </body>
 </html>

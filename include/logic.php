@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 //Register a user
 if(isset($_POST['register'])){
@@ -93,7 +93,6 @@ if(isset($_POST['login'])){
     //Retrieves input data
     $usernameEmail = htmlspecialchars(addslashes($_POST['email']));
     $passwordAttempt = htmlspecialchars(addslashes($_POST['password']));
-    $cookie = $_POST['cookie'];
 
     //Retrieves the user account information for the given username/email.
     $sql = "SELECT id, email, password FROM user WHERE email = :usernameEmail";
@@ -120,9 +119,6 @@ if(isset($_POST['login'])){
             //Provide the user with a LOGIN session.
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['logged_in'] = time();
-            if($cookie > 0){
-                setcookie('user_logged', $user['id'], time() + (86400 * 30), "/");
-            }
             //Redirect user
             header('Location: ' . $url . '');
             exit;
@@ -167,109 +163,93 @@ function time_elapsed_string($datetime, $full = false) {
 }
 
 
+if(isset($_POST['create'])){
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])) {
-
-    // Build POST request:
-    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-    $recaptcha_secret = 'XXX';
-    $recaptcha_response = $_POST['recaptcha_response'];
-
-    // Make and decode POST request:
-    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    $recaptcha = json_decode($recaptcha);
-
-    // Take action based on the score returned:
-    if ($recaptcha->score >= 0.5) {
-            if(isset($_POST['create'])){
-
-            //Sanitizes data
-            $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
-            $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
-            $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
-            $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
-            $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
-            $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
-        
-        
-            $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
-            $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
-            $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
-            $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
-            $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
-            $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
-        
-        
-            $oneCut = str_replace(".png","","$one");
-            $oneCleanStr = str_replace("img/block/","","$oneCut");
-        
-            $twoCut = str_replace(".png","","$two");
-            $twoCleanStr = str_replace("img/block/","","$twoCut");
-        
-            $threeCut = str_replace(".png","","$three");
-            $threeCleanStr = str_replace("img/block/","","$threeCut");
-        
-            $fourCut = str_replace(".png","","$four");
-            $fourCleanStr = str_replace("img/block/","","$fourCut");
-        
-            $fiveCut = str_replace(".png","","$five");
-            $fiveCleanStr = str_replace("img/block/","","$fiveCut");
-        
-            $sixCut = str_replace(".png","","$six");
-            $sixCleanStr = str_replace("img/block/","","$sixCut");
+    //Sanitizes data
+    $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
+    $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
+    $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
+    $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
+    $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
+    $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
 
 
-    
+    $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
+    $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
+    $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
+    $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
+    $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
+    $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
+
+    $uid = $_POST['uid'];
 
 
-                //Checking if the supplied username already exists
-            //Preparing SQL statement
-            $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
-                                            AND blockTwo LIKE '$twoCleanStr' 
-                                            AND blockThree LIKE '$threeCleanStr' 
-                                            AND blockFour LIKE '$fourCleanStr' 
-                                            AND blockFive LIKE '$fiveCleanStr' 
-                                            AND blockSix LIKE '$sixCleanStr'";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':title', $title);
-            $stmt->execute();
-            //Fetch the row
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $oneCut = str_replace(".png","","$one");
+    $oneCleanStr = str_replace("img/block/","","$oneCut");
 
-            //Username already exists error
-            if($row['num'] > 0){
-                session_start();
-                $_SESSION['error'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            }
-        
-                //Preparing insert statement
-                $sql = "INSERT INTO palette (blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
-                $stmt = $pdo->prepare($sql);
-                //Bind varibles
-                $stmt->bindValue(':blockOne', $oneCleanStr);
-                $stmt->bindValue(':blockTwo', $twoCleanStr);
-                $stmt->bindValue(':blockThree', $threeCleanStr);
-                $stmt->bindValue(':blockFour', $fourCleanStr);
-                $stmt->bindValue(':blockFive', $fiveCleanStr);
-                $stmt->bindValue(':blockSix', $sixCleanStr);
-            
-                //Execute the statement
-                $result = $stmt->execute();
-            
-                //If successful, returns to user profile
-                if($result) {
-                    $_SESSION['create'] = "New Palette";
-                    header('Location: ' . $url . 'palettes');
-                }
-        
-         }
-    } else {
-        header('Location: ' . $url . 'palettes');
+    $twoCut = str_replace(".png","","$two");
+    $twoCleanStr = str_replace("img/block/","","$twoCut");
+
+    $threeCut = str_replace(".png","","$three");
+    $threeCleanStr = str_replace("img/block/","","$threeCut");
+
+    $fourCut = str_replace(".png","","$four");
+    $fourCleanStr = str_replace("img/block/","","$fourCut");
+
+    $fiveCut = str_replace(".png","","$five");
+    $fiveCleanStr = str_replace("img/block/","","$fiveCut");
+
+    $sixCut = str_replace(".png","","$six");
+    $sixCleanStr = str_replace("img/block/","","$sixCut");
+
+
+
+
+
+        //Checking if the supplied username already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
+                                    AND blockTwo LIKE '$twoCleanStr' 
+                                    AND blockThree LIKE '$threeCleanStr' 
+                                    AND blockFour LIKE '$fourCleanStr' 
+                                    AND blockFive LIKE '$fiveCleanStr' 
+                                    AND blockSix LIKE '$sixCleanStr'";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    //Fetch the row
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Username already exists error
+    if($row['num'] > 0){
+        session_start();
+        $_SESSION['error'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
     }
 
-}
+        //Preparing insert statement
+        $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+        $stmt = $pdo->prepare($sql);
+        //Bind varibles
+        $stmt->bindValue(':uid', $uid);
+        $stmt->bindValue(':blockOne', $oneCleanStr);
+        $stmt->bindValue(':blockTwo', $twoCleanStr);
+        $stmt->bindValue(':blockThree', $threeCleanStr);
+        $stmt->bindValue(':blockFour', $fourCleanStr);
+        $stmt->bindValue(':blockFive', $fiveCleanStr);
+        $stmt->bindValue(':blockSix', $sixCleanStr);
+    
+        //Execute the statement
+        $result = $stmt->execute();
+    
+        //If successful, returns to user profile
+        if($result) {
+            $_SESSION['create'] = "New Palette";
+            header('Location: ' . $url . 'palettes');
+        }
+
+ }
+
 //unfavorite
 if(isset($_POST['unfavorite'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;

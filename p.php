@@ -8,9 +8,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
-}else if(isset($_COOKIE['user_logged'])) { 
-  $_SESSION['user_id'] = $_COOKIE['user_logged'];
-  $_SESSION['logged_in'] = time();
 }
 
 

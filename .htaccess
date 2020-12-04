@@ -1,6 +1,6 @@
 RewriteEngine On
 DirectoryIndex featured.php
-
+ErrorDocument 404 https://www.blockpalettes.com/palettes
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

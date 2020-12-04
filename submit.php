@@ -214,10 +214,15 @@ $i = 0;
                   <?php } else { ?>
                   <input type="hidden" name="uid" value="0">
                   <?php } ?>
+                  <?php if(isset($_SESSION['last_submit']) && ((time() - $_SESSION['last_submit']) < 60)) {
+                     $time = time() - $_SESSION['last_submit'];
+                    echo "You must wait 60 seconds, before submitting again. (" . $time . " seconds)";
+                  } else { ?>
                   <button type="submit" name="create" class="btn btn-theme-form btn-block">Submit</button>
+                  <?php } ?>
                 </div>
               </div>
-              
+              <input type="hidden" name="recaptcha_response" id="recaptchaResponse" style="z-index:999">
             </form>
           </div>
         </div>

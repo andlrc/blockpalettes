@@ -1,7 +1,15 @@
 <?php 
 session_start();
-require "include/connect.php";
+
 require "include/logic.php";
+
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+  $uid = $_SESSION['user_id'];
+  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 
 $id = !empty($_GET['p']) ? trim($_GET['p']) : null;
 $pid = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
@@ -57,45 +65,18 @@ $date = date_format($d,"Y/m/d");
         </div> 
       </div>
     </div>
-    <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="<?=$url?>">
-                    <img src="../img/logotest.png" class="logo-size">
-                </a>
-                <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                  <i class="fas fa-bars fa-2x"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
-                      <li class="nav-item">
-                            <a href="../" class="nav-link">Featured Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../new" class="nav-link">New Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../blog" class="nav-link">Blog<div class="active"></div></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../submit" class="nav-link btn btn-theme-nav">Submit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <!-- End Nav -->
+    <?php include('include/header.php'); ?>
     <div class="palettes" style="padding-top:50px">
       <div class="container">
+      <a href="<?=$url?>blog" class="theme-link"><i class="fas fa-arrow-left"></i> Back To Blog</a>
         <div class="row">
           <div class="col-md-12">
             <span class="update-pill">Site Update</span>
-            <img src="<?=$blog['image']?>" class="fullImage">
+            <img src="<?=$blog['image']?>" class="fullImage" style="width:100%">
             <div class="article">
                 <h3 class="small-title"><?=ucwords($blog['title'])?></h3>
                 <p class="subText"><i class="far fa-calendar-alt"></i> <?=$date?></p>
-                <p><?=$blog['article']?></p>
+                <p><?=htmlspecialchars_decode($blog['article'])?></p>
              </div>
           </div>
         </div>
@@ -103,7 +84,7 @@ $date = date_format($d,"Y/m/d");
     </div>
 
 
-    <?php include('include/footerP.php') ?>
+    <?php include('include/footer.php') ?>
     <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
 

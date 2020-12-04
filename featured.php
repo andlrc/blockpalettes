@@ -1,17 +1,25 @@
 <?php 
 session_start();
-require "include/connect.php";
+
 require "include/logic.php";
-
-
-if(isset($_COOKIE['likes'])) {
-  $dataInput = !empty($_COOKIE['likes']) ? trim($_COOKIE['likes']) : null;
-  $data = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-} else {
-  $data = "";
-
+//Check if user is logged in
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+  $uid = $_SESSION['user_id'];
+  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+if(isset($_SESSION['emailError'])) {
+  $error = "email";
+  unset($_SESSION['emailError']);
+} else if(isset($_SESSION['userError'])) {
+  $error = "user";
+  unset($_SESSION['userError']);
+}
+else {
+  $error = "";
+}
 
 //pagination
 $limit = 12;
@@ -47,7 +55,6 @@ $i = 0;
 
       gtag('config', 'UA-81969207-1');
     </script>
-    <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -59,63 +66,91 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="<?=$url?>">
-                    <img src="<?=$url?>img/logotest.png" class="logo-size">
-                </a>
-                <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                  <i class="fas fa-bars fa-2x"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
-                      <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes<div class="active"></div></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>blog" class="nav-link">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav">Submit</a>
-                        </li>
-                    </ul>
+    <?php include('include/header.php'); ?>
+    <!-- End Nav -->
+    <?php if($error == "email") { ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bs-example"> 
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Warning!</strong> That email is already in use!
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
     </div>
-    <!-- End Nav -->
+    <?php }else if($error == "user") { ?>
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bs-example"> 
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <strong>Warning!</strong> That username is already in use!
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:5px">Featured Palettes</div>
             <p style="padding-bottom:25px">Featured block palettes are hand picked by our staff weekly.</p>
           </div>
           <?php foreach($palette as $p): ?>
-          <div class="col-lg-4 col-md-6 paddingFix">
+          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
-              <a href="<?=$url?>palette/<?=$p['id']?>">
+            <a href="<?=$url?>palette/<?=$p['id']?>">
                 <div class="palette-float">
-                  <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                  <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                  </div>
+                  <div class="flex-thirds">
+                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                  </div>
+                  
+                  <?php 
+                    $pid = $p['id'];
+                    $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                    $savePull->execute();
+                    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                    if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                      $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                      $savedCheckPull->execute();
+                      $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                    }
+
+                    
+                  ?>
                   <div class="subtext">
-                    <div class="award half shine">
+                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                      <div class="time left half">
+                        <?php if ($saved !== false) { ?>
+                          <span class="btn-unsave">Saved</span>
+                        <?php } else { ?>
+                          <span class="btn-save"><?=$save['num'];?> Saves</span>
+                        <?php } ?>
+                        </div>
+                      <?php } else {?>
+                        <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                        </div>
+                      <?php } ?>
+                    <div class="award right half shine">
                       <i class="fas fa-award"></i> Staff Pick
-                    </div>
-                    <div class="time half">
-                    &nbsp;
                     </div>
                   </div>
                 </div>
-              </a>
+                </a>
             </div>
           </div>
           <?php endforeach; ?>
@@ -125,12 +160,7 @@ $i = 0;
 
 
     <?php include('include/footer.php') ?>
-      <iframe name="frame"></iframe>
     <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-            
 
     <!-- Modal -->
     <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -161,6 +191,19 @@ $i = 0;
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
   </body>
 </html>

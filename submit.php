@@ -1,8 +1,15 @@
 <?php
 session_start();
 
-require "include/connect.php";
 include "include/logic.php";
+
+
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+  $uid = $_SESSION['user_id'];
+  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 
 $dir = "img/block/*.png";
@@ -62,7 +69,7 @@ $i = 0;
 
     gtag('config', 'UA-81969207-1');
   </script>
-<script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
   </head>
   <body>
     <!-- Nav -->
@@ -73,34 +80,9 @@ $i = 0;
         </div> 
       </div>
     </div>
-    <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="<?=$url?>">
-                    <img src="img/logotest.png" class="logo-size">
-                </a>
-                <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars fa-2x"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
-                      <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>new" class="nav-link">New Palettes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?=$url?>submit" class="nav-link btn btn-theme-nav" >Submit</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    <!-- End Nav -->
+    <?php include('include/header.php'); ?>
     <div class="palettes">
-      <div class="container">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Submit Palette</div>
@@ -110,21 +92,24 @@ $i = 0;
               <?php } else {?>
                 <div style="margin-bottom:10px"></div>
               <?php } ?>
-          </div>
-          <div class="col-lg-2"></div>
-          <div class="col-lg-8 col-md-12 paddingFixLargeCreate">
+              </div>
+          <div class="col-xl-6 col-lg-12 col-md-12 paddingFixLargeCreate">
             <div style="position: relative">
               <div class="palette-float-large">
-                <img id="image1" src="img/placeholder.png" class="block">
-                <img id="image2" src="img/placeholder.png" class="block">
-                <img id="image3" src="img/placeholder.png" class="block">
-                <img id="image4" src="img/placeholder.png" class="block">
-                <img id="image5" src="img/placeholder.png" class="block">
-                <img id="image6" src="img/placeholder.png" class="block">
+                <div class="flex-thirds">
+                  <img id="image1" src="img/placeholder.png" class="block">
+                  <img id="image2" src="img/placeholder.png" class="block">
+                  <img id="image3" src="img/placeholder.png" class="block">
+                </div>
+                <div class="flex-thirds">
+                  <img id="image4" src="img/placeholder.png" class="block">
+                  <img id="image5" src="img/placeholder.png" class="block">
+                  <img id="image6" src="img/placeholder.png" class="block">
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-12 col-md-12" style="padding-bottom:100px">
+          <div class="col-xl-6 col-lg-12 col-md-12 insertBlocks" style="padding-bottom:100px">
             <h2 class="medium-title">Pick Blocks</h2>
             <form method="post" method="submit">
               <div class="row">
@@ -224,10 +209,15 @@ $i = 0;
                   </select>
                 </div>
                 <div class="col-xl-12 form-group">
+                  <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                  <input type="hidden" name="uid" value="<?=$uid?>">
+                  <?php } else { ?>
+                  <input type="hidden" name="uid" value="0">
+                  <?php } ?>
                   <button type="submit" name="create" class="btn btn-theme-form btn-block">Submit</button>
                 </div>
               </div>
-              <input type="hidden" name="recaptcha_response" id="recaptchaResponse" style="z-index:999">
+              
             </form>
           </div>
         </div>
@@ -313,7 +303,11 @@ $i = 0;
         </div>
       </div>
     </div>
-
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
 
   </body>
 </html>

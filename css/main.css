@@ -43,14 +43,26 @@ iframe{
     padding-top: 100px;
     min-height: 80vh;
 }
+.about{
+ background: black;
+ height: auto;
+ width: 100%;
+ color: white!important;
+ padding-bottom: 130px;
+}
+.quickAbout{
+    padding-top:130px
+}
+.aboutTextArea{
+    padding: 100px 0px;
+    min-height: 40vh;
+}
 
 .palette-float{
     padding: 10px 6px 3px 10px;
     border-radius: 7px;
     background: white;
     width: 100%;
-    position: absolute;
-
 }
 .palette-float-info{
     padding: 15px;
@@ -64,11 +76,9 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
-    position: absolute;
-
 }
 .paddingFix{
-    padding-bottom: 300px;
+    padding-bottom: 35px;
 }
 
 .paddingFixLarge{
@@ -76,7 +86,7 @@ iframe{
 }
 
 .paddingFixLargeCreate{
-    padding-bottom: 540px;
+    padding-bottom: 35px;
 }
 
 
@@ -89,13 +99,13 @@ iframe{
         padding-bottom: 650px;
     }
     .paddingFix{
-        padding-bottom: 350px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
     }
     .paddingFixLargeCreate{
-        padding-bottom: 300px;
+        padding-bottom: 35px;
     }
     
 }
@@ -104,7 +114,7 @@ iframe{
         padding-bottom: 500px;
     }
     .paddingFix{
-        padding-bottom: 275px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
@@ -116,7 +126,7 @@ iframe{
         padding-bottom: 380px;
     }
     .paddingFix{
-        padding-bottom: 220px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 25px;
@@ -128,11 +138,12 @@ iframe{
         padding-bottom: 285px;
     }
     .paddingFix{
-        padding-bottom: 300px;
+        padding-bottom: 35px;
     }
     .palette-float-info{
         margin-bottom: 45px;
     }
+    
 }
 
 .block{
@@ -143,6 +154,8 @@ iframe{
     padding: 0px;
     margin: 0px;
     float: left;
+    height: auto!important;
+    
 }
 
 .btn-like{
@@ -154,7 +167,6 @@ iframe{
 }
 
 .time{
-    text-align: right;
     padding-top:5px;
     color: gray;
     font-size: 15px
@@ -207,8 +219,17 @@ iframe{
     border-radius: 7px;
 }
 
+.right{
+    text-align: right;
+    
+}
+
+.left{
+    text-align: left!important;
+    
+}
+
 .award{
-    text-align: left;
     padding-top:5px;
     color: #4b7bec;
     font-size: 15px;
@@ -241,7 +262,7 @@ iframe{
 
 
 .blocks .small-title{
-    padding-top: 50px;
+    padding-top: 40px;
 }
 .blocks ul{
     list-style-type: none;
@@ -316,7 +337,7 @@ iframe{
     border-color: transparent;
 } 
 .logo-size{
-    width: 240px;
+    width: 250px;
 }
 
 @media only screen and (max-width: 900px) {
@@ -371,6 +392,23 @@ iframe{
     font-family: tommyMedium, sans-serif;
 }
 
+.btn-theme-small{
+    background: black;
+    border-radius: 4px;
+    padding: 2px 10px;
+    color: white !important;
+    font-size: 14px;
+    font-family: tommyLight, sans-serif;
+    margin-top: -5px
+}
+
+.btn-theme-google{
+    background: #007bff;
+    border-radius: 7px;
+    padding: 5px;
+    color: white !important;
+    font-family: tommyMedium, sans-serif;
+}
 .btn-theme-form{
     background: black;
     border-radius: 7px;
@@ -469,3 +507,245 @@ iframe{
     color: gray;
     font-size: 15px;
 }
+
+.blogSnip{
+    padding-bottom: 10px;
+    padding-top:5px;
+    margin-top:15px;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.user-pill{
+    padding: 10px;
+    background: #f8f9fc;
+    border-radius: 6px;
+    border: 1px solid #e3e6f0;
+    color: black;
+    margin-bottom: 15px;
+}
+
+.role-pill{
+    display: inline-block;
+    color: white;
+    padding: 2px 10px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    font-family: tommyMedium, sans-serif;
+}
+
+.feature-pill{
+    display: inline-block;
+    color: white;
+    padding: 0px 10px 3px 10px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 999;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: white;
+    bottom: 0px;
+    right: 20px;
+}
+
+.favorite{
+    display: inline-block;
+    color: white;
+    padding: 0px 5px 3px 5px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 999;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: #f1c40f;
+    right:50px;
+    border: none;
+}
+
+.delete{
+    display: inline-block;
+    color: white;
+    padding: 0px 6px 3px 6px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 999;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: #e74c3c;
+    right:20px;
+    border: none;
+}
+
+.unfavorite{
+    display: inline-block;
+    color: white;
+    padding: 0px 5px 3px 5px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 999;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: black;
+    right:20px;
+    border: none;
+}
+
+.dropdown-toggle::after{
+    content: none;
+}
+
+.btn-save{
+    border: none;
+    background: none;
+    color: gray;
+    font-family: tommyMedium, sans-serif;
+}
+
+.btn-unsave{
+    border: none;
+    background: none;
+    font-family: tommyMedium, sans-serif;
+    color: #2ecc71;
+    padding-left: 0px
+}
+.savesFloat{
+    position: absolute;
+    margin-top:6px;
+    right: 28px;
+    text-align: right;
+}
+
+.profile-float{
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom:25px
+}
+.user-info{
+    margin-left: 90px;
+    margin-top: 7px;
+}
+
+.profile-notes {
+    border-top: 1px dashed #666;
+    margin: 0 -12px;
+    padding: 12px 12px 0;
+    margin-top:15px;
+    font-size: 15px;
+}
+.award-box{
+    
+}
+
+.postUser{
+    font-family: tommyMedium, sans-serif;
+    font-size: 15px;
+    padding-bottom: 5px;
+}
+
+.userRank{
+    font-size:10px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    color: white;
+    top: -2px;
+    position: relative;
+
+}
+.userLink{
+    color: black;
+}
+.userLink:hover{
+    color: black;
+    text-decoration: none;
+}
+
+
+.flex-thirds{
+    display: flex;
+    align-items: flex-start; 
+}
+.subtext{
+    height: 30px;
+}
+
+.block-pill{
+    background: black;
+    color: gray;
+    display: inline-block;
+    padding: 3px 6px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: ease-in-out all .2s;
+}
+
+.block-pill:hover{
+    text-decoration: none;
+    scale: 1.1;
+}
+
+.block-pill b{
+    color: white;
+}
+
+.reset-panel{
+    margin-top:150px;
+    background: white;
+    text-align: center;
+    padding: 30px 30px 15px 30px;
+    border-radius: 8px;
+}
+
+.error-badge{
+    background: #e74c3c;
+    color: white;
+    padding: 3px 20px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-bottom:15px;
+}
+
+@media only screen and (min-width: 1200px) {
+    .insertBlocks{
+        padding-top:75px;
+    }
+}
+
+.theme-link{
+    color: black;
+}
+.theme-link:hover{
+    color: black;
+}
+.tiny-text{
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.bs-example{
+    margin-bottom:-25px;
+    width: 100%;
+}
+
+
+@media only screen and (max-width: 1000px) {
+    .nav-item{
+        width: 100%;
+    }
+    .dropdown .nav-link{
+        margin-bottom: 15px;
+    }
+    .nav-item .btn {
+        margin-top:35px;
+    }
+}
+

@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 //Register a user
 if(isset($_POST['register'])){
@@ -76,14 +76,10 @@ if(isset($_POST['register'])){
         $headers .= "X-Priority: 3\r\n";
         $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
         mail($to, $subject, $msg, $headers);
-        $_SESSION['email'] = $email;
-        $_SESSION['token'] = $token;
-        header('location: ' . $url . 'pending?email=' . $email);
-
-
 
         $_SESSION['userRegister'] = "success";
         header('Location: ' . $url . '');
+        exit;
     }
 }
 

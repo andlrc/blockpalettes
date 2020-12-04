@@ -16,12 +16,15 @@ if(isset($_SESSION['emailError'])) {
 } else if(isset($_SESSION['userError'])) {
   $error = "user";
   unset($_SESSION['userError']);
-} else if(isset($_SESSION['userRegister'])) {
-  $error = "success";
-  unset($_SESSION['userRegister']);
-}
-else {
+} else {
   $error = "";
+}
+
+if(isset($_SESSION['userRegister'])) {
+  $success = "successReg";
+  unset($_SESSION['userRegister']);
+} else {
+  $success = "";
 }
 
 //pagination
@@ -97,7 +100,7 @@ $i = 0;
             </div>
         </div>
     </div>
-    <?php }else if($error == "success") { ?>
+    <?php }else if($success == "successReg") { ?>
       <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">

@@ -67,12 +67,11 @@ if(isset($_POST['register'])){
         $subject = "Welcome to Block Palettes!";
         $msg = "Hi there, <br>Thank you for creating an account on our website! Create your own block palettes or browse hundreds of community made palettes!<br>- Block Palettes Staff";
         $msg = wordwrap($msg,70);
-        $headers = "From: hello@blockpalettes.com";
         $headers .= "Organization: Block Palettes\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= 'Content-type: text/html' . "\r\n";
-        $headers .= "Reply-To: Block Palettes <hello@blockpalettes.com>\r\n";
-        $headers .= "Return-Path: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
+        $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
         $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
         $headers .= "X-Priority: 3\r\n";
         $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
@@ -364,7 +363,7 @@ if(isset($_POST['blog'])){
     
         //If successful, returns to user profile
         if($result) {
-            header('Location: ' . $url . 'palettes');
+            header('Location: ' . $url . 'dashboard/all-posts');
         }
 
  }
@@ -484,12 +483,11 @@ if (isset($_POST['reset-password'])) {
         $subject = "Reset your password on Block Palettes";
         $msg = "Hi there, click on this <a href=" . $url . "new_password?token=" . $token . ">link</a> to reset your password on our site.";
         $msg = wordwrap($msg,70);
-        $headers = "From: hello@blockpalettes.com";
         $headers .= "Organization: Block Palettes\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= 'Content-type: text/html' . "\r\n";
-        $headers .= "Reply-To: Block Palettes <hello@blockpalettes.com>\r\n";
-        $headers .= "Return-Path: Block Palettes <hello@blockpalettes.com>\r\n";
+        $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
+        $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
         $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
         $headers .= "X-Priority: 3\r\n";
         $headers .= "X-Mailer: PHP". phpversion() ."\r\n";

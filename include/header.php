@@ -76,12 +76,6 @@
                     <div class="form-group">
                         <input type="password" name="password" placeholder="Password" class="form-control" required>
                     </div>
-                    <div class="form-group" style="padding-left:20px"> 
-                        <input class="form-check-input" type="checkbox" name="acceptterms" id="acceptterms" value="yes" required>
-                        <label class="form-check-label" for="acceptterms">
-                            I agree to your <a href="">Terms and Conditions</a> and <a href="">Privacy Policy</a>
-                        </label>
-                    </div>
                     <button class="btn btn-theme btn-block" type="submit" name="register"><b>Create your free account</b></button>
                 </form>
             </div>

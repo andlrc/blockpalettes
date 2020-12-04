@@ -143,6 +143,7 @@ iframe{
     .palette-float-info{
         margin-bottom: 45px;
     }
+    
 }
 
 .block{
@@ -153,6 +154,8 @@ iframe{
     padding: 0px;
     margin: 0px;
     float: left;
+    height: auto!important;
+    
 }
 
 .btn-like{
@@ -668,6 +671,7 @@ iframe{
 
 .flex-thirds{
     display: flex;
+    align-items: flex-start; 
 }
 .subtext{
     height: 30px;

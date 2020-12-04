@@ -80,6 +80,9 @@ $dir = "img/block/*.png";
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Saved Palettes</div>
+              <?php if($save == null){ ?>
+              You have not saved any palettes yet :(
+              <?php } ?>
             <div style="padding-bottom:15px"></div> 
           </div>
           <?php foreach($save as $s): ?>

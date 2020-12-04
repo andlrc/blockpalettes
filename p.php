@@ -72,11 +72,11 @@ $date = date_format($d,"Y/m/d");
         <div class="row">
           <div class="col-md-12">
             <span class="update-pill">Site Update</span>
-            <img src="<?=$blog['image']?>" class="fullImage">
+            <img src="<?=$blog['image']?>" class="fullImage" style="width:100%">
             <div class="article">
                 <h3 class="small-title"><?=ucwords($blog['title'])?></h3>
                 <p class="subText"><i class="far fa-calendar-alt"></i> <?=$date?></p>
-                <p><?=nl2br($blog['article'])?></p>
+                <p><?=htmlspecialchars_decode($blog['article'])?></p>
              </div>
           </div>
         </div>

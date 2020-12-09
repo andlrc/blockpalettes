@@ -16,6 +16,14 @@ $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
 
+if(isset($_SESSION['blockError'])) {
+    $blockError = "You have entered in an invalid block!";
+    unset($_SESSION['blockError']);
+} else {
+    $blockError = "";
+}
+
+
 //extract only the name of the file without the extension and save in an array named $find
 if(isset($_SESSION['error'])) {
   $error = "This palette already exists!";
@@ -87,12 +95,18 @@ $i = 0;
           <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Submit Palette</div>
               <?php if($error != null) { ?>
-                <div class="delete-tag" style="margin-bottom:25px"><?=$error?></div>
+                <div class="delete-tag" style="margin-bottom:25px"><?=$error?><?=$error?></div>
                 
               <?php } else {?>
                 <div style="margin-bottom:10px"></div>
               <?php } ?>
-              </div>
+              <?php if($blockError != null) { ?>
+                  <div class="delete-tag" style="margin-bottom:25px"><?=$blockError?></div>
+
+              <?php } else {?>
+                  <div style="margin-bottom:10px"></div>
+              <?php } ?>
+          </div>
           <div class="col-xl-6 col-lg-12 col-md-12 paddingFixLargeCreate">
             <div style="position: relative">
               <div class="palette-float-large">

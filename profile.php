@@ -177,16 +177,22 @@ $i = 0;
                         <?php } else { ?>
                           <span class="btn-save"><?=$save['num'];?> Saves</span>
                         <?php } ?>
-                        </div>
+                      </div>
                       <?php } else {?>
                         <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
                           <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
                         </div>
                       <?php } ?>
-                    <div class="award right half shine">
-                      <i class="fas fa-award"></i> Staff Pick
+                      <?php if($p['featured'] == 1){ ?>
+                        <div class="award right half shine">
+                          <i class="fas fa-award"></i> Staff Pick
+                        </div>
+                      <?php } else { ?>
+                        <div class="time right half">
+                          <?=time_elapsed_string($p['date'])?>
+                        </div>
+                       <?php } ?>       
                     </div>
-                  </div>
                 </div>
             </div>
           </div>

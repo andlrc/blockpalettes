@@ -3,7 +3,8 @@
 require "password.php";
 require "connect.php";
 
-$url = "https://www.blockpalettes.com/";
+$url = "http://localhost/blockpalettes/";
+
 
 //Register a user
 if(isset($_POST['register'])){
@@ -192,6 +193,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
 
             $uid = $_POST['uid'];
 
+            // Form validation to check if blocks are in img folder
+            $dir =  "img/block/*.png";
+            $images = glob( $dir );
+            if(in_array($blockOne, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            } else if(in_array($blockTwo, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            } else if(in_array($blockThree, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            } else if(in_array($blockFour, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            } else if(in_array($blockFive, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            } else if(in_array($blockSix, $images) == false) {
+                $_SESSION['blockError'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            }
 
             $oneCut = str_replace(".png","","$one");
             $oneCleanStr = str_replace("img/block/","","$oneCut");
@@ -212,10 +241,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
             $sixCleanStr = str_replace("img/block/","","$sixCut");
 
 
+            
 
 
-
-                //Checking if the supplied username already exists
+            //Checking if the supplied username already exists
             //Preparing SQL statement
             $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
                                             AND blockTwo LIKE '$twoCleanStr' 
@@ -230,7 +259,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
 
             //Username already exists error
             if($row['num'] > 0){
-                session_start();
                 $_SESSION['error'] = "error";
                 header('Location: ' . $url . 'submit');
                 exit();

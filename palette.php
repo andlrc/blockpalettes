@@ -245,7 +245,7 @@ $images = glob( $dir );
                               </div>
                                 <?php 
                                   $pid2 = $p['id'];
-                                  $savePull2 = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                                  $savePull2 = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid2");
                                   $savePull2->execute();
                                   $save2 = $savePull2->fetch(PDO::FETCH_ASSOC);
                                   if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {

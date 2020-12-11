@@ -1,4 +1,5 @@
-<?php 
+<?php
+error_reporting(0);
 session_start();
 include "include/logic.php";
 
@@ -34,7 +35,7 @@ $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                         from palette
                       ) d
                       group by blocks
-                      order by total desc LIMIT 9;
+                      order by total desc LIMIT 12;
 
 ");
 $popularPull->execute();
@@ -267,13 +268,28 @@ $images = glob( $dir );
           </div>
           <?php if(isset($_GET['filter'])){ ?>
           <?php } else { ?>
+
+              <?php
+
+                $pgStart = 1;
+                $pg = $_GET['page'] - 2;
+                $pgStart = $pg + 5 > $total_pages ? $total_pages - 4 : $pg; //EDIT fix when reach pages end
+                $pgStart = $pg < 1 ? 1 : $pg; // This must be after ending correction (previous line)
+              ?>
+
               <nav aria-label="Page navigation example">
                   <ul class="pagination justify-content-center">
-                      <li class="page-item"><a href="<?=$url?>palettes" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
-                      <?php for($p=1; $p<=$total_pages; $p++){?> 
-                      <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'palettes/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
+                      <?php if ($pgStart > 1) { // show 1 ?>
+                      <li class="page-item"><a href="<?=$url?>palettes" class="page-link">1</a></li>
+                       <li class="page-item"><a href="<?=$url?>palettes" class="page-link">...</a></li>
+                      <?php } ?>
+                      <?php for($e = $pgStart; $e <= $total_pages && $e < $pgStart + 5; $e++){?>
+                      <li class="<?= $page == $e ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'palettes/'.$e; ?>" class="page-link"><?= $e; ?></a></li>
                       <?php }?>
-                      <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
+                      <?php if ($e < $total_pages) { ?>
+                          <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link">...</a></li>
+                      <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link"><?=$total_pages?></a></li>
+                      <?php } ?>
                   </ul> 
               </nav>
 

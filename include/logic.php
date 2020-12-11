@@ -13,7 +13,19 @@ if(isset($_POST['register'])){
     $username = htmlspecialchars(addslashes($_POST['username']));
     $email = htmlspecialchars(addslashes($_POST['email']));
     $password = htmlspecialchars(addslashes($_POST['password']));
-    //Checking if the supplied username/email already exists
+
+
+    if (ctype_alnum($username)){
+
+    } else {
+        $error = 'Username must only contain alphanumeric characters';
+        $_SESSION['invalidUsername'] = "error";
+        header('Location: ' . $url . '');
+        exit;
+    }
+
+
+        //Checking if the supplied username/email already exists
     //Preparing SQL statement
     $sql = "SELECT COUNT(*) AS email FROM user WHERE email = :email";
     $stmt = $pdo->prepare($sql);
@@ -104,6 +116,9 @@ if(isset($_POST['login'])){
     if($user === false){
         //No user with that username/email
         $error = 'We could not find a user with that username or email';
+        $_SESSION['badEmail'] = "bad email";
+        header('Location: ' . $url . '');
+        exit;
      } else {
         //User account found. Check to see if passwords match
 
@@ -121,6 +136,9 @@ if(isset($_POST['login'])){
         } else {
             //$validPassword was FALSE. Passwords didnt match
             $error = 'Password was incorrect';
+            $_SESSION['badPassword'] = "bad password";
+            header('Location: ' . $url . '');
+            exit;
         }
     }
 }
@@ -240,8 +258,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])
             $sixCut = str_replace(".png","","$six");
             $sixCleanStr = str_replace("img/block/","","$sixCut");
 
-
-            
 
 
             //Checking if the supplied username already exists

@@ -19,6 +19,9 @@ $images = glob( $dir );
 if(isset($_SESSION['blockError'])) {
     $blockError = "You have entered in an invalid block!";
     unset($_SESSION['blockError']);
+} elseif(isset($_SESSION['blockDup'])) {
+    $blockError = "You have entered too many of the same blocks";
+    unset($_SESSION['blockDup']);
 } else {
     $blockError = "";
 }
@@ -58,15 +61,6 @@ $i = 0;
               sortField: 'text'
           });
       });
-    </script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6Lf0ouAZAAAAALdfbXOAQyb9zJ9xKcB0bYjp9KVQ"></script>
-    <script>
-        grecaptcha.ready(function () {
-            grecaptcha.execute('6Lf0ouAZAAAAALdfbXOAQyb9zJ9xKcB0bYjp9KVQ', { action: 'contact' }).then(function (token) {
-                var recaptchaResponse = document.getElementById('recaptchaResponse');
-                recaptchaResponse.value = token;
-            });
-        });
     </script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
@@ -236,7 +230,6 @@ $i = 0;
                   <?php } ?>
                 </div>
               </div>
-              <input type="hidden" name="recaptcha_response" id="recaptchaResponse" style="z-index:999">
             </form>
           </div>
         </div>

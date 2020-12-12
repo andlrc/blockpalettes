@@ -27,6 +27,25 @@ if(isset($_SESSION['userRegister'])) {
   $success = "";
 }
 
+if(isset($_SESSION['invalidUsername'])) {
+    $inUser = "invalidUser";
+    unset($_SESSION['invalidUsername']);
+} else {
+    $inUser = "";
+}
+
+if(isset($_SESSION['badEmail'])) {
+    $error = "bad email";
+    unset($_SESSION['badEmail']);
+} else if(isset($_SESSION['badPassword'])) {
+    $error = "bad password";
+    unset($_SESSION['badPassword']);
+} else {
+    $error = "";
+}
+
+
+
 //pagination
 $limit = 12;
 //pull palettes
@@ -36,6 +55,7 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 
 $i = 0;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -113,6 +133,45 @@ $i = 0;
             </div>
         </div>
     </div>
+    <?php }else if($inUser == "invalidUser") { ?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bs-example">
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Error!</strong> Username must only contain alphanumeric characters
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php }else if($error == "bad password") { ?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bs-example">
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Warning!</strong> There was an issue with your entered password
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php }else if($error == "bad email") { ?>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bs-example">
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Warning!</strong> Cannot find any users with that email
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     <?php } ?>
     <div class="palettes">
       <div class="container-fluid">

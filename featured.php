@@ -56,12 +56,6 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 $i = 0;
 
-
-$check = array('black_wool', 'black_wool', 'black_wool', 'black_wool', 'black_wool', 'white_wool');
-$tmp = array_count_values($check);
-$cnt = $tmp['black_wool'];
-
-echo $cnt;
 ?>
 <!doctype html>
 <html lang="en">

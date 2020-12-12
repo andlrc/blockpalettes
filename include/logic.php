@@ -177,136 +177,129 @@ function time_elapsed_string($datetime, $full = false) {
 }
 
 
+if(isset($_POST['create'])){
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recaptcha_response'])) {
-
-    // Build POST request:
-    $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
-    $recaptcha_secret = 'xxx';
-    $recaptcha_response = $_POST['recaptcha_response'];
-
-    // Make and decode POST request:
-    $recaptcha = file_get_contents($recaptcha_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    $recaptcha = json_decode($recaptcha);
-
-    // Take action based on the score returned:
-    if ($recaptcha->score >= 0.5) {
-        if(isset($_POST['create'])){
-
-            //Sanitizes data
-            $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
-            $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
-            $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
-            $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
-            $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
-            $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
+    //Sanitizes data
+    $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
+    $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
+    $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
+    $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
+    $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
+    $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
 
 
-            $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
-            $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
-            $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
-            $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
-            $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
-            $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
+    $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
+    $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
+    $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
+    $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
+    $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
+    $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
 
-            $uid = $_POST['uid'];
+    $uid = $_POST['uid'];
 
-            // Form validation to check if blocks are in img folder
-            $dir =  "img/block/*.png";
-            $images = glob( $dir );
-            if(in_array($blockOne, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            } else if(in_array($blockTwo, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            } else if(in_array($blockThree, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            } else if(in_array($blockFour, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            } else if(in_array($blockFive, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            } else if(in_array($blockSix, $images) == false) {
-                $_SESSION['blockError'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            }
+    // Form validation to check if blocks are in img folder
+    $dir =  "img/block/*.png";
+    $images = glob( $dir );
+    if(in_array($blockOne, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if(in_array($blockTwo, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if(in_array($blockThree, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if(in_array($blockFour, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if(in_array($blockFive, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if(in_array($blockSix, $images) == false) {
+        $_SESSION['blockError'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    }
 
-            $oneCut = str_replace(".png","","$one");
-            $oneCleanStr = str_replace("img/block/","","$oneCut");
+    $oneCut = str_replace(".png","","$one");
+    $oneCleanStr = str_replace("img/block/","","$oneCut");
 
-            $twoCut = str_replace(".png","","$two");
-            $twoCleanStr = str_replace("img/block/","","$twoCut");
+    $twoCut = str_replace(".png","","$two");
+    $twoCleanStr = str_replace("img/block/","","$twoCut");
 
-            $threeCut = str_replace(".png","","$three");
-            $threeCleanStr = str_replace("img/block/","","$threeCut");
+    $threeCut = str_replace(".png","","$three");
+    $threeCleanStr = str_replace("img/block/","","$threeCut");
 
-            $fourCut = str_replace(".png","","$four");
-            $fourCleanStr = str_replace("img/block/","","$fourCut");
+    $fourCut = str_replace(".png","","$four");
+    $fourCleanStr = str_replace("img/block/","","$fourCut");
 
-            $fiveCut = str_replace(".png","","$five");
-            $fiveCleanStr = str_replace("img/block/","","$fiveCut");
+    $fiveCut = str_replace(".png","","$five");
+    $fiveCleanStr = str_replace("img/block/","","$fiveCut");
 
-            $sixCut = str_replace(".png","","$six");
-            $sixCleanStr = str_replace("img/block/","","$sixCut");
+    $sixCut = str_replace(".png","","$six");
+    $sixCleanStr = str_replace("img/block/","","$sixCut");
+
+    // checks to see if there are duplicate blocks
+    $check = array($oneCleanStr, $twoCleanStr, $twoCleanStr, $threeCleanStr, $fourCleanStr, $fiveCleanStr, $sixCleanStr);
+    $tmp = array_count_values($check);
+    $cnt = $tmp[$oneCleanStr];
+
+    if ($cnt >= 6){
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    }
 
 
-
-            //Checking if the supplied username already exists
-            //Preparing SQL statement
-            $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
+    //Checking if the supplied username already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
                                             AND blockTwo LIKE '$twoCleanStr' 
                                             AND blockThree LIKE '$threeCleanStr' 
                                             AND blockFour LIKE '$fourCleanStr' 
                                             AND blockFive LIKE '$fiveCleanStr' 
                                             AND blockSix LIKE '$sixCleanStr'";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
-            //Fetch the row
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    //Fetch the row
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            //Username already exists error
-            if($row['num'] > 0){
-                $_SESSION['error'] = "error";
-                header('Location: ' . $url . 'submit');
-                exit();
-            }
+    //Username already exists error
+    if($row['num'] > 0){
+        $_SESSION['error'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    }
 
-                //Preparing insert statement
-                $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
-                $stmt = $pdo->prepare($sql);
-                //Bind varibles
-                $stmt->bindValue(':uid', $uid);
-                $stmt->bindValue(':blockOne', $oneCleanStr);
-                $stmt->bindValue(':blockTwo', $twoCleanStr);
-                $stmt->bindValue(':blockThree', $threeCleanStr);
-                $stmt->bindValue(':blockFour', $fourCleanStr);
-                $stmt->bindValue(':blockFive', $fiveCleanStr);
-                $stmt->bindValue(':blockSix', $sixCleanStr);
-            
-                //Execute the statement
-                $result = $stmt->execute();
-            
-                //If successful, returns to user profile
-                if($result) {
-                    $_SESSION['last_submit'] = time();
-                    $_SESSION['create'] = "New Palette";
-                    header('Location: ' . $url . 'palettes');
-                }
+    //Preparing insert statement
+    $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+    $stmt = $pdo->prepare($sql);
+    //Bind varibles
+    $stmt->bindValue(':uid', $uid);
+    $stmt->bindValue(':blockOne', $oneCleanStr);
+    $stmt->bindValue(':blockTwo', $twoCleanStr);
+    $stmt->bindValue(':blockThree', $threeCleanStr);
+    $stmt->bindValue(':blockFour', $fourCleanStr);
+    $stmt->bindValue(':blockFive', $fiveCleanStr);
+    $stmt->bindValue(':blockSix', $sixCleanStr);
 
-        }
-    } else {
+    //Execute the statement
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        $_SESSION['last_submit'] = time();
+        $_SESSION['create'] = "New Palette";
         header('Location: ' . $url . 'palettes');
     }
+
 }
+
 
 //unfavorite
 if(isset($_POST['unfavorite'])){

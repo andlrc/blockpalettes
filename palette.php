@@ -30,7 +30,7 @@ $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                         from palette
                       ) d
                       group by blocks
-                      order by total desc LIMIT 9;
+                      order by total desc LIMIT 12;
 
 ");
 $popularPull->execute();

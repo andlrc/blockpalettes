@@ -70,7 +70,7 @@ $i = 0;
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
-    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="icon" type="image/png" href="img/biglogo.png">
     <title>Block Palettes - Minecraft Building Inspiration Through Blocks</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
@@ -85,13 +85,6 @@ $i = 0;
   </head>
   <body>
     <!-- Nav -->
-    <div class="topbar" data-toggle="modal" data-target="#exampleModalCenter">
-      <div class="container">
-        <div class="topbarText">
-          NEW SITE - Click Here To Find Out More
-        </div> 
-      </div>
-    </div>
     <?php include('include/header.php'); ?>
     <!-- End Nav -->
     <?php if($error == "email") { ?>
@@ -238,46 +231,11 @@ $i = 0;
 
 
     <?php include('include/footer.php') ?>
-    <!-- Optional JavaScript; choose one of the two! -->
 
-    <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="medium-title" id="exampleModalLongTitle">Updates</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <h4 class="small-title">Welcome to the NEW and IMPROVED Block Palettes!</h4>
-            <p>As you can see a few things have changed from the previous site.</p>
-            <ul>
-            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/submit">create</a> page and create a beautiful block palette.</li>
-            <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
-            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/new">new palettes</a> page.</li>
-            </ul>
-            <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
-            <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>
-          </div>    
-        </div>
-      </div>
-    </div>
-    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-    -->
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()

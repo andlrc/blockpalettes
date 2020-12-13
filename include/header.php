@@ -1,5 +1,5 @@
 <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg shadow-sm mb-5 navbar-fixed-top" >
             <div class="container-fluid">
                 <a class="navbar-brand" href="<?=$url?>">
                     <img src="<?=$url?>img/logotest.png" class="logo-size">
@@ -8,9 +8,9 @@
                   <i class="fas fa-bars fa-2x"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
+                    <ul class="navbar-nav custom-nav-text centeredContent">
                         <li class="nav-item">
-                            <a href="<?=$url?>" class="nav-link">Featured Palettes</a>
+                            <a href="<?=$url?>" class="nav-link ">Featured Palettes</a>
                         </li>
                         <li class="nav-item">
                             <a href="<?=$url?>palettes" class="nav-link">Palettes</a>
@@ -19,37 +19,51 @@
                             <li class="nav-item">
                                 <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
                             </li> 
-                        <?php } else { }?> 
-
-                        <li class="nav-item dropdown ">
-                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            More <i class="fas fa-chevron-down"></i>
-                          </a>
-                          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="<?=$url?>blog">Blog</a>
-                            <a class="dropdown-item" href="<?=$url?>about">About</a>
-                            <div class="dropdown-divider"></div>
-                            <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                              <a class="dropdown-item" href="<?=$url?>include/logout.php"><i class="fas fa-lock"></i> Logout</a>
-                            <?php } else { ?>
-                              <a class="dropdown-item" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
-                              <a class="dropdown-item" data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
-                            <?php } ?>
-                          </div>
-                        </li>
+                        <?php } ?>
                         <li class="nav-item">
-                            <a href="<?=$url?>submit" class=" btn btn-theme-nav">Submit</a>
+                            <a href="<?=$url?>submit" class="nav-link">Submit</a>
                         </li>
-                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?> 
-                            <li class="nav-item">
-                                <a href="<?=$url?>profile/<?=$user['username']?>" class="nav-link" style="margin-top:-5px" data-toggle="tooltip" data-placement="bottom" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i></a>
+                    </ul>
+                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                            <?php
+                            $userrankid = $user['rank'];
+                            $rankPullUser = $pdo->prepare("SELECT * FROM rank WHERE id = '$userrankid'");
+                            $rankPullUser ->execute();
+                            $rankuser = $rankPullUser ->fetch(PDO::FETCH_ASSOC);
+
+                            ?>
+                            <li class="nav-item dropdown ">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div href="<?=$url?>profile/<?=$user['username']?>" style="margin-top:-5px" data-toggle="tooltip" data-placement="left" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i></div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="<?=$url?>profile/<?=$user['username']?>"><i class="fas fa-user"></i> My Profile <span class="role-pill" style="background:<?=$rankuser['rank_color']?>; float:right"><?=ucwords($rankuser['rank_name'])?></span></a>
+                                    <a class="dropdown-item" href="<?=$url?>saved"><i class="fas fa-save"></i> Saved Palettes</a>
+                                    <a class="dropdown-item" href="<?=$url?>profile/settings"><i class="fas fa-cog"></i> Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                                        <a class="dropdown-item" href="<?=$url?>include/logout.php"><i class="fas fa-lock"></i> Logout</a>
+                                    <?php } else { ?>
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
+                                    <?php } ?>
+                                </div>
                             </li>
-                        <?php } else { }?>        
+                        <?php } else { ?>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div>
         </nav>
     </div>
+<div style="height: 100px"></div>
 
 
     <!-- Register Modal -->

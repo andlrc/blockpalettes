@@ -13,7 +13,7 @@
 }
 body{
     font-family: tommyLight, sans-serif;
-    background: #F4F6FB;
+    background: white;
 }
 
 iframe{
@@ -40,7 +40,7 @@ iframe{
 }
 /* Palette Page */
 .palettes{
-    padding-top: 100px;
+    padding-top: 70px;
     min-height: 80vh;
 }
 .about{
@@ -63,6 +63,8 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
+    border: #f6f6f6 solid 1px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
 }
 .palette-float-info{
     padding: 15px;
@@ -76,6 +78,8 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
+    border: #f6f6f6 solid 1px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
 }
 .paddingFix{
     padding-bottom: 35px;
@@ -313,6 +317,8 @@ iframe{
 .custom-nav-text .nav-link{
     color: black;
     border-bottom: 3px transparent solid;
+    margin-top: -5px;
+    padding: 0px!important;
 }
 
 .custom-nav-text .nav-link:hover{
@@ -328,9 +334,6 @@ iframe{
     left: 0;
     z-index: 1030;
     padding-top: 20px;
-}
-.custom-toggler .navbar-toggler-icon{
-    background-image: url('../images/hamburger-solid.svg');
 }
 
 .custom-toggler.navbar-toggler {
@@ -627,7 +630,9 @@ iframe{
     background: white;
     padding: 20px;
     border-radius: 8px;
-    margin-bottom:25px
+    margin-bottom:25px;
+    border: #f6f6f6 solid 1px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
 }
 .user-info{
     margin-left: 90px;
@@ -749,3 +754,24 @@ iframe{
     }
 }
 
+
+.navbar-fixed-top {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    background: white;
+    border-bottom: #f6f6f6 solid 1px;
+}
+
+
+.dropdown-menu{
+    width: 275px;
+    border: none;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    top: 51px;
+}
+.dropdown-item{
+
+    padding: 10px 20px;
+}

@@ -28,6 +28,7 @@ $pFooter = $paletteFooter->fetchAll(PDO::FETCH_ASSOC);
                     <li class="footerText"><a  data-toggle="modal" data-target="#loginModal" style="cursor: pointer">Login</a></li>
                     <li class="footerText"><a data-toggle="modal" data-target="#registerModal" style="cursor: pointer">Register</a></li>
                     <li class="footerText"><a href="<?=$url?>about">About</a></li>
+                    <li class="footerText"><a href="<?=$url?>blog">Blog</a></li>
                 </ul>
             </div>
             <div class="col-lg-2" style=" padding-top:50px">

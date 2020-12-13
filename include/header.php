@@ -1,14 +1,15 @@
 <div class="custom-header" id="#">
-        <nav class="navbar navbar-expand-lg shadow-sm mb-5 navbar-fixed-top" >
+        <nav class="navbar navbar-expand-lg navbar-fixed-top" >
             <div class="container-fluid">
                 <a class="navbar-brand" href="<?=$url?>">
-                    <img src="<?=$url?>img/logotest.png" class="logo-size">
+                    <img src="<?=$url?>img/logotest.png" class="logo-size d-md-none d-lg-none d-xl-block d-sm-block">
+                    <img src="<?=$url?>img/biglogo.png" class="logo-size-small d-md-block d-lg-block d-xl-none d-sm-none d-none">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                   <i class="fas fa-bars fa-2x"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarsExample05">
-                    <ul class="navbar-nav custom-nav-text centeredContent">
+                    <ul class="navbar-nav custom-nav-text">
                         <li class="nav-item">
                             <a href="<?=$url?>" class="nav-link ">Featured Palettes</a>
                         </li>
@@ -24,7 +25,7 @@
                             <a href="<?=$url?>submit" class="nav-link">Submit</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ml-auto custom-nav-text centeredContent">
+                    <ul class="navbar-nav ml-auto custom-nav-text height-nav">
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                             <?php
                             $userrankid = $user['rank'];
@@ -35,7 +36,7 @@
                             ?>
                             <li class="nav-item dropdown ">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div href="<?=$url?>profile/<?=$user['username']?>" style="margin-top:-5px" data-toggle="tooltip" data-placement="left" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i></div>
+                                    <div href="<?=$url?>profile/<?=$user['username']?>" style="margin-top:-5px" data-toggle="tooltip" data-placement="left" title="<?=ucwords($user['username'])?>'s Profile"><i class="fas fa-user-circle fa-2x"></i> <span class="d-md-none usernameMobile" style="ma"><?=ucwords($user['username'])?></span></div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="<?=$url?>profile/<?=$user['username']?>"><i class="fas fa-user"></i> My Profile <span class="role-pill" style="background:<?=$rankuser['rank_color']?>; float:right"><?=ucwords($rankuser['rank_name'])?></span></a>
@@ -63,7 +64,7 @@
             </div>
         </nav>
     </div>
-<div style="height: 100px"></div>
+<div style="height: 65px"></div>
 
 
     <!-- Register Modal -->

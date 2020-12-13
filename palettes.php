@@ -142,13 +142,6 @@ $images = glob( $dir );
   </head>
   <body>
     <!-- Nav -->
-    <div class="topbar" data-toggle="modal" data-target="#exampleModalCenter">
-      <div class="container">
-        <div class="topbarText">
-          NEW SITE - Click Here To Find Out More
-        </div> 
-      </div>
-    </div>
     <?php include('include/header.php'); ?>
     <div class="palettes">
       <div class="container-fluid">
@@ -349,29 +342,6 @@ $images = glob( $dir );
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
-    <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="medium-title" id="exampleModalLongTitle">Updates</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <h4 class="small-title">Welcome to the NEW and IMPROVED Block Palettes!</h4>
-            <p>As you can see a few things have changed from the previous site.</p>
-            <ul>
-            <li>You can now create palettes in real time! Head over to the <a href="<?=$url?>/submit">create</a> page and create a beautiful block palette.</li>
-            <li>We are still curating palettes. On the <a href="<?=$url?>">featured</a> page our staff picks 12 users submitted palettes every week to be apart of the collection!</li>
-            <li>We have created an <a href="https://www.instagram.com/blockpalettes/">Instagram</a> where we will post daily palettes from the <a href="<?=$url?>/palettes">new palettes</a> page.</li>
-            </ul>
-            <p>This is just the beginning with this new platform. We have many great updates on the way that will continue to improve the site into the future!</p>
-            <p>Thank you for the support!<br><i>- Block Palettes Staff</i></p>
-          </div>    
-        </div>
-      </div>
-    </div>
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

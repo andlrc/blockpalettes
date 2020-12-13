@@ -13,7 +13,7 @@
 }
 body{
     font-family: tommyLight, sans-serif;
-    background: #F4F6FB;
+    background: white;
 }
 
 iframe{
@@ -40,7 +40,7 @@ iframe{
 }
 /* Palette Page */
 .palettes{
-    padding-top: 100px;
+    padding-top: 70px;
     min-height: 80vh;
 }
 .about{
@@ -63,6 +63,8 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
+    border: #ededed solid 1px;
+
 }
 .palette-float-info{
     padding: 15px;
@@ -76,6 +78,7 @@ iframe{
     border-radius: 7px;
     background: white;
     width: 100%;
+    border: #ededed solid 1px;
 }
 .paddingFix{
     padding-bottom: 35px;
@@ -313,6 +316,8 @@ iframe{
 .custom-nav-text .nav-link{
     color: black;
     border-bottom: 3px transparent solid;
+    margin-top: -5px;
+    padding: 0px!important;
 }
 
 .custom-nav-text .nav-link:hover{
@@ -329,15 +334,15 @@ iframe{
     z-index: 1030;
     padding-top: 20px;
 }
-.custom-toggler .navbar-toggler-icon{
-    background-image: url('../images/hamburger-solid.svg');
-}
 
 .custom-toggler.navbar-toggler {
     border-color: transparent;
 } 
 .logo-size{
     width: 250px;
+}
+.logo-size-small{
+    width: 46px;
 }
 
 @media only screen and (max-width: 900px) {
@@ -365,7 +370,27 @@ iframe{
     }
     
     .navbar-nav {
+        padding-top: 15px;
+    }
+    .height-nav{
         height: 100vh !important;
+        padding-top: 0px;
+    }
+    .nav-item{
+        border-top: 1px solid lightgrey;
+        padding: 20px 20px 10px 20px!important;
+
+    }
+    .dropdown-menu{
+        width: 100%!important;
+    }
+    .nav-link{
+        margin-bottom: 0px;
+    }
+    .usernameMobile{
+        top: 18px;
+        position: absolute;
+        left: 60px;
     }
     .centeredContent{
         text-align: center;
@@ -487,7 +512,8 @@ iframe{
     background: white;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
-    margin-bottom:25px
+    margin-bottom:25px;
+    border: #ededed solid 1px;
 }
 
 .update-pill{
@@ -627,7 +653,8 @@ iframe{
     background: white;
     padding: 20px;
     border-radius: 8px;
-    margin-bottom:25px
+    margin-bottom:25px;
+    border: #ededed solid 1px;
 }
 .user-info{
     margin-left: 90px;
@@ -749,3 +776,30 @@ iframe{
     }
 }
 
+
+.navbar-fixed-top {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    background: white;
+    border-bottom: #ededed solid 1px;
+}
+
+
+.dropdown-menu{
+    width: 275px;
+    border: none;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+    top: 51px;
+    background: #f5f5f5;
+}
+.dropdown-divider{
+    border-color: lightgrey;
+}
+.dropdown-item{
+    padding: 10px 20px;
+}
+.dropdown-item:hover{
+ background: #ebebeb;
+}

@@ -68,13 +68,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   </head>
   <body>
     <!-- Nav -->
-    <div class="topbar" data-toggle="modal" data-target="#exampleModalCenter">
-      <div class="container">
-        <div class="topbarText">
-          NEW SITE - Click Here To Find Out More
-        </div> 
-      </div>
-    </div>
     <?php include('include/header.php'); ?>
     <div class="about">
       <div class="container-fluid align-middle">

@@ -83,6 +83,10 @@ session_start();
         $userCount = $pdo->prepare("SELECT count(*) as users FROM user");
         $userCount->execute();
         $userC = $userCount->fetch(PDO::FETCH_ASSOC);
+
+        $userProfilePull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $uid");
+        $userProfilePull->execute();
+        $userProfile = $userProfilePull->fetch(PDO::FETCH_ASSOC);
     }
 
 ?>
@@ -181,7 +185,7 @@ session_start();
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="dashboard/users">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Users</span></a>
             </li>
@@ -251,8 +255,11 @@ session_start();
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hello, <?=ucwords($user['username'])?></span>
-                                <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                <?php if($userProfile['minecraft_ign'] == null) { ?>
+                                    <img src="<?=$url?>img/default.jpg" class="profile-pic">
+                                <?php } else { ?>
+                                    <img src="<?=$url?>include/face.php?u=<?=$userProfile['minecraft_ign']?>&s=48&v=front" class="profile-pic">
+                                <?php } ?>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

@@ -822,6 +822,13 @@ iframe{
     image-rendering: crisp-edges;
     image-rendering: pixelated;
 }
+.profile-pic-small{
+    height: 25px;
+    border-radius: 3px;
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
 .profile-pic-large{
     height: 80px;
     border-radius: 6px;

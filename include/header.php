@@ -33,10 +33,21 @@
                             $rankPullUser ->execute();
                             $rankuser = $rankPullUser ->fetch(PDO::FETCH_ASSOC);
 
+                            $loggedinDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $uid");
+                            $loggedinDataPull->execute();
+                            $loggedinData = $loggedinDataPull->fetch(PDO::FETCH_ASSOC);
+
                             ?>
                             <li class="nav-item dropdown ">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div href="<?=$url?>profile/<?=$user['username']?>" style="margin-top:-5px" data-toggle="tooltip" data-placement="left" title="<?=ucwords($user['username'])?>'s Profile"><img src="<?=$url?>include/face.php?u=ntbol&s=48&v=front" class="profile-pic"> <span class="d-md-none usernameMobile" style=""><?=ucwords($user['username'])?></span></div>
+                                    <div href="<?=$url?>profile/<?=$user['username']?>" style="margin-top:-5px" data-toggle="tooltip" data-placement="left" title="<?=ucwords($user['username'])?>'s Profile">
+                                        <?php if($loggedinData['minecraft_ign'] == null) { ?>
+                                            <img src="<?=$url?>img/default.jpg" class="profile-pic">
+                                        <?php } else { ?>
+                                            <img src="<?=$url?>include/face.php?u=<?=$loggedinData['minecraft_ign']?>&s=48&v=front" class="profile-pic" onerror="this.src='<?=$url?>img/default.jpg'">
+                                        <?php } ?>
+                                        <span class="d-md-none usernameMobile" style=""><?=ucwords($user['username'])?></span>
+                                    </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="<?=$url?>profile/<?=$user['username']?>"><i class="fas fa-user"></i> My Profile <span class="role-pill" style="background:<?=$rankuser['rank_color']?>; float:right"><?=ucwords($rankuser['rank_name'])?></span></a>

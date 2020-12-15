@@ -100,7 +100,7 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                         <?php if($profileData['minecraft_ign'] == null) { ?>
                             <img src="../img/default.jpg" class="profile-pic-large">
                         <?php } else { ?>
-                            <img src="../include/face.php?u=<?=$profileData['minecraft_ign']?>&s=48&v=front" class="profile-pic-large">
+                            <img src="../include/face.php?u=<?=$profileData['minecraft_ign']?>&s=48&v=front" class="profile-pic-large" onerror="this.src='../img/default.jpg'">
                         <?php } ?>
                         <div class="user-info">
                             <h2 class="medium-title" style="margin-bottom:0px"><?=ucwords($userProfile['username'])?> 

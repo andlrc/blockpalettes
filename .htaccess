@@ -21,10 +21,8 @@ RewriteRule ^dashboard/post([0-9a-zA-Z_-]+) dashboard/post.php [NC,L]
 RewriteRule ^profile/([0-9a-zA-Z_-]+) profile.php?p=$1 [NC,L]
 
 
-RewriteRule ^avatar/([^/]+)/([^/]+)/(f|l|r|b|front|left|right|back)$ face.php?u=$1&s=$2&v=$3
-RewriteRule ^avatar/([^/]+)/(f|l|r|b|front|left|right|back)$ face.php?u=$1&v=$2
-RewriteRule ^avatar/([^/]+)/([^/]+)$ face.php?u=$1&s=$2
-RewriteRule ^avatar/([^/]+)$ face.php?u=$1
-
 # Disable Automatic Directory detection
 DirectorySlash Off
+
+
+

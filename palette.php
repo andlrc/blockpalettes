@@ -75,6 +75,11 @@ if ($postUser > 0){
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
+
+$profileDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $postUser");
+$profileDataPull->execute();
+$profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -187,7 +192,13 @@ $images = glob( $dir );
                                 ?>
                                 <div class="postUser" color="">
                                   <a href="../profile/<?=$userP['username']?>" class="userLink">
-                                    By: <?=ucwords($userP['username'])?> <span class="userRank" style="background:<?=$rank['rank_color']?>"><?=ucwords(mb_substr($rank['rank_name'], 0, 1, "UTF-8"))?></span>
+                                      <?php if($profileData['minecraft_ign'] == null) { ?>
+                                          <img src="../img/default.jpg" class="profile-pic-small">
+                                      <?php } else { ?>
+                                          <img src="../include/face.php?u=<?=$profileData['minecraft_ign']?>&s=48&v=front" class="profile-pic-small" onerror="this.src='../img/default.jpg'">
+                                      <?php } ?>
+                                      <span style="margin-left: 6px"></span>
+                                    <?=ucwords($userP['username'])?> <span class="userRank" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></span>
                                   </a>
                                 </div>
                               <?php } ?>

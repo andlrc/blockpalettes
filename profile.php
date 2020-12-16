@@ -109,7 +109,7 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                             <div class="role-pill" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></div>
                         </div>
                     </div>
-                    <div class="col-sm-4" style="padding-top:0px">
+                    <div class="col-sm-4 award-area">
                         <h3 class="small-title" style="font-size:18px; margin-bottom:0px">Awards</h3>
                         <div class="award-box">
                             <?php if($userAwards == null){ ?>

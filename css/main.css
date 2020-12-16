@@ -134,6 +134,9 @@ iframe{
     .palette-float-info{
         margin-bottom: 25px;
     }
+    .award-area{
+        margin-top: 10px;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -815,6 +818,8 @@ iframe{
 }
 
 
+
+
 .profile-pic{
     height: 40px;
     border-radius: 6px;
@@ -840,4 +845,9 @@ iframe{
 
 .award-icon{
     padding-top: 5px;
+}
+
+.selected-image{
+    opacity: 0.4;
+    filter: alpha(opacity=40);
 }

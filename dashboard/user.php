@@ -79,6 +79,27 @@ if (isset($_SESSION['user_id'])) {
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <style>
+        /* HIDE RADIO */
+        [type=radio] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* IMAGE STYLES */
+        [type=radio] + img {
+            cursor: pointer;
+        }
+
+        /* CHECKED STYLES */
+        [type=radio]:checked + img {
+            outline: 2px solid #f00;
+        }
+    </style>
+
 </head>
 <body id="page-top">
 <!-- Page Wrapper -->
@@ -141,7 +162,7 @@ if (isset($_SESSION['user_id'])) {
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item active">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="../users">
                 <i class="fas fa-fw fa-users"></i>
                 <span>Users</span></a>
         </li>
@@ -286,13 +307,62 @@ if (isset($_SESSION['user_id'])) {
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="row">
-
-                                    update rank<br>
-                                    give award<br>
-                                    ban user (cant log in)<br>
-                                    shadow ban user (can still use site)<br>
-
-
+                                    <div class="col-lg-12">
+                                        Update user rank
+                                        <form action="user" method="post">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <select class="form-control" id="rank" name="rank">
+                                                            <option value="0" <?php if($rank['rank_name'] == "user"){ echo "selected"; } ?>>User</option>
+                                                            <option value="5" <?php if($rank['rank_name'] == "builder"){ echo "selected"; } ?>>Builder</option>
+                                                            <option value="50" <?php if($rank['rank_name'] == "contributor"){ echo "selected"; } ?>>Contributor</option>
+                                                            <option value="99" <?php if($rank['rank_name'] == "staff"){ echo "selected"; } ?>>Staff</option>
+                                                            <option value="100" <?php if($rank['rank_name'] == "developer"){ echo "selected"; } ?>>Developer</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="submit" class="btn-theme btn btn-block" name="updateRank" id="name" value="Update" style="background-color: black!important">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        Give award
+                                        <form action="user" method="post">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <?php
+                                                        $awardsPull = $pdo->prepare("SELECT * FROM awards");
+                                                        $awardsPull->execute();
+                                                        $awards = $awardsPull->fetchAll(PDO::FETCH_ASSOC);
+                                                        ?>
+                                                        <?php foreach ($awards as $awa): ?>
+                                                            <label>
+                                                                <input type="radio" name="award" value="<?=$awa['id']?>">
+                                                                <img src="<?=$url?>img/awards/<?=$awa['award_icon']?>">
+                                                            </label>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <input type="submit" class="btn-theme btn btn-block" name="giveAward" id="name" value="Update" style="background-color: black!important">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <form action="user" method="post">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <input type="submit" class="btn-theme btn btn-block" name="shadowBan" value="Mute" style="background-color: black!important">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="submit" class="btn btn-danger btn-block" name="ban" value="Ban">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

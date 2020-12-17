@@ -1,5 +1,6 @@
 <?php
 
+error_reporting(0);
 session_start();
 
 require "../include/logic.php";
@@ -131,7 +132,7 @@ if (isset($_SESSION['user_id'])) {
 
 
         <li class="nav-item">
-            <a class="nav-link" href="palettes">
+            <a class="nav-link" href="../palettes">
                 <i class="fas fa-fw fa-th-large"></i>
                 <span>Palettes</span></a>
         </li>
@@ -146,8 +147,8 @@ if (isset($_SESSION['user_id'])) {
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Blog Components:</h6>
-                    <a class="collapse-item" href="new-post">New Post</a>
-                    <a class="collapse-item" href="all-posts">View Posts</a>
+                    <a class="collapse-item" href="../new-post">New Post</a>
+                    <a class="collapse-item" href="../all-posts">View Posts</a>
                 </div>
             </div>
         </li>
@@ -254,6 +255,17 @@ if (isset($_SESSION['user_id'])) {
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="row">
+                                    <?php if($userP['status'] == 1){ ?>
+                                        <div class="status-bar" style="background:#95a5a6">
+                                            Muted User
+                                        </div>
+                                    <?php } else if($userP['status'] == 2){ ?>
+                                        <div class="status-bar">
+                                            Suspended User
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                                <div class="row">
                                     <?php if($userProfile['minecraft_ign'] == null) { ?>
                                         <img src="<?=$url?>img/default.jpg" class="profile-pic-large" style="margin-left: 10px">
                                     <?php } else { ?>
@@ -313,6 +325,7 @@ if (isset($_SESSION['user_id'])) {
                                             <div class="form-group">
                                                 <div class="row">
                                                     <div class="col-md-10">
+                                                        <input type="hidden" name="id" value="<?=$userID?>">
                                                         <select class="form-control" id="rank" name="rank">
                                                             <option value="0" <?php if($rank['rank_name'] == "user"){ echo "selected"; } ?>>User</option>
                                                             <option value="5" <?php if($rank['rank_name'] == "builder"){ echo "selected"; } ?>>Builder</option>
@@ -337,9 +350,10 @@ if (isset($_SESSION['user_id'])) {
                                                         $awardsPull->execute();
                                                         $awards = $awardsPull->fetchAll(PDO::FETCH_ASSOC);
                                                         ?>
+                                                        <input type="hidden" name="id" value="<?=$userID?>">
                                                         <?php foreach ($awards as $awa): ?>
                                                             <label>
-                                                                <input type="radio" name="award" value="<?=$awa['id']?>">
+                                                                <input type="radio" name="award" value="<?=$awa['id']?>" required>
                                                                 <img src="<?=$url?>img/awards/<?=$awa['award_icon']?>">
                                                             </label>
                                                         <?php endforeach; ?>
@@ -350,15 +364,30 @@ if (isset($_SESSION['user_id'])) {
                                                 </div>
                                             </div>
                                         </form>
+                                        <hr>
+                                        Advanced User Management
                                         <form action="user" method="post">
+                                            <input type="hidden" name="id" value="<?=$userID?>">
                                             <div class="form-group">
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <input type="submit" class="btn-theme btn btn-block" name="shadowBan" value="Mute" style="background-color: black!important">
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="submit" class="btn btn-danger btn-block" name="ban" value="Ban">
-                                                    </div>
+                                                    <?php if($userP['status'] == 1){ ?>
+                                                        <div class="col-md-6">
+                                                            <input type="submit" class="btn-theme btn btn-block" name="unshadowBan" value="Un Mute" style="background-color: black!important">
+                                                        </div>
+                                                    <?php } else { ?>
+                                                        <div class="col-md-6">
+                                                            <input type="submit" class="btn-theme btn btn-block" name="shadowBan" value="Mute" style="background-color: black!important">
+                                                        </div>
+                                                    <?php } ?>
+                                                    <?php if($userP['status'] == 2){ ?>
+                                                        <div class="col-md-6">
+                                                            <input type="submit" class="btn btn-danger btn-block" name="unban" value="Un Suspend">
+                                                        </div>
+                                                    <?php } else { ?>
+                                                        <div class="col-md-6">
+                                                            <input type="submit" class="btn btn-danger btn-block" name="ban" value="Suspend">
+                                                        </div>
+                                                    <?php } ?>
                                                 </div>
                                             </div>
                                         </form>

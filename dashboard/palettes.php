@@ -38,7 +38,7 @@ session_start();
 
         $start = ($page-1)*$limit;
 
-        $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC LIMIT $start, $limit");
+        $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 AND hidden = 0 ORDER BY date DESC LIMIT $start, $limit");
         $stmt->execute();
 
         // set the resulting array to associative
@@ -53,6 +53,10 @@ session_start();
 
         $i = 0;
 
+
+        $hiddenPalettes = $pdo->prepare("SELECT * FROM palette WHERE hidden = 1");
+        $hiddenPalettes->execute();
+        $hidden = $hiddenPalettes->fetchAll(PDO::FETCH_ASSOC);
 
         $featuredPalettes = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
         $featuredPalettes->execute();
@@ -158,7 +162,7 @@ session_start();
             
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="users">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Users</span></a>
             </li>
@@ -256,6 +260,12 @@ session_start();
                                             <div class="col-xl-3 col-lg-6 col-sm-6 col-6" style="margin-bottom:15px">
                                                 <form action="palettes" method="post">
                                                     <input type="hidden" name="id" value="<?=$p['id']?>">
+                                                    <button type="submit" name="hide" class="hide">
+                                                        <i class="fas fa-eye-slash"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="palettes" method="post">
+                                                    <input type="hidden" name="id" value="<?=$p['id']?>">
                                                     <button type="submit" name="favorite" class="favorite">
                                                         <i class="fas fa-star"></i>
                                                     </button>
@@ -327,6 +337,39 @@ session_start();
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-dark">Hidden Palettes</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body" >
+                                    <div class="row">
+                                        <?php foreach($hidden  as $p): ?>
+                                            <div class="col-lg-4" style="margin-bottom:15px">
+                                                <form action="palettes" method="post">
+                                                    <input type="hidden" name="id" value="<?=$p['id']?>">
+                                                    <button type="submit" name="unhide" class="unfavorite">
+                                                        <i class="fas fa-eye-slash"></i>
+                                                    </button>
+                                                </form>
+                                                <div style="position: relative">
+                                                    <a href="<?=$url?>palette/<?=$p['id']?>" target="_blank">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block" style="border-top-left-radius: 6px;">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block" style="border-top-right-radius: 6px;">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block" style="border-bottom-left-radius: 6px;">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                                                        <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block" style="border-bottom-right-radius: 6px;">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>

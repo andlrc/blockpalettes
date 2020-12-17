@@ -154,14 +154,14 @@ if (isset($_SESSION['user_id'])) {
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item active">
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="">
                 <i class="fas fa-fw fa-users"></i>
                 <span>Users</span></a>
         </li>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="">
                 <i class="fas fa-fw fa-trophy"></i>
                 <span>Contests</span></a>
         </li>
@@ -326,10 +326,9 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- Bootstrap core JavaScript-->
 <script src="<?=$url?>vendor/jquery/jquery.min.js"></script>
-<script src="<?=$url?>vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
-<script src="<?=$url?>vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
 
 <!-- Custom scripts for all pages-->
 <script src="<?=$url?>js/sb-admin-2.min.js"></script>

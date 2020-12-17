@@ -595,6 +595,22 @@ iframe{
     border: none;
 }
 
+.hide{
+    display: inline-block;
+    color: white;
+    padding: 0px 5px 3px 5px;
+    font-size: 12px;
+    border-radius:4px;
+    margin-bottom: 5px;
+    position: absolute;
+    z-index: 999;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: gray;
+    right:80px;
+    border: none;
+}
+
 .delete{
     display: inline-block;
     color: white;
@@ -850,4 +866,14 @@ iframe{
 .selected-image{
     opacity: 0.4;
     filter: alpha(opacity=40);
+}
+
+.status-bar{
+    background: #e74c3c;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 5px;
+    text-align: center;
+    color: white;
+    border-radius: 5px;
 }

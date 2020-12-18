@@ -197,7 +197,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                       <?php } else { ?>
                                           <img src="../include/face.php?u=<?=$profileData['minecraft_ign']?>&s=48&v=front" class="profile-pic-small" onerror="this.src='../img/default.jpg'">
                                       <?php } ?>
-                                      <span style="margin-left: 6px"></span>
+                                      <span style="margin-left: 3px"></span>
                                     <?=ucwords($userP['username'])?> <span class="userRank" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></span>
                                   </a>
                                 </div>

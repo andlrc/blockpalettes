@@ -234,7 +234,7 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="padding: 35px">
+                <div class="modal-body" style="padding: 30px">
                     <div align="center">
                         <h3 class="medium-title" id="profileModalTitle">Edit Profile</h3>
                         <p class="text">More setting coming soon!</p>
@@ -242,8 +242,12 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                     <form action="<?=$url?>include/logic.php" method="post">
                         <div class="form-group">
                           Bio
-                          <textarea maxlength="150" rows="5" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
+                          <textarea maxlength="150" rows="3" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
                           <div id="charNum" align="right" class="tiny-text" style="margin-bottom: 5px; margin-top: -40px; margin-right: 5px">150</div>
+                        </div>
+                        <div class="form-group">
+                            Minecraft IGN
+                            <input type="text" name="ign" class="form-control" placeholder="Sets Avatar To Your Minecraft Skin" value="<?=$profileData['minecraft_ign']?>">
                         </div>
                         <input type="hidden" name="uid" value="<?=$userProfile['id']?>">
                         <input type="hidden" name="username" value="<?=$userProfile['username']?>">

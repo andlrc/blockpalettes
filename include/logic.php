@@ -619,6 +619,9 @@ if (isset($_POST['updateprofile'])) {
     $bioIn = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
     $bio = htmlspecialchars($bioIn, ENT_QUOTES, 'UTF-8');
 
+    $ignIn = !empty($_POST['ign']) ? trim($_POST['ign']) : null;
+    $ign = htmlspecialchars($ignIn, ENT_QUOTES, 'UTF-8');
+
     $username = $_POST['username'];
     $uid = $_POST['uid'];
 
@@ -630,26 +633,70 @@ if (isset($_POST['updateprofile'])) {
     //Fetch the row
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //Username already exists error
     if($row['num'] > 0){
-        $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
-        $update = $pdo->prepare($bioUpdate);
-        $result = $update->execute();
-        if($result) {
+        if (isset($_POST['bio'])) {
+            $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
+            $update = $pdo->prepare($bioUpdate);
+            $resultbio = $update->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+        if (isset($_POST['ign'])) {
+            $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
+            $updateign = $pdo->prepare($ignUpdate);
+            $result = $updateign->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+
+        if ($resultbio || $result) {
             header('Location: ' . $url . 'profile/' . $username);
         }
     } else {
-        $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+        if ($_POST['bio'] !== "") {
+            $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+            $stmt = $pdo->prepare($sql);
+            //Bind varibles
+            $stmt->bindValue(':uid', $uid);
+            $stmt->bindValue(':bio', $bio);
+
+            //Execute the statement
+            $resultbio = $stmt->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+
+        $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $uid";
         $stmt = $pdo->prepare($sql);
-        //Bind varibles
-        $stmt->bindValue(':uid', $uid);
-        $stmt->bindValue(':bio', $bio);
-    
-        //Execute the statement
-        $result = $stmt->execute();
-    
+        $stmt->execute();
+        //Fetch the row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($row['num'] > 0) {
+            if (isset($_POST['ign'])) {
+                $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
+                $updateign = $pdo->prepare($ignUpdate);
+                $result = $updateign->execute();
+            } else {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
+        } else {
+            if ($_POST['ign'] !== "") {
+                $insertIgn = "INSERT INTO user_profile (uid, minecraft_ign) VALUES (:uid, :ign)";
+                $stmtign = $pdo->prepare($insertIgn);
+                //Bind varibles
+                $stmtign->bindValue(':uid', $uid);
+                $stmtign->bindValue(':ign', $ign);
+
+                //Execute the statement
+                $result = $stmtign->execute();
+            } else {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
+        }
+
         //If successful, returns to user profile
-        if($result) {
+        if($resultbio || $result) {
             header('Location: ' . $url . 'profile/' . $username);
         }
     }

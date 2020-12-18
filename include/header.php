@@ -1,3 +1,4 @@
+<?php  error_reporting(0); ?>
 <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg navbar-fixed-top" >
             <div class="container-fluid">

@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 
 //Register a user

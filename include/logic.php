@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 
 //Register a user
@@ -349,6 +349,39 @@ if(isset($_POST['favorite'])){
 }
 
 
+//hide
+if(isset($_POST['unhide'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE palette SET hidden = 0 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/palettes');
+    }
+}
+
+if(isset($_POST['hide'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE palette SET hidden = 1 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/palettes');
+    }
+}
+
+
+
 function custom_echo($x, $length)
 {
   if(strlen($x)<=$length)
@@ -586,6 +619,9 @@ if (isset($_POST['updateprofile'])) {
     $bioIn = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
     $bio = htmlspecialchars($bioIn, ENT_QUOTES, 'UTF-8');
 
+    $ignIn = !empty($_POST['ign']) ? trim($_POST['ign']) : null;
+    $ign = htmlspecialchars($ignIn, ENT_QUOTES, 'UTF-8');
+
     $username = $_POST['username'];
     $uid = $_POST['uid'];
 
@@ -597,30 +633,202 @@ if (isset($_POST['updateprofile'])) {
     //Fetch the row
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //Username already exists error
     if($row['num'] > 0){
-        $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
-        $update = $pdo->prepare($bioUpdate);
-        $result = $update->execute();
-        if($result) {
+        if (isset($_POST['bio'])) {
+            $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
+            $update = $pdo->prepare($bioUpdate);
+            $resultbio = $update->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+        if (isset($_POST['ign'])) {
+            $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
+            $updateign = $pdo->prepare($ignUpdate);
+            $result = $updateign->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+
+        if ($resultbio || $result) {
             header('Location: ' . $url . 'profile/' . $username);
         }
     } else {
-        $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+        if ($_POST['bio'] !== "") {
+            $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+            $stmt = $pdo->prepare($sql);
+            //Bind varibles
+            $stmt->bindValue(':uid', $uid);
+            $stmt->bindValue(':bio', $bio);
+
+            //Execute the statement
+            $resultbio = $stmt->execute();
+        } else {
+            header('Location: ' . $url . 'profile/' . $username);
+        }
+
+        $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $uid";
         $stmt = $pdo->prepare($sql);
-        //Bind varibles
-        $stmt->bindValue(':uid', $uid);
-        $stmt->bindValue(':bio', $bio);
-    
-        //Execute the statement
-        $result = $stmt->execute();
-    
+        $stmt->execute();
+        //Fetch the row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($row['num'] > 0) {
+            if (isset($_POST['ign'])) {
+                $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
+                $updateign = $pdo->prepare($ignUpdate);
+                $result = $updateign->execute();
+            } else {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
+        } else {
+            if ($_POST['ign'] !== "") {
+                $insertIgn = "INSERT INTO user_profile (uid, minecraft_ign) VALUES (:uid, :ign)";
+                $stmtign = $pdo->prepare($insertIgn);
+                //Bind varibles
+                $stmtign->bindValue(':uid', $uid);
+                $stmtign->bindValue(':ign', $ign);
+
+                //Execute the statement
+                $result = $stmtign->execute();
+            } else {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
+        }
+
         //If successful, returns to user profile
-        if($result) {
+        if($resultbio || $result) {
             header('Location: ' . $url . 'profile/' . $username);
         }
     }
 }
-    
+
+
+
+//User updates
+
+if(isset($_POST['updateRank'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+    $rank = !empty($_POST['rank']) ? trim($_POST['rank']) : null;
+
+    //Updates table
+    $edit = "UPDATE user SET rank = '$rank' WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+    }
+}
+
+if(isset($_POST['giveAward'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+    $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
+
+    //Checking if username already exists
+    //Preparing SQL statement
+    $sql = "SELECT COUNT(id) AS num FROM user_awards WHERE uid = $id AND award_id = $award";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    //Fetch the row
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Username already exists error
+    if($row['num'] > 0){
+        $delete = "DELETE FROM user_awards WHERE uid = :uid AND award_id = :award_id";
+        $stmt = $pdo->prepare($delete);
+        //Bind varibles
+        $stmt->bindValue(':uid', $id);
+        $stmt->bindValue(':award_id', $award);
+
+        //Execute the statement
+        $result = $stmt->execute();
+
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        }
+    } else {
+
+        //Updates table
+        $sql = "INSERT INTO user_awards (uid, award_id) VALUES (:id, :award)";
+        $stmt = $pdo->prepare($sql);
+        //Bind varibles
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':award', $award);
+
+        $result = $stmt->execute();
+
+        //If successful, returns to user profile
+        if ($result) {
+            header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        }
+    }
+}
+
+//Mutes user
+if(isset($_POST['shadowBan'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE user SET status = 1 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+    }
+}
+
+//Un mutes user
+if(isset($_POST['unshadowBan'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+    }
+}
+
+//Bans user
+if(isset($_POST['ban'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE user SET status = 2 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+    }
+}
+
+//Unban user
+if(isset($_POST['unban'])){
+    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+    //Updates table
+    $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
+    $stmt = $pdo->prepare($edit);
+
+    $result = $stmt->execute();
+
+    //If successful, returns to user profile
+    if($result) {
+        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+    }
+}
 
 ?>

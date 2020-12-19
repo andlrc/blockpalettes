@@ -77,7 +77,7 @@ if(isset($_GET['filter'])){
 
   $start = ($page-1)*$limit;
 
-  $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT $start, $limit");
+  $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id DESC LIMIT $start, $limit");
   $stmt->execute();
 
   // set the resulting array to associative

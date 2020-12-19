@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 session_start();
 
 include "include/logic.php";
@@ -76,6 +77,18 @@ $i = 0;
   <body>
     <!-- Nav -->
     <?php include('include/header.php'); ?>
+    <?php if ($user['status'] >= 1){?>
+    <div class="palettes">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="title" style="padding-bottom:15px">Submit Palette</div>
+                    Your account has been muted! You can't create palettes during this time.<br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } else { ?>
     <div class="palettes">
       <div class="container-fluid">
         <div class="row">
@@ -228,6 +241,7 @@ $i = 0;
         </div>
       </div>
     </div>
+    <?php } ?>
 
     <?php include('include/footer.php') ?>
     <!-- Optional JavaScript; choose one of the two! -->

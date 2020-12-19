@@ -33,8 +33,7 @@ $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
 $rankPull ->execute();
 $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
 
-//pagination
-$limit = 12;
+
 //pull palettes
 $palettePull = $pdo->prepare("SELECT * FROM palette WHERE uid = $id");
 $palettePull->execute();
@@ -44,8 +43,11 @@ $profileDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $id");
 $profileDataPull->execute();
 $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
 
+$userAwardsPull = $pdo->prepare("SELECT * FROM user_awards WHERE uid = $id");
+$userAwardsPull->execute();
+$userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
 
-$i = 0;
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -95,7 +97,11 @@ $i = 0;
             <div class="profile-float" >
                 <div class="row align-middle" >
                     <div class="col-sm-8" >
-                        <span class="fas fa-user-circle fa-5x" style="float:left"></span>
+                        <?php if($profileData['minecraft_ign'] == null) { ?>
+                            <img src="../img/default.jpg" class="profile-pic-large">
+                        <?php } else { ?>
+                            <img src="../include/face.php?u=<?=$profileData['minecraft_ign']?>&s=48&v=front" class="profile-pic-large" onerror="this.src='../img/default.jpg'">
+                        <?php } ?>
                         <div class="user-info">
                             <h2 class="medium-title" style="margin-bottom:0px"><?=ucwords($userProfile['username'])?> 
                               <?php if($userProfile['id'] == $uid ){ ?><a data-toggle="modal" data-target="#profileModal" style="cursor: pointer" class="btn btn-theme-small"><i class="fas fa-pencil-alt"></i> Edit Profile</a><?php } ?>
@@ -103,10 +109,23 @@ $i = 0;
                             <div class="role-pill" style="background:<?=$rank['rank_color']?>"><?=ucwords($rank['rank_name'])?></div>
                         </div>
                     </div>
-                    <div class="col-sm-4" style="padding-top:7px">
+                    <div class="col-sm-4 award-area">
                         <h3 class="small-title" style="font-size:18px; margin-bottom:0px">Awards</h3>
                         <div class="award-box">
-                            <i class="subText">None to display... For now.</i>
+                            <?php if($userAwards == null){ ?>
+                                <i>None to display... For now.</i>
+                            <?php } else { ?>
+                                <?php foreach($userAwards as $a): ?>
+                                    <?php
+                                    $awardID = $a['award_id'];
+                                    $awardsPull = $pdo->prepare("SELECT * FROM awards WHERE id = $awardID");
+                                    $awardsPull->execute();
+                                    $awards = $awardsPull->fetch(PDO::FETCH_ASSOC);
+
+                                    ?>
+                                    <img class="award-icon" src="<?=$url?>img/awards/<?=$awards['award_icon']?>" data-toggle="tooltip" data-placement="right" title="<?=$awards['award_bio']?>">
+                                <?php endforeach; ?>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="col-sm-12">
@@ -215,7 +234,7 @@ $i = 0;
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="padding: 35px">
+                <div class="modal-body" style="padding: 30px">
                     <div align="center">
                         <h3 class="medium-title" id="profileModalTitle">Edit Profile</h3>
                         <p class="text">More setting coming soon!</p>
@@ -223,8 +242,12 @@ $i = 0;
                     <form action="<?=$url?>include/logic.php" method="post">
                         <div class="form-group">
                           Bio
-                          <textarea maxlength="150" rows="5" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
+                          <textarea maxlength="150" rows="3" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
                           <div id="charNum" align="right" class="tiny-text" style="margin-bottom: 5px; margin-top: -40px; margin-right: 5px">150</div>
+                        </div>
+                        <div class="form-group">
+                            Minecraft IGN
+                            <input type="text" name="ign" class="form-control" placeholder="Sets Avatar To Your Minecraft Skin" value="<?=$profileData['minecraft_ign']?>">
                         </div>
                         <input type="hidden" name="uid" value="<?=$userProfile['id']?>">
                         <input type="hidden" name="username" value="<?=$userProfile['username']?>">

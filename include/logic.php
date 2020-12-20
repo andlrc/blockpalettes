@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "https://www.blockpalettes.com/";
+$url = "http://localhost/blockpalettes/";
 
 
 //Register a user
@@ -245,58 +245,83 @@ if(isset($_POST['create'])){
     $sixCleanStr = str_replace("img/block/","","$sixCut");
 
     // checks to see if there are duplicate blocks
-    $check = array($oneCleanStr, $twoCleanStr, $twoCleanStr, $threeCleanStr, $fourCleanStr, $fiveCleanStr, $sixCleanStr);
+    $check = array($oneCleanStr, $twoCleanStr, $threeCleanStr, $fourCleanStr, $fiveCleanStr, $sixCleanStr);
     $tmp = array_count_values($check);
     $cnt = $tmp[$oneCleanStr];
+    $cnt2 = $tmp[$twoCleanStr];
+    $cnt3 = $tmp[$threeCleanStr];
+    $cnt4 = $tmp[$fourCleanStr];
+    $cnt5 = $tmp[$fiveCleanStr];
+    $cnt6 = $tmp[$sixCleanStr];
 
-    if ($cnt >= 6){
+    if ($cnt !== 1){
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if ($cnt2 !== 1) {
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if ($cnt3 !== 1) {
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if ($cnt4 !== 1) {
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if ($cnt5 !== 1) {
+        $_SESSION['blockDup'] = "error";
+        header('Location: ' . $url . 'submit');
+        exit();
+    } else if ($cnt6 !== 1) {
         $_SESSION['blockDup'] = "error";
         header('Location: ' . $url . 'submit');
         exit();
     }
 
 
-    //Checking if the supplied username already exists
-    //Preparing SQL statement
-    $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
+        //Checking if the supplied username already exists
+        //Preparing SQL statement
+        $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
                                             AND blockTwo LIKE '$twoCleanStr' 
                                             AND blockThree LIKE '$threeCleanStr' 
                                             AND blockFour LIKE '$fourCleanStr' 
                                             AND blockFive LIKE '$fiveCleanStr' 
                                             AND blockSix LIKE '$sixCleanStr'";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    //Fetch the row
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        //Fetch the row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //Username already exists error
-    if($row['num'] > 0){
-        $_SESSION['error'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    }
+        //Username already exists error
+        if ($row['num'] > 0) {
+            $_SESSION['error'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        }
 
-    //Preparing insert statement
-    $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
-    $stmt = $pdo->prepare($sql);
-    //Bind varibles
-    $stmt->bindValue(':uid', $uid);
-    $stmt->bindValue(':blockOne', $oneCleanStr);
-    $stmt->bindValue(':blockTwo', $twoCleanStr);
-    $stmt->bindValue(':blockThree', $threeCleanStr);
-    $stmt->bindValue(':blockFour', $fourCleanStr);
-    $stmt->bindValue(':blockFive', $fiveCleanStr);
-    $stmt->bindValue(':blockSix', $sixCleanStr);
+        //Preparing insert statement
+        $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+        $stmt = $pdo->prepare($sql);
+        //Bind varibles
+        $stmt->bindValue(':uid', $uid);
+        $stmt->bindValue(':blockOne', $oneCleanStr);
+        $stmt->bindValue(':blockTwo', $twoCleanStr);
+        $stmt->bindValue(':blockThree', $threeCleanStr);
+        $stmt->bindValue(':blockFour', $fourCleanStr);
+        $stmt->bindValue(':blockFive', $fiveCleanStr);
+        $stmt->bindValue(':blockSix', $sixCleanStr);
 
-    //Execute the statement
-    $result = $stmt->execute();
+        //Execute the statement
+        $result = $stmt->execute();
 
-    //If successful, returns to user profile
-    if($result) {
-        $_SESSION['last_submit'] = time();
-        $_SESSION['create'] = "New Palette";
-        header('Location: ' . $url . 'palettes');
-    }
+        //If successful, returns to user profile
+        if ($result) {
+            $_SESSION['last_submit'] = time();
+            $_SESSION['create'] = "New Palette";
+            header('Location: ' . $url . 'palettes');
+        }
 
 }
 

@@ -2,8 +2,6 @@
 session_start();
 include "include/logic.php";
 
-
-
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $uid = $_SESSION['user_id'];
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");

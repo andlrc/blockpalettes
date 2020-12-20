@@ -36,6 +36,7 @@ if(isset($_SESSION['error'])) {
   $error = "";
 }
 $i = 0;
+
 ?>
 
 <!doctype html>

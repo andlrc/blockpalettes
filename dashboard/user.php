@@ -351,6 +351,8 @@ if (isset($_SESSION['user_id'])) {
                                                         $awards = $awardsPull->fetchAll(PDO::FETCH_ASSOC);
                                                         ?>
                                                         <input type="hidden" name="id" value="<?=$userID?>">
+                                                        <input type="hidden" name="email" value="<?=$userP['email']?>">
+                                                        <input type="hidden" name="username" value="<?=$userP['username']?>">
                                                         <?php foreach ($awards as $awa): ?>
                                                             <label>
                                                                 <input type="radio" name="award" value="<?=$awa['id']?>" required>

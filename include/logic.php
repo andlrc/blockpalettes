@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 
 //Register a user
@@ -462,7 +462,7 @@ if(isset($_POST['blog'])){
         $stmt = $pdo->prepare($sql);
         //Bind varibles
         $stmt->bindValue(':uid', $uid);
-        $stmt->bindValue(':title', $tlower);
+        $stmt->bindValue(':title', $tLower);
         $stmt->bindValue(':article', $article);
         $stmt->bindValue(':image', $image);
         $stmt->bindValue(':meta', $meta);
@@ -775,7 +775,6 @@ if(isset($_POST['giveAward'])){
             header('Location: ' . $url . 'dashboard/user/' . $id . '');
         }
     } else {
-
         //Updates table
         $sql = "INSERT INTO user_awards (uid, award_id) VALUES (:id, :award)";
         $stmt = $pdo->prepare($sql);
@@ -786,7 +785,8 @@ if(isset($_POST['giveAward'])){
         $result = $stmt->execute();
 
         //If successful, returns to user profile
-        if ($result) {
+        //If register was successful
+        if($result) {
             header('Location: ' . $url . 'dashboard/user/' . $id . '');
         }
     }

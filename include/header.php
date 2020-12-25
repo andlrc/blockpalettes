@@ -1,9 +1,10 @@
 <?php  error_reporting(0); ?>
+<script src="<?=$url?>js/snowstorm.js"></script>
 <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg navbar-fixed-top" >
             <div class="container-fluid">
                 <a class="navbar-brand" href="<?=$url?>">
-                    <img src="<?=$url?>img/logotest.png" class="logo-size d-md-none d-lg-none d-xl-block d-sm-block">
+                    <img src="<?=$url?>img/logofestive.png" class="logo-size d-md-none d-lg-none d-xl-block d-sm-block">
                     <img src="<?=$url?>img/biglogo.png" class="logo-size-small d-md-block d-lg-block d-xl-none d-sm-none d-none">
                 </a>
                 <button class="navbar-toggler custom-toggler" id="hamburger" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">

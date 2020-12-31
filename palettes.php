@@ -2,7 +2,7 @@
 error_reporting(0);
 session_start();
 include "include/logic.php";
-
+$uri = $_SERVER['REQUEST_URI'];
 
 
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
@@ -45,19 +45,33 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
 //pagination
 $limit = 21;
 
-
 if(isset($_GET['filter'])){
   $dataInput = !empty($_GET['filter']) ? trim($_GET['filter']) : null;
   $block = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
+  $time = htmlspecialchars($_POST['t'], ENT_QUOTES, 'UTF-8');
 
-  $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
+  if($time == 'old'){
+      $order = 'ORDER BY date ASC';
+      echo "hia";
+  } elseif($time == 'popular') {
+        $order = 'ORDER BY date ASC';
+        echo "hia";
+  } elseif($time == 'new') {
+        $order = 'ORDER BY date DESC';
+        echo "hia";
+  } else {
+      $order = '';
+  }
+
+      $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
                                OR blockTwo LIKE '$block' 
                                OR blockThree LIKE '$block' 
                                OR blockFour LIKE '$block' 
                                OR blockFive LIKE '$block' 
-                               OR blockSix LIKE '$block'");
-  $palettePull->execute();
-  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+                               OR blockSix LIKE '$block'
+                               '$order'");
+      $palettePull->execute();
+      $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 
 
@@ -93,8 +107,11 @@ if(isset($_GET['filter'])){
   $i = 0;
 }
 
-if(isset($_GET['removeFilter'])){
-  header('Location: palettes');
+if(isset($_POST['removeFilter'])){
+    header('Location: palettes');
+}
+if(isset($_POST['removeTime'])){
+    unset($_POST['t']);
 }
 //pull palettes
 
@@ -292,17 +309,21 @@ $images = glob( $dir );
             <h3 class="medium-title">Filters</h3>
             <?php if(isset($_GET['filter'])){ ?>
               <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
-              <span class="filter-tag"><?=ucwords($blockName)?></span>
-              <form style="display: inline-block;">
-              <button class="delete-tag btn" type="submit" name="removeFilter">
-                <i class="fas fa-times"></i>
+              <form method="post" action="<?=$uri?>" style="display: inline-block;">
+              <button class="filter-tag btn" type="submit" name="removeFilter">
+                  <?=ucwords($blockName)?> <i class="fas fa-times"></i>
               </button>
+              <?php if(isset($_POST['t'])){ ?>
+                  <button class="filter-tag btn" type="submit" name="removeTime">
+                      <?=ucwords($_POST['t'])?> <i class="fas fa-times"></i>
+                  </button>
+              <?php }?>
             </form>
             <?php } else { ?>  
               <div style="padding-bottom:0px"></div> 
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
-            <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
+            <form method="get" style="padding-bottom:25px" action="<?=$uri?>">
               <div class="input-group">
                   <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
                   <option value="" class="cursor">Select a block...</option>
@@ -319,6 +340,13 @@ $images = glob( $dir );
                   <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
               </div>
             </form>
+            <p style="margin-bottom:0px">Additional Filters</p>
+            <form method="post" style="padding-bottom:25px" action="<?=$uri?>">
+                <button type="submit" class="btn btn-theme" value="new" name="t" style="font-size:15px"><i class="fas fa-arrow-up"></i> New</button>
+                <button type="submit" class="btn btn-theme" value="old" name="t" style="font-size:15px"><i class="fas fa-arrow-down"></i> Old</button>
+              <button type="submit" class="btn btn-theme" value="popular" name="t" style="font-size:15px"><i class="fas fa-star"></i> Popular</button>
+            </form>
+
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>

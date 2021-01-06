@@ -56,6 +56,8 @@ $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 $i = 0;
 
+
+
 ?>
 <!doctype html>
 <html lang="en">

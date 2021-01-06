@@ -877,3 +877,16 @@ iframe{
     color: white;
     border-radius: 5px;
 }
+
+.result{
+   background: white;
+    border-radius: 4px;
+    z-index: 999;
+    width: 90%;
+    position: absolute;
+    right:10px
+}
+
+.result .nav-link{
+    padding: 0px!important;
+}

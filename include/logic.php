@@ -19,9 +19,9 @@ if(isset($_REQUEST["term"])) {
                 $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
                 $rankPull ->execute();
                 $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
-                echo '<div class="col-xl-3 col-lg-4 col-sm-6 col-6">
+                echo '<div class="col-xl-12">
                        <a href="'.$url.'dashboard/user/'. $row['id']. '" class="nav-link">
-                         <div class="user-mgmt-float">
+                         <div class="user-mgmt-float" style="margin-top:10px!important">
                             <div class="role-pill" style="background:'.$rank['rank_color'].'">'. ucwords(mb_substr($rank['rank_name'], 0, 1, "UTF-8")) . '</div>
                                '.ucwords($row['username']).'
                             </div>

@@ -232,11 +232,9 @@ if (isset($_SESSION['user_id'])) {
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 medium-title">Users</h1>
 
-                    <div class="search-box">
-                        <input type="text" class="form-control" style="margin-bottom:0px" autocomplete="off" placeholder="Search username..." />
-
+                    <div class="search-box col-md-2">
+                        <input type="text" class="form-control" style="margin-bottom:0px" autocomplete="off" placeholder="Search username..." >
                         <div class="result"></div>
-
                     </div>
                 </div>
 

@@ -779,6 +779,9 @@ if(isset($_POST['updateRank'])){
 if(isset($_POST['giveAward'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
     $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
+    $award_name = !empty($_POST['award_name']) ? trim($_POST['award_name']) : null;
+    $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
+    $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
 
     //Checking if username already exists
     //Preparing SQL statement
@@ -816,6 +819,29 @@ if(isset($_POST['giveAward'])){
 
         //If successful, returns to user profile
         if ($result) {
+
+
+            // Send email to user with the token in a link they can click on
+            $to = $email;
+            $subject = "You were given an award on Block Palettes!";
+            $msg = "<h4>Congratulations on receiving the award: " . ucwords($award_name) . "<br>
+                    Check it out on your profile, <a href='". $url ."profile/'". $username .">here</a>.</h4>
+                   <br>
+                    <i>- Block Palettes Staff</i>
+
+                   ";
+            $msg = wordwrap($msg,70);
+            $headers .= "Organization: Block Palettes\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= 'Content-type: text/html' . "\r\n";
+            $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
+            $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
+            $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
+            $headers .= "X-Priority: 3\r\n";
+            $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+            mail($to, $subject, $msg, $headers);
+
+
             header('Location: ' . $url . 'dashboard/user/' . $id . '');
         }
     }

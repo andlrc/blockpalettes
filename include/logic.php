@@ -3,7 +3,7 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+$url = "http://localhost:8888/blockpalettes/";
 
 if(isset($_REQUEST["term"])) {
 // Prepare a select statement

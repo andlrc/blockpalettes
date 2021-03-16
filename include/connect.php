@@ -1,9 +1,9 @@
 <?php
 //connect.php
 //MYSQL DB Details
-define('MYSQL_USER', 'Nate');
+define('MYSQL_USER', 'nate');
 define('MYSQL_PASSWORD', '');
-define('MYSQL_HOST', 'localhost:3306');
+define('MYSQL_HOST', 'localhost:8889');
 define('MYSQL_DATABASE', 'blockpalettes');
 
 //PDO Options

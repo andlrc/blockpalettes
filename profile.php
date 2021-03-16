@@ -1,5 +1,5 @@
 <?php 
-error_reporting(0);
+
 session_start();
 
 require "include/logic.php";
@@ -35,7 +35,7 @@ $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
 
 
 //pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette WHERE uid = $id");
+$palettePull = $pdo->prepare("SELECT * FROM palette WHERE uid = $id ORDER BY id DESC");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
@@ -47,7 +47,9 @@ $userAwardsPull = $pdo->prepare("SELECT * FROM user_awards WHERE uid = $id");
 $userAwardsPull->execute();
 $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
 
-
+$saveCheck = $pdo->prepare("SELECT pid FROM saved WHERE uid = $id ORDER BY date DESC");
+$saveCheck->execute();
+$savedp = $saveCheck->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
 <html lang="en">
@@ -140,8 +142,9 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
           </div>
-          <div class="col-md-12">
-              <?php if($userProfile['id'] == $uid){ ?>
+
+          <div class="col-xl-9">
+          <?php if($userProfile['id'] == $uid){ ?>
                 <div class="small-title" style="padding-bottom:5px">Your Palettes</div>
               <?php } else { ?>
                 <div class="small-title" style="padding-bottom:5px"><?=ucwords($userProfile['username']);?>'s Palettes</div>
@@ -150,65 +153,102 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
               <?php if ($palette == null) { ?>
                 User has not created any palettes yet.
               <?php }?>
-          </div>
-          <?php foreach($palette as $p): ?>
-          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
-            <div style="position: relative">
-              
-                <div class="palette-float">
-                <a href="<?=$url?>palette/<?=$p['id']?>">
-                  <div class="flex-thirds">
-                    <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                  </div>
-                  <div class="flex-thirds">
-                    <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                    <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                  </div>
-                  </a>
-                  <?php 
-                    $pid = $p['id'];
-                    $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
-                    $savePull->execute();
-                    $save = $savePull->fetch(PDO::FETCH_ASSOC);
-                    if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
-                      $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
-                      $savedCheckPull->execute();
-                      $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
-                    }
-
-                    
-                  ?>
-                  <div class="subtext">
-                    <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                      <div class="time left half">
-                        <?php if ($saved !== false) { ?>
-                          <span class="btn-unsave">Saved</span>
-                        <?php } else { ?>
-                          <span class="btn-save"><?=$save['num'];?> Saves</span>
-                        <?php } ?>
+            <div class="row">
+              <?php foreach($palette as $p): ?>
+              <div class="col-xl-4 col-lg-4 col-md-6 paddingFix">
+                <div style="position: relative">
+                  
+                    <div class="palette-float">
+                    <a href="<?=$url?>palette/<?=$p['id']?>">
+                      <div class="flex-thirds">
+                        <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
                       </div>
-                      <?php } else {?>
-                        <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                      <div class="flex-thirds">
+                        <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                      </div>
+                      </a>
+                      <?php 
+                        $pid = $p['id'];
+                        $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                        $savePull->execute();
+                        $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                        if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                          $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                          $savedCheckPull->execute();
+                          $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                        }
+
+                        
+                      ?>
+                      <div class="subtext">
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                          <div class="time left half">
+                            <?php if ($saved !== false) { ?>
+                              <span class="btn-unsave">Saved</span>
+                            <?php } else { ?>
+                              <span class="btn-save"><?=$save['num'];?> Saves</span>
+                            <?php } ?>
+                          </div>
+                          <?php } else {?>
+                            <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                              <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                            </div>
+                          <?php } ?>
+                          <?php if($p['featured'] == 1){ ?>
+                            <div class="award right half shine">
+                              <i class="fas fa-award"></i> Staff Pick
+                            </div>
+                          <?php } else { ?>
+                            <div class="time right half">
+                              <?=time_elapsed_string($p['date'])?>
+                            </div>
+                          <?php } ?>       
                         </div>
-                      <?php } ?>
-                      <?php if($p['featured'] == 1){ ?>
-                        <div class="award right half shine">
-                          <i class="fas fa-award"></i> Staff Pick
-                        </div>
-                      <?php } else { ?>
-                        <div class="time right half">
-                          <?=time_elapsed_string($p['date'])?>
-                        </div>
-                       <?php } ?>       
                     </div>
                 </div>
+              </div>
+              <?php endforeach; ?>
+              </div>
+          </div>
+          <div class="col-xl-3">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="small-title" style="padding-bottom:5px">Recently Liked Palettes</div>
+              </div>
+              <?php foreach($savedp as $d): ?>
+                <?php 
+                  $pid = $d['pid'];
+                  $palettePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+                  $palettePull->execute();
+                  $palettep = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                <?php foreach($palettep as $p): ?>
+                  <div class="col-lg-6 col-12">
+                    <div style="position: relative">
+                      <a href="<?=$url?>palette/<?=$p['id']?>">
+                        <div class="palette-float" style="padding-bottom:10px; margin-bottom:15px">
+                          <div class="flex-thirds">
+                            <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                          </div>
+                          <div class="flex-thirds">
+                            <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              <?php endforeach; ?>
             </div>
           </div>
-          <?php endforeach; ?>
         </div>
       </div>
     </div>

@@ -54,7 +54,7 @@ $blockFive = str_replace("_"," ",$pf['blockFive']);
 $blockSix = str_replace("_"," ",$pf['blockSix']);
 
 //pull palettes
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY RAND ()  LIMIT 12");
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY RAND ()  LIMIT 15");
 $palettePull->execute();
 $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
@@ -121,35 +121,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
     <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
    <style>
 
-.hide {
-	display: none;
-}
-.button-like{
-    background-color: black;
-    border-radius: 5px;
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-weight: 900;
-    color: white;
-    cursor: pointer;
-}
-.button-unlike{
-    background-color: #ee5253;
-    border-radius: 5px;
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-weight: 900;
-    color: white;
-    cursor: pointer;
-}
 
-.like , .unlike{
-  cursor: pointer;
-}
-
-.unlikesmall .fa-heart{
-  color: #ee5253;
-}
 
 
    </style>
@@ -329,7 +301,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                       
                                     <?php } else {?>
                                       <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                                        <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save2['num'];?> Saves</span>
+                                        <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
                                       </div>
                                     <?php } ?>
                                     <?php if($p['featured'] == 1){ ?>

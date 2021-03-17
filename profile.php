@@ -184,15 +184,24 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                   <div class="subtext">
                     <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                       <div class="time left half">
-                        <?php if ($saved !== false) { ?>
-                          <span class="btn-unsave">Saved</span>
-                        <?php } else { ?>
-                          <span class="btn-save"><?=$save['num'];?> Saves</span>
-                        <?php } ?>
-                      </div>
+                            <?php
+                              $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$p['id']."");
+                              $liked->execute();
+                              $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                              if ($like['num'] > 0): ?>
+                                <!-- user already likes post -->
+                                <span class="unlike unlikesmall" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                <span class="like hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                              <?php else: ?>
+                                <!-- user has not yet liked post -->
+                                <span class="like" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                <span class="unlike unlikesmall hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                              <?php endif ?>
+                        </div>
                       <?php } else {?>
                         <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
                         </div>
                       <?php } ?>
                       <?php if($p['featured'] == 1){ ?>
@@ -224,6 +233,50 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+
+    <script>
+        $(document).ready(function(){
+          // when the user clicks on like
+          $('.like').on('click', function(){
+            var postid = $(this).data('id');
+                $post = $(this);
+
+            $.ajax({
+              url: 'profile.php',
+              type: 'post',
+              data: {
+                'liked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
+
+          // when the user clicks on unlike
+          $('.unlike').on('click', function(){
+            var postid = $(this).data('id');
+              $post = $(this);
+
+            $.ajax({
+              url: 'profile.php',
+              type: 'post',
+              data: {
+                'unliked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
+        });
+      </script>
 
     <!-- Edit Profile Modal -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalTitle" aria-hidden="true">

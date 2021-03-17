@@ -1,12 +1,7 @@
 <?php
 session_start();
 require "include/logic.php";
-if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
-  $uid = $_SESSION['user_id'];
-  $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
-  $stmt->execute();
-  $user = $stmt->fetch(PDO::FETCH_ASSOC);
-}
+
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                       from 
@@ -80,6 +75,10 @@ $profileDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $postUs
 $profileDataPull->execute();
 $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
 
+
+
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -99,7 +98,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
     <script>
@@ -109,6 +108,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
           });
       });
     </script>
+    
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -119,10 +119,48 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
     gtag('config', 'UA-81969207-1');
     </script>
     <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+   <style>
+
+.hide {
+	display: none;
+}
+.button-like{
+    background-color: black;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+}
+.button-unlike{
+    background-color: #ee5253;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+}
+
+.like , .unlike{
+  cursor: pointer;
+}
+
+.unlikesmall .fa-heart{
+  color: #ee5253;
+}
+
+
+   </style>
+   
     </head>
   <body>
     <!-- Nav -->
     <?php include('include/header.php'); ?>
+
+
+
     <div class="palettes">
         <div class="container-fluid">
           <div class="row">
@@ -159,23 +197,29 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
 
                               <span class="savesFloat">
                                 <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                                  <?php if ($saved !== false) { ?>
-                                      <form method="post" action="palette">
-                                        <input type="hidden" name="uid" value="<?=$uid?>">
-                                        <input type="hidden" name="pid" value="<?=$pid?>">
-                                        <input type="submit" name="unsave" class="btn-unsave" value="Saved" data-toggle="tooltip" data-placement="bottom" title="Click to unsave">
-                                      </form>
-                                    <?php } else { ?>
-                                      <form method="post" action="palette">
-                                        <input type="hidden" name="uid" value="<?=$uid?>">
-                                        <input type="hidden" name="pid" value="<?=$pid?>">
-                                        <input type="submit" name="save" class="btn-save" value="<?=$save['num'];?> Saves" data-toggle="tooltip" data-placement="bottom" title="Click to save">
-                                      </form>
-                                    <?php } ?>
+                                  <div style=" margin-top: 0px;">
+                                    <?php 
+                                      // determine if user has already liked this post
+                                      $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$pf['id']."");
+                                      $liked->execute();
+                                      $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                                      if ($like['num'] > 0): ?>
+                                        <!-- user already likes post -->
+                                        <span class="unlike button-unlike" data-id="<?php echo $pf['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $pf['likes']; ?></span></span>
+                                        <span class="like hide button-like" data-id="<?php echo $pf['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $pf['likes']; ?></span></span> 
+                                      <?php else: ?>
+                                        <!-- user has not yet liked post -->
+                                        <span class="like button-like " data-id="<?php echo $pf['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $pf['likes']; ?></span></span> 
+                                        <span class="unlike hide button-unlike" data-id="<?php echo $pf['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $pf['likes']; ?></span></span> 
+                                      <?php endif ?>
+
+                                    
+                                    </div>
                                     
                                   <?php } else {?>
                                     <div class="" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                                      <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                                      <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><span class="likes_count"><?php echo $pf['likes']; ?></span> Saves</span>
                                     </div>
                                 <?php } ?>
                               </span>
@@ -235,8 +279,9 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                 <?php foreach($palette as $p): ?>
                 <div class="col-xl-4 col-lg-6 col-sm-6 paddingFix">
                     <div style="position: relative">
-                        <a href="<?=$p['id']?>">
+                        
                             <div class="palette-float">
+                            <a href="<?=$p['id']?>">
                               <div class="flex-thirds">
                                 <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
                                 <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
@@ -247,6 +292,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                 <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
                                 <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
                               </div>
+                              </a>
                                 <?php 
                                   $pid2 = $p['id'];
                                   $savePull2 = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid2");
@@ -261,12 +307,26 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                 <div class="subtext">
                                   <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                                     <div class="time left half">
-                                      <?php if ($saved2 !== false) { ?>
-                                        <span class="btn-unsave">Saved</span>
-                                      <?php } else { ?>
-                                        <span class="btn-save"><?=$save2['num'];?> Saves</span>
-                                      <?php } ?>
-                                      </div>
+
+                                    <?php
+                                      $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$p['id']."");
+                                      $liked->execute();
+                                      $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                                      if ($like['num'] > 0): ?>
+                                        <!-- user already likes post -->
+                                        <span class="unlike unlikesmall" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                        <span class="like hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                      <?php else: ?>
+                                        <!-- user has not yet liked post -->
+                                        <span class="like" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                        <span class="unlike unlikesmall hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                      <?php endif ?>
+
+
+                                    </div>
+
+                                      
                                     <?php } else {?>
                                       <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
                                         <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save2['num'];?> Saves</span>
@@ -283,7 +343,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                     <?php } ?>       
                               </div>
                             </div>
-                        </a>
+                        
                     </div>
                 </div>
                 <?php endforeach;?>
@@ -329,13 +389,59 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+
 
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+
+    <script>
+    $(document).ready(function(){
+      // when the user clicks on like
+      $('.like').on('click', function(){
+        var postid = $(this).data('id');
+            $post = $(this);
+
+        $.ajax({
+          url: 'palette.php',
+          type: 'post',
+          data: {
+            'liked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+
+      // when the user clicks on unlike
+      $('.unlike').on('click', function(){
+        var postid = $(this).data('id');
+          $post = $(this);
+
+        $.ajax({
+          url: 'palette.php',
+          type: 'post',
+          data: {
+            'unliked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+    });
+  </script>
   </body>
   
 </html>

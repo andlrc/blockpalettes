@@ -3,7 +3,14 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+    $uid = $_SESSION['user_id'];
+    $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+$url = "http://localhost:8888/blockpalettes/";
 
 if(isset($_REQUEST["term"])) {
 // Prepare a select statement
@@ -539,12 +546,17 @@ if(isset($_POST['blog'])){
 }
 
 
-if(isset($_POST['save'])){
-    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
-    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
-
-    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+if(isset($_POST['liked'])){
+    $pidIn = !empty($_POST['postid']) ? trim($_POST['postid']) : null;
     $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+    $uid = $user['id'];
+
+    $savePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+    $savePull->execute();
+    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+
+    $n = $save['likes'];
+    
 
     //Preparing insert statement
     $sql = "INSERT INTO saved (uid, pid) VALUES (:uid, :pid)";
@@ -552,39 +564,47 @@ if(isset($_POST['save'])){
     //Bind varibles
     $stmt->bindValue(':uid', $uid);
     $stmt->bindValue(':pid', $pid);
-
-
     //Execute the statement
+    $result = $stmt->execute();
+
+    $edit = "UPDATE palette SET likes = $n+1 WHERE id ='$pid'";
+    $stmt = $pdo->prepare($edit);
     $result = $stmt->execute();
 
     //If successful, returns to user profile
     if($result) {
-        header('Location: ' . $url . 'palette/' . $pid);
+        echo $n+1;
+        exit();
     }
 }
 
-if(isset($_POST['unsave'])){
-    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
-    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
-
-    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+if(isset($_POST['unliked'])){
+    $pidIn = !empty($_POST['postid']) ? trim($_POST['postid']) : null;
     $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+    $uid = $user['id'];
+
+
+    $savePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+    $savePull->execute();
+    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+
+    $n = $save['likes'];
+
 
     //Preparing insert statement
-    $delete = "DELETE FROM saved WHERE uid = :uid AND pid = :pid";
-    $stmt = $pdo->prepare($delete);
-    //Bind varibles
-    $stmt->bindValue(':uid', $uid);
-    $stmt->bindValue(':pid', $pid);
+    $sql = "DELETE FROM saved WHERE pid = $pid AND uid = $uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
 
-
-    //Execute the statement
-    $result = $stmt->execute();
+    $edit = "UPDATE palette SET likes =$n-1 WHERE id =$pid";
+    $stmt = $pdo->prepare($edit);
+    $stmt->execute();
 
     //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'palette/' . $pid);
-    }
+    
+        echo $n-1;
+        exit();
+    
 }
 
 

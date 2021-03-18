@@ -191,7 +191,7 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                                     
                                   <?php } else {?>
                                     <div class="" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                                      <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><span class="likes_count"><?php echo $pf['likes']; ?></span> Saves</span>
+                                      <span class="btn-save button-like" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><span class="likes_count"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $pf['likes']; ?></span></span>
                                     </div>
                                 <?php } ?>
                               </span>

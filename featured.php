@@ -225,7 +225,7 @@ $i = 0;
                         </div>
                       <?php } else {?>
                         <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
                         </div>
                       <?php } ?>
                     <div class="award right half shine">

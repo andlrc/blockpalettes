@@ -19,6 +19,7 @@ RewriteRule ^dashboard/user/([0-9a-zA-Z_-]+) dashboard/user.php?p=$1 [NC,L]
 RewriteRule ^dashboard([0-9a-zA-Z_-]+) dashboard.php?page=$1 [NC,L]
 RewriteRule ^dashboard/post([0-9a-zA-Z_-]+) dashboard/post.php [NC,L]
 RewriteRule ^profile/([0-9a-zA-Z_-]+) profile.php?p=$1 [NC,L]
+RewriteRule ^contests/([0-9a-zA-Z_-]+) contest.php?p=$1 [NC,L]
 
 
 # Disable Automatic Directory detection

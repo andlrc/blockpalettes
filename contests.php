@@ -54,7 +54,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
           <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
                 <div class="palette-float" style="padding-right: 10px">
-                <a href="<?=$url?>palette/<?=$p['id']?>" style="text-decoration: none">
+                <a href="<?=$url?>contests/1" style="text-decoration: none">
                   <span id="clockdiv" class="contest-time-float-small" data-toggle="tooltip" data-placement="top" title="Time left in contest">
                       <i class="far fa-clock"></i> 
                         <span class="days"></span>:
@@ -70,6 +70,29 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
                     </div>
                     <div class="time right half">
                       <i class="far fa-user"></i> 345
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+
+          <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
+            <div style="position: relative">
+                <div class="palette-float" style="padding-right: 10px">
+                <a href="<?=$url?>contests/<?=$p['id']?>" style="text-decoration: none">
+                  <span id="clockdiv" class="contest-time-float-small-closed" data-toggle="tooltip" data-placement="top" title="Time left in contest">
+                      <i class="far fa-clock"></i> 
+                        CLOSED
+                    </span>
+                  <img src="https://i.imgur.com/kcSdxHq.jpeg" class="contest-thumbnail">
+                </a>
+                  <div class="subtext">
+                    <div class="contest-small-title left half">
+                        Title of Contest
+                    </div>
+                    <div class="time right half">
+                      <i class="far fa-user"></i> 32
                     </div>
                   </div>
                 </div>

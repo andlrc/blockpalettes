@@ -248,6 +248,27 @@ iframe{
     from { -webkit-mask-position: 150%; }
     to { -webkit-mask-position: -50%; }
   }
+  .contest-small-title{
+    padding-top:5px;
+    color: black;
+    font-size: 15px;
+    font-family: tommyMedium, sans-serif;
+
+}
+.contest-thumbnail{
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+}
+.contest-time-float-small{
+    background: black;
+    border-radius: 7px;
+    padding: 2px 10px;
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
 
 .half{
     float: left;

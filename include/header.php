@@ -17,6 +17,9 @@
                         <li class="nav-item">
                             <a href="<?=$url?>palettes" class="nav-link">Palettes</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?=$url?>contests" class="nav-link">Contests</a>
+                        </li>
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                             <li class="nav-item">
                                 <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>

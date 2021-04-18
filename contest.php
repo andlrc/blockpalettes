@@ -26,7 +26,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
     <meta name="description" content="We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with submitting your own palettes and monthly building contest!">
     <meta name="keywords" content="Minecraft, Building, Blocks, Colors, Creative, Medieval, fantasy, Farm, Jungle, Modern, Gothic, Scary">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Block Palettes - Contests</title>
+    <title>Block Palettes - Mideval Fortress Contest</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -47,8 +47,39 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <div class="title" style="padding-bottom:5px">Specific Contest Page</div>
-            <p style="padding-bottom:25px">Win cool awards by creating palettes in specific contest themes.</p>
+            <span id="clockdiv" class="contest-time-float" data-toggle="tooltip" data-placement="top" title="Time left in contest">
+              <i class="far fa-clock"></i> 
+              <span class="days"></span>:
+              <span class="hours"></span>:
+              <span class="minutes"></span>:
+              <span class="seconds"></span>
+            </span>
+            <span class="contest-user-float" data-toggle="tooltip" data-placement="top" title="# of Entries">
+            <i class="far fa-user"></i>  342
+            </span>
+            <img src="https://i.imgur.com/kcSdxHq.jpeg" class="contest-image">
+          </div>
+          <div class="col-md-12">
+            <div class="contest-float">
+              <div class="row">
+                <div class="col-lg-6">
+                  <span><i class="fas fa-circle contest-live"></i> Active Contest</span>
+                  <h1 class="medium-title">Contest Name</h1>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar sapien eget turpis tempus faucibus. Praesent maximus mollis tellus, eu posuere lacus suscipit vitae. Duis pulvinar condimentum felis, congue molestie lacus dapibus ut.</p>
+                </div>
+                <div class="col-lg-6" >
+                  <b>Prizes</b>
+
+                </div>
+              </div>
+            </div>
+            <div class="contest-float-submit">
+              <div class="row">
+                <div class="col-md-6 offset-md-3">
+                  <a href="" class="btn btn-theme btn-block">Submit Palette</a>
+                </div>
+              </div>
+            </div>
           </div>
          
 
@@ -109,7 +140,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
         const timeinterval = setInterval(updateClock, 1000);
         }
 
-        const deadline = "Sun Apr 17 2021 13:55:56 GMT-0400 (EDT)";
+        const deadline = "Sun Apr 24 2021 13:55:56 GMT-0400 (EDT)";
         initializeClock('clockdiv', deadline);
           
     </script>

@@ -838,14 +838,20 @@ if(isset($_POST['giveAward'])){
         $result = $stmt->execute();
 
         //If successful, returns to user profile
-        if ($result) {
+         if ($result) {
+            $sql = "SELECT award_name AS name FROM awards WHERE id = $award";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            //Fetch the row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $award_name = $row['name'];
 
             // Send email to user with the token in a link they can click on
             $to = $email;
             $subject = "You were given an award on Block Palettes!";
             $msg = "<h4>Congratulations on receiving the award: " . ucwords($award_name) . "<br>
-                    Check it out on your profile, <a href='". $url ."profile/'". $username .">here</a>.</h4>
+                    Check it out on your profile, <a href='". $url ."profile/". $username ."'>here</a>.</h4>
                    <br>
                     <i>- Block Palettes Staff</i>
 

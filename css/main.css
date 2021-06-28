@@ -1005,3 +1005,12 @@ iframe{
 .unlikesmall{
     font-family: Tommymedium;
 }
+
+@media only screen and (min-width: 1000px) {
+    .prizes{
+        float: right;
+    }
+}
+.entry-filters{
+    float:right;
+}

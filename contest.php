@@ -10,6 +10,22 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+$palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 1");
+$palettePull->execute();
+$palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+if(isset($_POST['filtered'])){
+  $pidIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
+  $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+
+  if ($pid == "old"){
+    $palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 0");
+    $palettePull->execute();
+    $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+  }
+  exit();
+}
+
 
 ?>
 <!doctype html>
@@ -68,8 +84,13 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar sapien eget turpis tempus faucibus. Praesent maximus mollis tellus, eu posuere lacus suscipit vitae. Duis pulvinar condimentum felis, congue molestie lacus dapibus ut.</p>
                 </div>
                 <div class="col-lg-6" >
-                  <b>Prizes</b>
-
+                  <div class="prizes">
+                    <p class="small-title" style="margin:0px">Prizes</p>
+                    <i class="fas fa-circle fa-4x"></i> 
+                    <i class="fas fa-circle fa-4x"></i> 
+                    <i class="fas fa-circle fa-4x"></i> 
+                    <i class="fas fa-circle fa-4x"></i> 
+                  </div>
                 </div>
               </div>
             </div>
@@ -81,9 +102,83 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
               </div>
             </div>
           </div>
-         
+          <div class="col-md-12" style="margin-top:35px">
+            <div class="row">
+              <div class="col-6">
+                <h2 class="medium-title">Recent Entries</h2>
+              </div>
+              <div class="col-6">
+                
+              </div>
+              <?php foreach($palette as $p): ?>
+              <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
+                <div style="position: relative">
+                    <div class="palette-float">
+                    <a href="<?=$url?>palette/<?=$p['id']?>">
+                      <div class="flex-thirds">
+                        <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                      </div>
+                      <div class="flex-thirds">
+                        <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                        <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                      </div>
+                      </a>
+                      
+                      <?php 
+                        $pid = $p['id'];
+                        $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                        $savePull->execute();
+                        $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                        if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                          $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                          $savedCheckPull->execute();
+                          $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                        }
 
-        
+                        
+                      ?>
+                        <div class="subtext">
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                          <div class="time left half">
+                              <?php
+                                $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$p['id']."");
+                                $liked->execute();
+                                $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                                if ($like['num'] > 0): ?>
+                                  <!-- user already likes post -->
+                                  <span class="unlike unlikesmall" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                  <span class="like hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                <?php else: ?>
+                                  <!-- user has not yet liked post -->
+                                  <span class="like" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                  <span class="unlike unlikesmall hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                <?php endif ?>
+                            </div>
+                          <?php } else {?>
+                            <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                              <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                            </div>
+                          <?php } ?>
+                          <?php if($p['featured'] == 1){ ?>
+                            <div class="award right half shine">
+                                <i class="fas fa-award"></i> Staff Pick
+                            </div>
+                          <?php } else { ?>
+                            <div class="time right half">
+                                <?=time_elapsed_string($p['date'])?>
+                            </div>
+                          <?php } ?>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -144,5 +239,66 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
         initializeClock('clockdiv', deadline);
           
     </script>
+    <script>
+
+    $(document).ready(function(){
+      // when the user clicks on like
+      $('#filter').change(function(){
+        var type = $(this).val();
+        console.log(type);
+
+        $.ajax({
+          url: 'contest.php',
+          type: 'post',
+          data: {
+            'filtered': 1,
+            'type': type
+          }
+      });
+    });
+  });
+
+    $(document).ready(function(){
+      // when the user clicks on like
+      $('.like').on('click', function(){
+        var postid = $(this).data('id');
+            $post = $(this);
+
+        $.ajax({
+          url: 'palettes.php',
+          type: 'post',
+          data: {
+            'liked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+
+      // when the user clicks on unlike
+      $('.unlike').on('click', function(){
+        var postid = $(this).data('id');
+          $post = $(this);
+
+        $.ajax({
+          url: 'palettes.php',
+          type: 'post',
+          data: {
+            'unliked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+    });
+  </script>
   </body>
 </html>

@@ -545,7 +545,6 @@ if(isset($_POST['blog'])){
     }  
 }
 
-
 if(isset($_POST['liked'])){
     $pidIn = !empty($_POST['postid']) ? trim($_POST['postid']) : null;
     $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');

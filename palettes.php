@@ -62,40 +62,59 @@ if(isset($_GET['filter'])){
 
 
 } else {
-  $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
-  $palettePull->execute();
-  $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
-  $total_results = $palettePull->rowCount();
-  $total_pages = ceil($total_results/$limit);
-      
-  if (!isset($_GET['page'])) {
-      $page = 1;
-  } else{
-      $page = $_GET['page'];
-  }
+    if (isset($_POST['time'])) {
+        $dataInput = !empty($_POST['time']) ? trim($_GET['time']) : null;
+        $timeVar = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
 
-  $start = ($page-1)*$limit;
+        if ($timeVar = "Old") {
+            $sort = "ASC";
+            $_SESSION['dateFilter'] = "Old";
+        } else if ($timeVar = "New") {
+            $sort = "DESC";
+            $_SESSION['dateFilter'] = "New";
+        } else if ($timeVar = "Popular") {
+            $_SESSION['dateFilter'] = "Popular";
+        }
+    }
+        $sort = "DESC";
 
-  $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id DESC LIMIT $start, $limit");
-  $stmt->execute();
 
-  // set the resulting array to associative
-  $stmt->setFetchMode(PDO::FETCH_OBJ);
-      
-  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-  $conn = null;
+        $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
+        $palettePull->execute();
+        $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
-  // var_dump($results);
-  $no = $page > 1 ? $start+1 : 1;
+        $total_results = $palettePull->rowCount();
+        $total_pages = ceil($total_results / $limit);
 
-  $i = 0;
-}
+        if (!isset($_GET['page'])) {
+            $page = 1;
+        } else {
+            $page = $_GET['page'];
+        }
 
-if(isset($_GET['removeFilter'])){
-  header('Location: palettes');
-}
+        $start = ($page - 1) * $limit;
+
+        $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id ".$sort." LIMIT $start, $limit");
+        $stmt->execute();
+
+        // set the resulting array to associative
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $conn = null;
+
+        // var_dump($results);
+        $no = $page > 1 ? $start + 1 : 1;
+
+        $i = 0;
+    }
+
+    if (isset($_GET['removeFilter'])) {
+        header('Location: palettes');
+    }
+
 //pull palettes
 
 $dir = "img/block/*.png";
@@ -129,6 +148,7 @@ $images = glob( $dir );
           });
       });
     </script>
+      <script src="js/filters.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-81969207-1"></script>
     <script>
@@ -301,6 +321,17 @@ $images = glob( $dir );
             <?php } else { ?>  
               <div style="padding-bottom:0px"></div> 
             <?php } ?>
+              <?php if(isset($_SESSION['dateFilter'])){ ?>
+                  <?php $name = $_SESSION['dateFilter']; ?>
+                  <span class="filter-tag"><?=ucwords($name)?></span>
+                  <form style="display: inline-block;">
+                      <button class="delete-tag btn" type="submit" name="removeFilter">
+                          <i class="fas fa-times"></i>
+                      </button>
+                  </form>
+              <?php } else { ?>
+                  <div style="padding-bottom:0px"></div>
+              <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
             <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
               <div class="input-group">
@@ -319,6 +350,14 @@ $images = glob( $dir );
                   <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
               </div>
             </form>
+
+              <p style="margin-bottom:0px">Additional Filters</p>
+              <form action="palettes" method="post" style="padding-bottom:25px">
+                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="Old">
+                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="New">
+                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="Popular">
+              </form>
+              
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>

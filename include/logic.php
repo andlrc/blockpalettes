@@ -35,6 +35,37 @@ if(isset($_REQUEST["term"])) {
     }
 }
 
+if(isset($_REQUEST["dateFilter"])) {
+// Prepare a select statement
+    $param_term = $_REQUEST["dateFilter"];
+    if ($param_term == "Old") {
+        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date ASC");
+        $_SESSION['dateFilter'] = $param_term;
+    }else if ($param_term == "New") {
+        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
+        $_SESSION['dateFilter'] = $param_term;
+    }else if ($param_term == "Popular") {
+        $stmt = $pdo->prepare("SELECT * FROM saved ORDER BY date DESC");
+        $_SESSION['dateFilter'] = $param_term;
+    }else {
+        echo "broken";
+    }
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if($result) {
+        if ($result != false) {
+            foreach ($result as $p) {
+                echo '
+                    '. $p["id"] .'<br>
+                ';
+            }
+        } else {
+            echo "<p>No matches found</p>";
+        }
+    }
+}
+
 //Register a user
 if(isset($_POST['register'])){
     $error = "";
@@ -779,7 +810,7 @@ if(isset($_POST['updateRank'])){
 if(isset($_POST['giveAward'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
     $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
-    $award_name = !empty($_POST['award_name']) ? trim($_POST['award_name']) : null;
+    $award_name = $_POST['award_name'];
     $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
     $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
 
@@ -819,7 +850,13 @@ if(isset($_POST['giveAward'])){
 
         //If successful, returns to user profile
         if ($result) {
+            $sql = "SELECT award_name AS name FROM awards WHERE id = $award";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            //Fetch the row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $award_name = $row['name'];
 
             // Send email to user with the token in a link they can click on
             $to = $email;

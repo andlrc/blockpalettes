@@ -13,6 +13,11 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 } 
 
 
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT 21");
+$palettePull->execute();
+$results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+
+
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                       from 
                       (
@@ -42,9 +47,6 @@ $popularPull->execute();
 $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
 
 
-//pagination
-$limit = 21;
-
 
 if(isset($_GET['filter'])){
   $dataInput = !empty($_GET['filter']) ? trim($_GET['filter']) : null;
@@ -55,71 +57,25 @@ if(isset($_GET['filter'])){
                                OR blockThree LIKE '$block' 
                                OR blockFour LIKE '$block' 
                                OR blockFive LIKE '$block' 
-                               OR blockSix LIKE '$block'");
+                               OR blockSix LIKE '$block' LIMIT 21");
   $palettePull->execute();
   $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-} else {
-
-    if (isset($_POST['time'])) {
-        $dataInput = !empty($_POST['time']) ? trim($_GET['time']) : null;
-        $timeVar = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-
-        if ($timeVar = "Old") {
-            $sort = "ASC";
-            $_SESSION['dateFilter'] = "Old";
-        } else if ($timeVar = "New") {
-            $sort = "DESC";
-            $_SESSION['dateFilter'] = "New";
-        } else if ($timeVar = "Popular") {
-            $_SESSION['dateFilter'] = "Popular";
-        }
-    }
-        $sort = "DESC";
-
-
-        $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
-        $palettePull->execute();
-        $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-        $total_results = $palettePull->rowCount();
-        $total_pages = ceil($total_results / $limit);
-
-        if (!isset($_GET['page'])) {
-            $page = 1;
-        } else {
-            $page = $_GET['page'];
-        }
-
-        $start = ($page - 1) * $limit;
-
-        $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id ".$sort." LIMIT $start, $limit");
-        $stmt->execute();
-
-        // set the resulting array to associative
-        $stmt->setFetchMode(PDO::FETCH_OBJ);
-
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $conn = null;
-
-        // var_dump($results);
-        $no = $page > 1 ? $start + 1 : 1;
-
-        $i = 0;
-    }
-
-    if (isset($_GET['removeFilter'])) {
-        header('Location: palettes');
-    }
+} 
+    
+if (isset($_GET['removeFilter'])) {
+  header('Location: palettes');
+}
 
 //pull palettes
 
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
+
+
 
 ?>
 <!doctype html>
@@ -219,95 +175,70 @@ $images = glob( $dir );
            
           <?php } else { ?>
             <div class="col-xl-9 col-lg-8 col-md-12">
-            <div class="row">
-          <?php foreach($results as $p): ?>
-          <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
-            <div style="position: relative">
-              <a href="<?=$url?>palette/<?=$p['id']?>">
-                <div class="palette-float">
-                    <div class="flex-thirds">
-                      <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
-                    </div>
-                    <div class="flex-thirds">
-                      <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
-                    </div>
-                  <?php 
-                      $pid = $p['id'];
-                      $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
-                      $savePull->execute();
-                      $save = $savePull->fetch(PDO::FETCH_ASSOC);
-                      if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
-                        $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
-                        $savedCheckPull->execute();
-                        $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
-                      }
+            <div class="row" id="post-data">
+              <?php foreach($results as $p): ?>
+              <div class="col-xl-4 col-lg-6 col-md-6 paddingFix" id="<?=$p['id'];?>">
+                <div style="position: relative">
+                  <a href="<?=$url?>palette/<?=$p['id']?>">
+                    <div class="palette-float">
+                        <div class="flex-thirds">
+                          <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                        </div>
+                        <div class="flex-thirds">
+                          <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                        </div>
+                      <?php 
+                          $pid = $p['id'];
+                          $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                          $savePull->execute();
+                          $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                          if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                            $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                            $savedCheckPull->execute();
+                            $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                          }
 
-                      
-                    ?>
-                    <div class="subtext">
-                      <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                        <div class="time left half">
-                          <?php if ($saved !== false) { ?>
-                            <span class="btn-unsave">Saved</span>
-                          <?php } else { ?>
-                            <span class="btn-save"><?=$save['num'];?> Saves</span>
-                          <?php } ?>
-                          </div>
-                        <?php } else {?>
-                          <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                            <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
-                          </div>
-                        <?php } ?>
-                        <?php if($p['featured'] == 1){ ?>
-                          <div class="award right half shine">
-                              <i class="fas fa-award"></i> Staff Pick
-                          </div>
-                        <?php } else { ?>
-                          <div class="time right half">
-                              <?=time_elapsed_string($p['date'])?>
-                          </div>
-                        <?php } ?>
-                    </div>
+                          
+                        ?>
+                        <div class="subtext">
+                          <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                            <div class="time left half">
+                              <?php if ($saved !== false) { ?>
+                                <span class="btn-unsave">Saved</span>
+                              <?php } else { ?>
+                                <span class="btn-save"><?=$save['num'];?> Saves</span>
+                              <?php } ?>
+                              </div>
+                            <?php } else {?>
+                              <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                                <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                              </div>
+                            <?php } ?>
+                            <?php if($p['featured'] == 1){ ?>
+                              <div class="award right half shine">
+                                  <i class="fas fa-award"></i> Staff Pick
+                              </div>
+                            <?php } else { ?>
+                              <div class="time right half">
+                                  <?=time_elapsed_string($p['date'])?>
+                              </div>
+                            <?php } ?>
+                        </div>
+                      </div>
                   </div>
+                </a>
               </div>
-            </a>
+              <?php endforeach; ?>
+            </div>
           </div>
-          <?php endforeach; ?>
           <?php } ?>
-          </div>
-          <?php if(isset($_GET['filter'])){ ?>
-          <?php } else { ?>
+         
 
-              <?php
-
-                $pgStart = 1;
-                $pg = $_GET['page'] - 2;
-                $pgStart = $pg + 5 > $total_pages ? $total_pages - 4 : $pg; //EDIT fix when reach pages end
-                $pgStart = $pg < 1 ? 1 : $pg; // This must be after ending correction (previous line)
-              ?>
-
-              <nav aria-label="Page navigation example">
-                  <ul class="pagination justify-content-center">
-                      <?php if ($pgStart > 1) { // show 1 ?>
-                      <li class="page-item"><a href="<?=$url?>palettes" class="page-link">1</a></li>
-                       <li class="page-item"><a href="<?=$url?>palettes" class="page-link">...</a></li>
-                      <?php } ?>
-                      <?php for($e = $pgStart; $e <= $total_pages && $e < $pgStart + 5; $e++){?>
-                      <li class="<?= $page == $e ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'palettes/'.$e; ?>" class="page-link"><?= $e; ?></a></li>
-                      <?php }?>
-                      <?php if ($e < $total_pages) { ?>
-                          <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link">...</a></li>
-                      <li class="page-item"><a href="<?=$url?>palettes/<?= $total_pages; ?>" class="page-link"><?=$total_pages?></a></li>
-                      <?php } ?>
-                  </ul> 
-              </nav>
-
-          <?php } ?>
-          </div>
+          
           <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
             <h3 class="medium-title">Filters</h3>
             <?php if(isset($_GET['filter'])){ ?>
@@ -351,13 +282,7 @@ $images = glob( $dir );
               </div>
             </form>
 
-              <p style="margin-bottom:0px">Additional Filters</p>
-              <form action="palettes" method="post" style="padding-bottom:25px">
-                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="Old">
-                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="New">
-                  <input type="submit" class="btn btn-theme" name="time"  style="font-size:15px" value="Popular">
-              </form>
-              
+
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>
@@ -390,6 +315,49 @@ $images = glob( $dir );
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
       })
+      $(document).on('click', 'a', function() {
+
+      var scrollpos = $(window).scrollTop(); 
+      localStorage.setItem('scrollpos', scrollpos);
+    });
+    var scrollplan = function() {
+      var foo = true
+      if ((foo == true) && $('.palettes').length > 30) {
+          var bar = localStorage.getItem('scrollpos')
+          $("html, body").animate({ scrollTop: bar}, 500);
+      }
+
+      };
+    </script>
+    <script>
+      $(window).scroll(function() {
+      if(($(window).scrollTop() == $(document).height() - $(window).height())) { //Add in condition
+          var last_id = $(".paddingFix:last").attr("id");
+          loadMoreData(last_id);
+      }
+      });
+
+      function loadMoreData(last_id){
+      $.ajax({
+          url: 'showMoreData.php?last_id=' + last_id,
+          type: "get",
+          beforeSend: function()
+          {
+              $('.ajax-load').hide();
+          }
+      })
+      .done(function(data)
+      {
+              $('.ajax-load').show();
+              $("#post-data").append(data);
+          
+      })
+      .fail(function(jqXHR, ajaxOptions, thrownError)
+      {
+              alert('No response...');
+
+      });
+      }
     </script>
   </body>
 </html>

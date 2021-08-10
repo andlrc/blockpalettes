@@ -1,8 +1,10 @@
 <?php 
 include "include/logic.php";
+
 $lastid = $_GET['last_id'];
 $pagData = $pdo->query("SELECT * FROM palette WHERE id < $lastid ORDER BY id DESC LIMIT 15");
 $pagData->setFetchMode(PDO:: FETCH_ASSOC);
+
 
 while($p = $pagData->fetch()) { 
 ?>

@@ -47,33 +47,62 @@ $popularPull->execute();
 $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-if(isset($_GET['filter'])){
-  $dataInput = !empty($_GET['filter']) ? trim($_GET['filter']) : null;
-  $block = htmlspecialchars($dataInput, ENT_QUOTES, 'UTF-8');
-
-  $palettePull = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
-                               OR blockTwo LIKE '$block' 
-                               OR blockThree LIKE '$block' 
-                               OR blockFour LIKE '$block' 
-                               OR blockFive LIKE '$block' 
-                               OR blockSix LIKE '$block' LIMIT 21");
-  $palettePull->execute();
-  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-
-
-} 
-    
-if (isset($_GET['removeFilter'])) {
-  header('Location: palettes');
-}
-
-//pull palettes
-
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
 $images = glob( $dir );
+
+
+//post request to check which ones are set, if one is set pull data, if two are set have if statement in each one.
+
+$path = $_SERVER['REQUEST_URI'];
+print_r($_GET);
+
+if(empty($_GET)){
+  $uri = $path . '?';
+} else {
+  $uri = $path . '&';
+}
+
+
+
+$query = "SELECT * FROM palette";
+
+$filtered_get = array_filter($_GET); // removes empty values from $_GET
+$i = 0;
+if (count($filtered_get)) { // not empty
+    $query .= " WHERE";
+
+    $keynames = array_keys($filtered_get); // make array of key names from $filtered_get
+    foreach($filtered_get as $key => $value)
+    {
+      $i++;
+      if($key == "block"){ 
+        $block = $value;
+        $query .= " blockOne LIKE '$block' 
+                    OR blockTwo LIKE '$block' 
+                    OR blockThree LIKE '$block' 
+                    OR blockFour LIKE '$block' 
+                    OR blockFive LIKE '$block' 
+                    OR blockSix LIKE '$block'"; 
+      }
+
+       $query .= " $key = '$value'";  // $filtered_get keyname = $filtered_get['keyname'] value
+       if (count($filtered_get) > 1 && (count($filtered_get) > $key)) {
+          if ($i == count($filtered_get)) {
+            $query;
+          } else {
+            $query .= " AND";
+          }
+       }
+       if($key == "block"){
+        $query = str_replace("block = '$value'", "", $query);
+       }
+    }
+}
+$query .= ";";
+
+
+
 
 
 
@@ -182,14 +211,14 @@ $images = glob( $dir );
                   <a href="<?=$url?>palette/<?=$p['id']?>">
                     <div class="palette-float">
                         <div class="flex-thirds">
-                          <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                          <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                          <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block" loading="lazy">
+                          <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block" loading="lazy">
+                          <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block" loading="lazy">
                         </div>
                         <div class="flex-thirds">
-                          <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                          <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                          <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                          <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block" loading="lazy">
+                          <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block" loading="lazy">
+                          <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block" loading="lazy">
                         </div>
                       <?php 
                           $pid = $p['id'];
@@ -285,14 +314,18 @@ $images = glob( $dir );
 
             <p style="margin-bottom:0px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
-                <?php $block = str_replace("_"," ",$popular['blocks']); ?>
-                <a href="<?=$url?>palettes?filter=<?=$popular['blocks']?>">
-                  <div class="block-pill">
+                <?php $block = str_replace("_"," ",$popular['blocks']); ?>   
+                  <a class="block-pill" href="<?=$uri . 'block=' . $popular['blocks']?>"">
                     <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
-                  </div>
-                </a>
+                  </a>
               <?php endforeach; ?>
               <div align="center" style="padding-top:25px">
+                  <a href="<?=$uri.'time=DESC'?>" class="block-pill">
+                    new
+                  </a>
+                  <a href="<?=$uri.'time=ASC'?>" class="block-pill">
+                    old
+                  </a>
                 <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
               </div>
           </div>
@@ -311,23 +344,25 @@ $images = glob( $dir );
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
+
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
       })
+      
       $(document).on('click', 'a', function() {
 
       var scrollpos = $(window).scrollTop(); 
       localStorage.setItem('scrollpos', scrollpos);
-    });
-    var scrollplan = function() {
-      var foo = true
-      if ((foo == true) && $('.palettes').length > 30) {
-          var bar = localStorage.getItem('scrollpos')
-          $("html, body").animate({ scrollTop: bar}, 500);
-      }
+      });
+      var scrollplan = function() {
+        var foo = true
+        if ((foo == true) && $('.palettes').length > 30) {
+            var bar = localStorage.getItem('scrollpos')
+            $("html, body").animate({ scrollTop: bar}, 500);
+        }
 
-      };
+        };
     </script>
     <script>
       $(window).scroll(function() {
@@ -359,5 +394,28 @@ $images = glob( $dir );
       });
       }
     </script>
+
+  <script>
+    $(document).ready(function () {
+      $(".filter").on("click",function(e){
+        var url = window.location.pathname;
+        e.preventDefault();
+        var block = $(this).attr("block");
+        var time = $(this).attr("time");
+        $.ajax({
+          url: url,
+          type: "get",
+          data: {
+            block: block,
+            time: time
+          },
+          success: function(response) {
+              
+          }
+        });
+      });
+    });
+  </script>
+  </body>
   </body>
 </html>

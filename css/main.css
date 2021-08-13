@@ -199,24 +199,30 @@ iframe{
 }
 
 .delete-tag{
-    background: #e74c3c;
+    background: #666;
     color: white;
     display:inline-block;
-    padding: 1px 10px;
+    padding: 1px 10px 1px 10px;
     border-radius: 4px;
     border: none;
-    margin-left:5px;
-    margin-top: -1px
+    margin-left:0px;
+    margin-top: -3px;
+    font-size:12px;
+    transition: ease .3s all;
+}
+.delete-tag:hover{
+    transform: scale(1.1);
 }
 
 .filter-tag{
-    background: black;
-    color: white;
+    background: transparent;
+    color: black;
     display:inline-block;
-    padding: 1px 10px;
+    padding: 1px 10px 1px 10px;
     border-radius: 4px;
- 
+    border: 2px black solid;
     margin-bottom: 15px;
+    font-weight: bolder;
 }
 
 .favbtn{

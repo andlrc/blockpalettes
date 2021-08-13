@@ -12,12 +12,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } 
 
-
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT 21");
-$palettePull->execute();
-$results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                       from 
                       (
@@ -55,7 +49,8 @@ $images = glob( $dir );
 //post request to check which ones are set, if one is set pull data, if two are set have if statement in each one.
 
 $path = $_SERVER['REQUEST_URI'];
-print_r($_GET);
+
+
 
 if(empty($_GET)){
   $uri = $path . '?';
@@ -70,7 +65,7 @@ $query = "SELECT * FROM palette";
 $filtered_get = array_filter($_GET); // removes empty values from $_GET
 $i = 0;
 if (count($filtered_get)) { // not empty
-    $query .= " WHERE";
+    $query .= " ";
 
     $keynames = array_keys($filtered_get); // make array of key names from $filtered_get
     foreach($filtered_get as $key => $value)
@@ -78,34 +73,57 @@ if (count($filtered_get)) { // not empty
       $i++;
       if($key == "block"){ 
         $block = $value;
-        $query .= " blockOne LIKE '$block' 
+        $block = " WHERE blockOne LIKE '$block' 
                     OR blockTwo LIKE '$block' 
                     OR blockThree LIKE '$block' 
                     OR blockFour LIKE '$block' 
                     OR blockFive LIKE '$block' 
                     OR blockSix LIKE '$block'"; 
+      } elseif($key == "s"){
+        if($value == "popular"){
+          $s = "ORDER BY likes DESC";
+        } elseif($value == "old"){
+          $s = "ORDER BY date ASC";
+        } else{
+          $s = "ORDER BY date DESC";
+        }
       }
 
-       $query .= " $key = '$value'";  // $filtered_get keyname = $filtered_get['keyname'] value
+       //$query .= " $key = '$value'";  // $filtered_get keyname = $filtered_get['keyname'] value
        if (count($filtered_get) > 1 && (count($filtered_get) > $key)) {
           if ($i == count($filtered_get)) {
             $query;
           } else {
-            $query .= " AND";
+            //$query .= " AND ";
           }
        }
        if($key == "block"){
-        $query = str_replace("block = '$value'", "", $query);
+        //$query = str_replace("block = '$value'", "", $query);
        }
     }
 }
+if(($key = "block") && ($key = "s")){
+  $query .= $block . ' ' . $s;
+}
+
 $query .= ";";
 
+$selected = $_GET; 
+$sblock = $selected['block'];
+$stime = $selected['s'];
+
+$sFilter = array("s" => array("popular","old","new"));
 
 
+$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT 21");
+$palettePull->execute();
+$results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
 
-
-
+if(!empty($_GET)){
+  $palettePull = $pdo->prepare($query);
+  $palettePull->execute();
+  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -193,7 +211,7 @@ $query .= ";";
 
 
           <?php if($results == null){ ?>
-            <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
+            <?php $blockName = str_replace("_"," ",$_GET['block']); ?>
             <div class="col-xl-9 col-lg-8 col-md-12" style="padding-bottom:200px">
             <div class="row">
             <div class="col-lg-12">
@@ -201,66 +219,77 @@ $query .= ";";
               There are currently no palettes that contain <?=ucwords($blockName)?>.<br>
               Create your own <a href="submit">here</a>.
             </div>
+            </div>
+            </div>
            
           <?php } else { ?>
             <div class="col-xl-9 col-lg-8 col-md-12">
             <div class="row" id="post-data">
               <?php foreach($results as $p): ?>
-              <div class="col-xl-4 col-lg-6 col-md-6 paddingFix" id="<?=$p['id'];?>">
-                <div style="position: relative">
-                  <a href="<?=$url?>palette/<?=$p['id']?>">
-                    <div class="palette-float">
-                        <div class="flex-thirds">
-                          <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block" loading="lazy">
-                          <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block" loading="lazy">
-                          <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block" loading="lazy">
-                        </div>
-                        <div class="flex-thirds">
-                          <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block" loading="lazy">
-                          <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block" loading="lazy">
-                          <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block" loading="lazy">
-                        </div>
-                      <?php 
-                          $pid = $p['id'];
-                          $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
-                          $savePull->execute();
-                          $save = $savePull->fetch(PDO::FETCH_ASSOC);
-                          if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
-                            $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
-                            $savedCheckPull->execute();
-                            $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
-                          }
+                <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
+                  <div style="position: relative">
+                      <div class="palette-float">
+                        <a href="<?=$url?>palette/<?=$p['id']?>">
+                          <div class="flex-thirds">
+                            <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                          </div>
+                          <div class="flex-thirds">
+                            <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
+                            <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                          </div>
+                        </a>
+                        <?php 
+                            $pid = $p['id'];
+                            $savePull = $pdo->prepare("SELECT COUNT(pid) as num FROM saved WHERE pid = $pid");
+                            $savePull->execute();
+                            $save = $savePull->fetch(PDO::FETCH_ASSOC);
+                            if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+                              $savedCheckPull = $pdo->prepare("SELECT uid FROM saved WHERE pid = $pid AND uid = $uid");
+                              $savedCheckPull->execute();
+                              $saved = $savedCheckPull->fetch(PDO::FETCH_ASSOC);
+                            }
 
-                          
-                        ?>
-                        <div class="subtext">
-                          <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                            <div class="time left half">
-                              <?php if ($saved !== false) { ?>
-                                <span class="btn-unsave">Saved</span>
-                              <?php } else { ?>
-                                <span class="btn-save"><?=$save['num'];?> Saves</span>
+                            
+                          ?>
+                          <div class="subtext">
+                            <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
+                              <div class="time left half">
+                                  <?php
+                                    $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$p['id']."");
+                                    $liked->execute();
+                                    $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                                    if ($like['num'] > 0): ?>
+                                      <!-- user already likes post -->
+                                      <span class="unlike unlikesmall" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                      <span class="like hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                    <?php else: ?>
+                                      <!-- user has not yet liked post -->
+                                      <span class="like" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                      <span class="unlike unlikesmall hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                    <?php endif ?>
+                                </div>
+                              <?php } else {?>
+                                <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
+                                  <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                </div>
                               <?php } ?>
-                              </div>
-                            <?php } else {?>
-                              <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                                <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
-                              </div>
-                            <?php } ?>
-                            <?php if($p['featured'] == 1){ ?>
-                              <div class="award right half shine">
-                                  <i class="fas fa-award"></i> Staff Pick
-                              </div>
-                            <?php } else { ?>
-                              <div class="time right half">
-                                  <?=time_elapsed_string($p['date'])?>
-                              </div>
-                            <?php } ?>
+                              <?php if($p['featured'] == 1){ ?>
+                                <div class="award right half shine">
+                                    <i class="fas fa-award"></i> Staff Pick
+                                </div>
+                              <?php } else { ?>
+                                <div class="time right half">
+                                    <?=time_elapsed_string($p['date'])?>
+                                </div>
+                              <?php } ?>
+                          </div>
                         </div>
-                      </div>
-                  </div>
-                </a>
-              </div>
+                    </div>
+                </div>
               <?php endforeach; ?>
             </div>
           </div>
@@ -270,32 +299,31 @@ $query .= ";";
           
           <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
             <h3 class="medium-title">Filters</h3>
-            <?php if(isset($_GET['filter'])){ ?>
-              <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
-              <span class="filter-tag"><?=ucwords($blockName)?></span>
-              <form style="display: inline-block;">
-              <button class="delete-tag btn" type="submit" name="removeFilter">
-                <i class="fas fa-times"></i>
-              </button>
-            </form>
-            <?php } else { ?>  
-              <div style="padding-bottom:0px"></div> 
+            <?php if(!empty($_GET)){ ?>
+              <div style="padding-bottom:10px">
+                <a href="palettes">
+                  <span class="delete-tag">
+                    Clear
+                    <i class="fas fa-times"></i>
+                  </span>
+                </a>
+              </div>
+              <?php 
+              $i = 0;
+                $selected_filters = array_filter($_GET);
+                foreach($filtered_get as $key => $value):
+                  $filter = str_replace("_"," ",$value); 
+                  
+              ?>
+                <span class="filter-tag">
+                  <?=ucwords($filter)?>
+                </span>
+              <?php endforeach; ?>
+          
             <?php } ?>
-              <?php if(isset($_SESSION['dateFilter'])){ ?>
-                  <?php $name = $_SESSION['dateFilter']; ?>
-                  <span class="filter-tag"><?=ucwords($name)?></span>
-                  <form style="display: inline-block;">
-                      <button class="delete-tag btn" type="submit" name="removeFilter">
-                          <i class="fas fa-times"></i>
-                      </button>
-                  </form>
-              <?php } else { ?>
-                  <div style="padding-bottom:0px"></div>
-              <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
-            <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
-              <div class="input-group">
-                  <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
+              <div class="input-group" style="padding-bottom:25px">
+                  <select id="select-1" name="block" class="form-control" placeholder="Search a block..." required> 
                   <option value="" class="cursor">Select a block...</option>
                       <?php 
                         foreach( $images as $image ):
@@ -307,27 +335,51 @@ $query .= ";";
                       <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
-                  <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
-              </div>
-            </form>
+                  <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
+                </div>
 
+            <p style="margin-bottom:0px">Sort By</p>
+              <?php foreach($sFilter['s'] as $tfilter): ?>
+                  <?php 
+                    if(empty($_GET)){
+                      $uri = $path . '?';
+                    } else {
+                      $uri = $path . '&';
+                    }
 
-            <p style="margin-bottom:0px">Popular Blocks</p>
+                    if(strpos($uri, '?s=' . $stime) !== false){
+                      $uri = str_replace('s=' . $stime . '&', "", $uri);
+                    } elseif(strpos($uri, "&s=".$stime) !== false){
+                      $uri = str_replace('&s=' . $stime, "", $uri);
+                    }
+
+                   
+                  ?>
+                  <a class="block-pill" href="<?=$uri.'s=' . $tfilter?>">
+                    <b><?=ucwords($tfilter)?></b>
+                  </a>
+                <?php endforeach; ?>
+            <p style="margin-bottom:0px; padding-top:25px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
                 <?php $block = str_replace("_"," ",$popular['blocks']); ?>   
-                  <a class="block-pill" href="<?=$uri . 'block=' . $popular['blocks']?>"">
+                <?php
+                    if(empty($_GET)){
+                      $uri = $path . '?';
+                    } else {
+                      $uri = $path . '&';
+                    }
+            
+                    if(strpos($uri, '?block=' . $sblock) !== false){
+                      $uri = str_replace('block=' . $sblock . '&', "", $uri);
+                    } elseif(strpos($uri, "&block=".$sblock) !== false){
+                      $uri = str_replace('&block=' . $sblock, "", $uri);
+                    }
+
+                ?>
+                  <a class="block-pill" href="<?=$uri . 'block=' . $popular['blocks']?>">
                     <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
                   </a>
               <?php endforeach; ?>
-              <div align="center" style="padding-top:25px">
-                  <a href="<?=$uri.'time=DESC'?>" class="block-pill">
-                    new
-                  </a>
-                  <a href="<?=$uri.'time=ASC'?>" class="block-pill">
-                    old
-                  </a>
-                <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
-              </div>
           </div>
         </div>
       </div>
@@ -346,6 +398,30 @@ $query .= ";";
     -->
 
     <script>
+      $('select[name="block"]').on('change', function(){    
+          var selectedVar = $('select[name="block"]').val();   
+          var pathname = window.location.href;
+          
+          var $_GET = {};
+
+          document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+              function decode(s) {
+                  return decodeURIComponent(s.split("+").join(" "));
+              }
+
+              $_GET[decode(arguments[1])] = decode(arguments[2]);
+          });
+
+         var currentBlock = $_GET["block"];
+         var newBlock = "block=" + selectedVar;
+
+          pathname = pathname.replace("block="+currentBlock, newBlock);
+          console.log(pathname);
+          $('#results').attr("href", pathname);
+
+      });
+
+
       $(function () {
         $('[data-toggle="tooltip"]').tooltip()
       })
@@ -411,6 +487,50 @@ $query .= ";";
           },
           success: function(response) {
               
+          }
+        });
+      });
+    });
+  </script>
+
+<script>
+    $(document).ready(function(){
+      // when the user clicks on like
+      $('.like').on('click', function(){
+        var postid = $(this).data('id');
+            $post = $(this);
+
+        $.ajax({
+          url: 'palettes.php',
+          type: 'post',
+          data: {
+            'liked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+
+      // when the user clicks on unlike
+      $('.unlike').on('click', function(){
+        var postid = $(this).data('id');
+          $post = $(this);
+
+        $.ajax({
+          url: 'palettes.php',
+          type: 'post',
+          data: {
+            'unliked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
           }
         });
       });

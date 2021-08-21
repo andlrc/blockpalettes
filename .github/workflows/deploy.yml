@@ -20,5 +20,5 @@ jobs:
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
           sourceDir: .
-          targetDir: ./html/
+          targetDir: ./blockpalettes.com/
 

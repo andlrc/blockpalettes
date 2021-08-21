@@ -199,30 +199,24 @@ iframe{
 }
 
 .delete-tag{
-    background: #666;
+    background: #e74c3c;
     color: white;
     display:inline-block;
-    padding: 1px 10px 1px 10px;
+    padding: 1px 10px;
     border-radius: 4px;
     border: none;
-    margin-left:0px;
-    margin-top: -3px;
-    font-size:12px;
-    transition: ease .3s all;
-}
-.delete-tag:hover{
-    transform: scale(1.1);
+    margin-left:5px;
+    margin-top: -1px
 }
 
 .filter-tag{
-    background: transparent;
-    color: black;
+    background: black;
+    color: white;
     display:inline-block;
-    padding: 1px 10px 1px 10px;
+    padding: 1px 10px;
     border-radius: 4px;
-    border: 2px black solid;
+ 
     margin-bottom: 15px;
-    font-weight: bolder;
 }
 
 .favbtn{
@@ -497,6 +491,7 @@ iframe{
 .page-link{
     color: black;
 }
+
 
 .fImage{
     width: 100%;
@@ -894,4 +889,39 @@ iframe{
 
 .result .nav-link{
     padding: 0px!important;
+}
+
+.hide {
+	display: none;
+}
+.button-like{
+    background-color: gray;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+}
+.button-unlike{
+    background-color: #ee5253;
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+}
+
+.like , .unlike{
+  cursor: pointer;
+  font-family: Tommymedium;
+}
+
+.unlikesmall .fa-heart{
+  color: #ee5253;
+}
+
+.unlikesmall{
+    font-family: Tommymedium;
 }

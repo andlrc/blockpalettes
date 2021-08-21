@@ -354,7 +354,6 @@ if (isset($_SESSION['user_id'])) {
                                                         <input type="hidden" name="email" value="<?=$userP['email']?>">
                                                         <input type="hidden" name="username" value="<?=$userP['username']?>">
                                                         <?php foreach ($awards as $awa): ?>
-                                                            <input type="hidden" name="award_name" value="<?=$awa['award_name']?>">
                                                             <label>
                                                                 <input type="radio" name="award" value="<?=$awa['id']?>" required>
                                                                 <img src="<?=$url?>img/awards/<?=$awa['award_icon']?>">

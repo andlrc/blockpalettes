@@ -3,7 +3,14 @@
 require "password.php";
 require "connect.php";
 
-$url = "http://localhost/blockpalettes/";
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+    $uid = $_SESSION['user_id'];
+    $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+$url = "https://www.blockpalettes.com/";
 
 if(isset($_REQUEST["term"])) {
 // Prepare a select statement
@@ -28,37 +35,6 @@ if(isset($_REQUEST["term"])) {
                        </a>
                      </div>
                      ';
-            }
-        } else {
-            echo "<p>No matches found</p>";
-        }
-    }
-}
-
-if(isset($_REQUEST["dateFilter"])) {
-// Prepare a select statement
-    $param_term = $_REQUEST["dateFilter"];
-    if ($param_term == "Old") {
-        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date ASC");
-        $_SESSION['dateFilter'] = $param_term;
-    }else if ($param_term == "New") {
-        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
-        $_SESSION['dateFilter'] = $param_term;
-    }else if ($param_term == "Popular") {
-        $stmt = $pdo->prepare("SELECT * FROM saved ORDER BY date DESC");
-        $_SESSION['dateFilter'] = $param_term;
-    }else {
-        echo "broken";
-    }
-    $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if($result) {
-        if ($result != false) {
-            foreach ($result as $p) {
-                echo '
-                    '. $p["id"] .'<br>
-                ';
             }
         } else {
             echo "<p>No matches found</p>";
@@ -570,12 +546,17 @@ if(isset($_POST['blog'])){
 }
 
 
-if(isset($_POST['save'])){
-    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
-    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
-
-    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+if(isset($_POST['liked'])){
+    $pidIn = !empty($_POST['postid']) ? trim($_POST['postid']) : null;
     $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+    $uid = $user['id'];
+
+    $savePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+    $savePull->execute();
+    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+
+    $n = $save['likes'];
+    
 
     //Preparing insert statement
     $sql = "INSERT INTO saved (uid, pid) VALUES (:uid, :pid)";
@@ -583,40 +564,49 @@ if(isset($_POST['save'])){
     //Bind varibles
     $stmt->bindValue(':uid', $uid);
     $stmt->bindValue(':pid', $pid);
-
-
     //Execute the statement
+    $result = $stmt->execute();
+
+    $edit = "UPDATE palette SET likes = $n+1 WHERE id ='$pid'";
+    $stmt = $pdo->prepare($edit);
     $result = $stmt->execute();
 
     //If successful, returns to user profile
     if($result) {
-        header('Location: ' . $url . 'palette/' . $pid);
+        echo $n+1;
+        exit();
     }
 }
 
-if(isset($_POST['unsave'])){
-    $uidIn = !empty($_POST['uid']) ? trim($_POST['uid']) : null;
-    $pidIn = !empty($_POST['pid']) ? trim($_POST['pid']) : null;
-
-    $uid = htmlspecialchars($uidIn, ENT_QUOTES, 'UTF-8');
+if(isset($_POST['unliked'])){
+    $pidIn = !empty($_POST['postid']) ? trim($_POST['postid']) : null;
     $pid = htmlspecialchars($pidIn, ENT_QUOTES, 'UTF-8');
+    $uid = $user['id'];
+
+
+    $savePull = $pdo->prepare("SELECT * FROM palette WHERE id = $pid");
+    $savePull->execute();
+    $save = $savePull->fetch(PDO::FETCH_ASSOC);
+
+    $n = $save['likes'];
+
 
     //Preparing insert statement
-    $delete = "DELETE FROM saved WHERE uid = :uid AND pid = :pid";
-    $stmt = $pdo->prepare($delete);
-    //Bind varibles
-    $stmt->bindValue(':uid', $uid);
-    $stmt->bindValue(':pid', $pid);
+    $sql = "DELETE FROM saved WHERE pid = $pid AND uid = $uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
 
-
-    //Execute the statement
-    $result = $stmt->execute();
+    $edit = "UPDATE palette SET likes =$n-1 WHERE id =$pid";
+    $stmt = $pdo->prepare($edit);
+    $stmt->execute();
 
     //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'palette/' . $pid);
-    }
+    
+        echo $n-1;
+        exit();
+    
 }
+
 
 
 
@@ -810,7 +800,7 @@ if(isset($_POST['updateRank'])){
 if(isset($_POST['giveAward'])){
     $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
     $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
-    $award_name = $_POST['award_name'];
+    $award_name = !empty($_POST['award_name']) ? trim($_POST['award_name']) : null;
     $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
     $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
 
@@ -862,7 +852,7 @@ if(isset($_POST['giveAward'])){
             $to = $email;
             $subject = "You were given an award on Block Palettes!";
             $msg = "<h4>Congratulations on receiving the award: " . ucwords($award_name) . "<br>
-                    Check it out on your profile, <a href='". $url ."profile/'". $username .">here</a>.</h4>
+                    Check it out on your profile, <a href='". $url ."profile/". $username ."'>here</a>.</h4>
                    <br>
                     <i>- Block Palettes Staff</i>
 

@@ -1,7 +1,10 @@
 <?php 
 session_start();
 
+
 require "include/logic.php";
+
+
 //Check if user is logged in
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $uid = $_SESSION['user_id'];
@@ -84,6 +87,7 @@ $i = 0;
       gtag('config', 'UA-81969207-1');
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   </head>
   <body>
     <!-- Nav -->
@@ -178,8 +182,8 @@ $i = 0;
           <?php foreach($palette as $p): ?>
           <div class="col-xl-3 col-lg-4 col-md-6 paddingFix">
             <div style="position: relative">
-            <a href="<?=$url?>palette/<?=$p['id']?>">
                 <div class="palette-float">
+                <a href="<?=$url?>palette/<?=$p['id']?>">
                   <div class="flex-thirds">
                     <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
                     <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
@@ -190,6 +194,7 @@ $i = 0;
                     <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
                     <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
                   </div>
+                  </a>
                   
                   <?php 
                     $pid = $p['id'];
@@ -207,15 +212,24 @@ $i = 0;
                   <div class="subtext">
                     <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                       <div class="time left half">
-                        <?php if ($saved !== false) { ?>
-                          <span class="btn-unsave">Saved</span>
-                        <?php } else { ?>
-                          <span class="btn-save"><?=$save['num'];?> Saves</span>
-                        <?php } ?>
+                            <?php
+                              $liked = $pdo->prepare("SELECT count(*) as num FROM saved WHERE uid=".$user['id']." AND pid=".$p['id']."");
+                              $liked->execute();
+                              $like = $liked->fetch(PDO::FETCH_ASSOC);
+
+                              if ($like['num'] > 0): ?>
+                                <!-- user already likes post -->
+                                <span class="unlike unlikesmall" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
+                                <span class="like hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                              <?php else: ?>
+                                <!-- user has not yet liked post -->
+                                <span class="like" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Save"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                                <span class="unlike unlikesmall hide" data-id="<?php echo $p['id']; ?>" data-toggle="tooltip" data-placement="bottom" title="Unsave"><i class="fas fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span> 
+                              <?php endif ?>
                         </div>
                       <?php } else {?>
                         <div class="time left half" data-toggle="modal" data-target="#loginModal" style="cursor: pointer">
-                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><?=$save['num'];?> Saves</span>
+                          <span class="btn-save" data-toggle="tooltip" data-placement="bottom" title="Sign in to save palettes!"><i class="far fa-heart"></i> <span class="likes_count"><?php echo $p['likes']; ?></span></span>
                         </div>
                       <?php } ?>
                     <div class="award right half shine">
@@ -223,7 +237,6 @@ $i = 0;
                     </div>
                   </div>
                 </div>
-                </a>
             </div>
           </div>
           <?php endforeach; ?>
@@ -243,5 +256,48 @@ $i = 0;
         $('[data-toggle="tooltip"]').tooltip()
       })
     </script>
+    <script>
+    $(document).ready(function(){
+      // when the user clicks on like
+      $('.like').on('click', function(){
+        var postid = $(this).data('id');
+            $post = $(this);
+
+        $.ajax({
+          url: 'featured.php',
+          type: 'post',
+          data: {
+            'liked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+
+      // when the user clicks on unlike
+      $('.unlike').on('click', function(){
+        var postid = $(this).data('id');
+          $post = $(this);
+
+        $.ajax({
+          url: 'featured.php',
+          type: 'post',
+          data: {
+            'unliked': 1,
+            'postid': postid
+          },
+          success: function(response){
+            $post.parent().find('span.likes_count').text(response + "");
+            $post.addClass('hide');
+            $post.siblings().removeClass('hide');
+          }
+        });
+      });
+    });
+  </script>
   </body>
 </html>

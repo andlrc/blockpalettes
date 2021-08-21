@@ -78,7 +78,7 @@
             </div>
         </nav>
     </div>
-<div class="filler" style="height: 65px"></div>
+<div class="buffer" style="height: 65px"></div>
 
 
     <!-- Register Modal -->

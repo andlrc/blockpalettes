@@ -240,40 +240,100 @@ $sFilter = array("s" => array("popular","old","new"));
             <div class="title" style="padding-bottom:15px">Palettes</div>
           </div>
 
+          <!--Filters-->
           <div class="col-md-12 d-xl-none d-lg-none d-md-block paddingFix" >
             <h3 class="medium-title">Filters</h3>
-            <?php if(isset($_GET['filter'])){ ?>
-              <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
-              <span class="filter-tag"><?=ucwords($blockName)?></span>
-              <form style="display: inline-block;">
-              <button class="delete-tag btn" type="submit" name="removeFilter">
-                <i class="fas fa-times"></i>
-              </button>
-            </form>
-            <?php } else { ?>  
-              <div style="padding-bottom:0px"></div> 
+            <?php if(!empty($_GET)){ ?>
+              <?php if(isset($_GET['p'])) {
+                if((isset($_GET['block'])) || (isset($_GET['s']))) { 
+                  echo '<div style="padding-bottom:10px">
+                          <a href="palettes">
+                            <span class="delete-tag">
+                              Clear
+                              <i class="fas fa-times"></i>
+                            </span>
+                          </a>
+                        </div>';
+                } else {
+
+                }
+              } else {
+                echo '<div style="padding-bottom:10px">
+                        <a href="palettes">
+                          <span class="delete-tag">
+                            Clear
+                            <i class="fas fa-times"></i>
+                          </span>
+                        </a>
+                      </div>';
+              }
+
+              ?>
+  
+              <?php 
+             
+              $i = 0;
+                $selected_filters = array_filter($_GET);
+                foreach($filtered_get as $key => $value):
+                  $filter = str_replace("_"," ",$value);
+                  
+              ?>
+              <?php if($key == "p"){ ?>
+                   
+              <?php } else { ?>
+                <span class="filter-tag">
+                  <?=ucwords($filter)?>
+                </span>
+              <?php } ?>
+              <?php endforeach; ?>
+          
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
-            <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
-            <div class="input-group">
-                <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
-                <option value="" class="cursor">Select a block...</option>
-                    <?php 
-                      foreach( $images as $image ):
-                        $extCut = str_replace(".png","","$image");
-                        $cleanStr = str_replace("img/block/","","$extCut");
+              <div class="input-group" style="padding-bottom:25px">
+                  <select id="select-1" name="block" class="form-control" placeholder="Search a block..." required> 
+                  <option value="" class="cursor">Select a block...</option>
+                      <?php 
+                        foreach( $images as $image ):
+                          $extCut = str_replace(".png","","$image");
+                          $cleanStr = str_replace("img/block/","","$extCut");
 
-                        $blockName = str_replace("_"," ",$cleanStr);
-                    ?>
-                    <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
-            </div>
-            </form>
-            <div align="center">
-              <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
-            </div>
+                          $blockName = str_replace("_"," ",$cleanStr);
+                      ?>
+                      <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
+                      <?php endforeach; ?>
+                  </select>
+                  <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
+                </div>
+
+            <p style="margin-bottom:0px">Sort By</p>
+              <?php foreach($sFilter['s'] as $tfilter): ?>
+                  <?php 
+                    if(empty($_GET)){
+                      $uri = $path . '?';
+                    } else {
+                      $uri = $path . '&';
+                    }
+
+                    //Remove current page in url
+                    $current_page = $_GET['p'];
+                    if(strpos($uri, '?p=' . $current_page) !== false){
+                      $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                    } elseif(strpos($uri, "&p=".$current_page) !== false){
+                      $uri = str_replace('&p=' . $current_page, "", $uri);
+                    }
+
+                    if(strpos($uri, '?s=' . $stime) !== false){
+                      $uri = str_replace('s=' . $stime . '&', "", $uri);
+                    } elseif(strpos($uri, "&s=".$stime) !== false){
+                      $uri = str_replace('&s=' . $stime, "", $uri);
+                    }
+
+                   
+                  ?>
+                  <a class="block-pill" href="<?=$uri.'s=' . $tfilter?>">
+                    <b><?=ucwords($tfilter)?></b>
+                  </a>
+                <?php endforeach; ?>
           </div>
 
 
@@ -428,19 +488,38 @@ $sFilter = array("s" => array("popular","old","new"));
           <?php } ?>
          
 
-          
+          <!--Filters-->
           <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
             <h3 class="medium-title">Filters</h3>
             <?php if(!empty($_GET)){ ?>
-              <div style="padding-bottom:10px">
-                <a href="palettes">
-                  <span class="delete-tag">
-                    Clear
-                    <i class="fas fa-times"></i>
-                  </span>
-                </a>
-              </div>
+              <?php if(isset($_GET['p'])) {
+                if((isset($_GET['block'])) || (isset($_GET['s']))) { 
+                  echo '<div style="padding-bottom:10px">
+                          <a href="palettes">
+                            <span class="delete-tag">
+                              Clear
+                              <i class="fas fa-times"></i>
+                            </span>
+                          </a>
+                        </div>';
+                } else {
+
+                }
+              } else {
+                echo '<div style="padding-bottom:10px">
+                        <a href="palettes">
+                          <span class="delete-tag">
+                            Clear
+                            <i class="fas fa-times"></i>
+                          </span>
+                        </a>
+                      </div>';
+              }
+
+              ?>
+  
               <?php 
+             
               $i = 0;
                 $selected_filters = array_filter($_GET);
                 foreach($filtered_get as $key => $value):
@@ -483,6 +562,14 @@ $sFilter = array("s" => array("popular","old","new"));
                       $uri = $path . '&';
                     }
 
+                    //Remove current page in url
+                    $current_page = $_GET['p'];
+                    if(strpos($uri, '?p=' . $current_page) !== false){
+                      $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                    } elseif(strpos($uri, "&p=".$current_page) !== false){
+                      $uri = str_replace('&p=' . $current_page, "", $uri);
+                    }
+
                     if(strpos($uri, '?s=' . $stime) !== false){
                       $uri = str_replace('s=' . $stime . '&', "", $uri);
                     } elseif(strpos($uri, "&s=".$stime) !== false){
@@ -505,6 +592,14 @@ $sFilter = array("s" => array("popular","old","new"));
                       $uri = $path . '&';
                     }
             
+                    //Remove current page in url
+                    $current_page = $_GET['p'];
+                    if(strpos($uri, '?p=' . $current_page) !== false){
+                      $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                    } elseif(strpos($uri, "&p=".$current_page) !== false){
+                      $uri = str_replace('&p=' . $current_page, "", $uri);
+                    }
+
                     if(strpos($uri, '?block=' . $sblock) !== false){
                       $uri = str_replace('block=' . $sblock . '&', "", $uri);
                     } elseif(strpos($uri, "&block=".$sblock) !== false){
@@ -548,6 +643,7 @@ $sFilter = array("s" => array("popular","old","new"));
               $_GET[decode(arguments[1])] = decode(arguments[2]);
           });
 
+          var currentPage = $_GET["p"];
           var currentBlock = $_GET["block"];
           var newBlock = "block=" + selectedVar;
           if (currentBlock == null){
@@ -556,8 +652,19 @@ $sFilter = array("s" => array("popular","old","new"));
             } else {
               pathname = pathname + "?" + newBlock;
             }
+            
+            if (pathname.includes("?p=")){
+              pathname = pathname.replace("?p="+currentPage, "");
+            } else if (pathname.includes("&p=")){
+              pathname = pathname.replace("&p="+currentPage, "");
+            }
           } else {
             pathname = pathname.replace("block="+currentBlock, newBlock);
+            if (pathname.includes("?p=")){
+              pathname = pathname.replace("?p="+currentPage, "");
+            } else if (pathname.includes("&p=")){
+              pathname = pathname.replace("&p="+currentPage, "");
+            }
           }
           console.log(pathname);
           $('#results').attr("href", pathname);

@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       

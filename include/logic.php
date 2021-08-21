@@ -610,6 +610,7 @@ if(isset($_POST['unliked'])){
 
 
 
+
 /*
   Accept email of user whose password is to be reset
   Send email to user to reset their password
@@ -838,7 +839,7 @@ if(isset($_POST['giveAward'])){
         $result = $stmt->execute();
 
         //If successful, returns to user profile
-         if ($result) {
+        if ($result) {
             $sql = "SELECT award_name AS name FROM awards WHERE id = $award";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();

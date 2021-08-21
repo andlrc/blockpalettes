@@ -138,7 +138,7 @@ $images = glob( $dir );
 
       gtag('config', 'UA-81969207-1');
     </script>
-
+    <script data-ad-client="ca-pub-9529646541661119" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   </head>
   <body>
     <!-- Nav -->
@@ -340,6 +340,20 @@ $images = glob( $dir );
               <div align="center" style="padding-top:25px">
                 <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
               </div>
+
+              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9529646541661119"
+     crossorigin="anonymous"></script>
+              <!-- Sidebar Ad -->
+              <ins class="adsbygoogle"
+                  style="display:block"
+                  data-ad-client="ca-pub-9529646541661119"
+                  data-ad-slot="7681853473"
+                  data-ad-format="auto"
+                  data-full-width-responsive="true"></ins>
+              <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+
           </div>
         </div>
       </div>

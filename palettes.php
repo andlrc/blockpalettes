@@ -1,8 +1,7 @@
 <?php
-error_reporting(0);
+error_reporting(1);
 session_start();
 include "include/logic.php";
-
 
 
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
@@ -11,6 +10,133 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 } 
+
+
+//pagination
+  $block = $_GET['block'];
+  $s = $_GET['s'];
+
+  $limit = 21;
+
+  if((!isset($block)) && (!isset($s))){
+    $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
+    $palettePull->execute();
+
+
+    $total_results = $palettePull->rowCount();
+    $total_pages = ceil($total_results/$limit);
+        
+    if (!isset($_GET['p'])) {
+        $page = 1;
+    } else{
+        $page = htmlspecialchars(addslashes($_GET['p']));
+    }
+
+    $start = ($page-1)*$limit;
+
+    $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id DESC LIMIT $start, $limit");
+    $stmt->execute();
+
+  } elseif((isset($block)) && (isset($s))){
+    if($s == "popular"){
+      $s = "ORDER BY likes DESC";
+    } elseif($s == "old"){
+      $s = "ORDER BY date ASC";
+    } else{
+      $s = "ORDER BY date DESC";
+    }
+    $block = "blockOne LIKE '$block' 
+                      OR blockTwo LIKE '$block' 
+                      OR blockThree LIKE '$block' 
+                      OR blockFour LIKE '$block' 
+                      OR blockFive LIKE '$block' 
+                      OR blockSix LIKE '$block'";
+
+    $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block $s");
+    $palettePull->execute();
+
+    $total_results = $palettePull->rowCount();
+    $total_pages = ceil($total_results/$limit);
+    
+    if (!isset($_GET['p'])) {
+        $page = 1;
+    } else{
+        $page = htmlspecialchars(addslashes($_GET['p']));
+    }
+
+    $start = ($page-1)*$limit;
+
+    $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 AND $block $s LIMIT $start, $limit");
+    $stmt->execute();
+
+  } elseif(isset($block)){
+    $block = "blockOne LIKE '$block' 
+              OR blockTwo LIKE '$block' 
+              OR blockThree LIKE '$block' 
+              OR blockFour LIKE '$block' 
+              OR blockFive LIKE '$block' 
+              OR blockSix LIKE '$block'";
+
+    $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block");
+    $palettePull->execute();
+
+
+    $total_results = $palettePull->rowCount();
+    $total_pages = ceil($total_results/$limit);
+
+    if (!isset($_GET['p'])) {
+    $page = 1;
+    } else{
+    $page = htmlspecialchars(addslashes($_GET['p']));
+    }
+
+    $start = ($page-1)*$limit;
+
+    $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 AND $block LIMIT $start, $limit");
+    $stmt->execute();
+
+  } elseif(isset($s)){
+    if($s == "popular"){
+      $s = "ORDER BY likes DESC";
+    } elseif($s == "old"){
+      $s = "ORDER BY date ASC";
+    } else{
+      $s = "ORDER BY date DESC";
+    }
+
+      $palettePull = $pdo->prepare("SELECT * FROM palette $s");
+      $palettePull->execute();
+
+
+      $total_results = $palettePull->rowCount();
+      $total_pages = ceil($total_results/$limit);
+          
+      if (!isset($_GET['p'])) {
+          $page = 1;
+      } else{
+          $page = htmlspecialchars(addslashes($_GET['p']));
+      }
+
+      $start = ($page-1)*$limit;
+
+      $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 $s LIMIT $start, $limit");
+      $stmt->execute();
+  }
+
+  // set the resulting array to associative
+  $stmt->setFetchMode(PDO::FETCH_OBJ);
+        
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+  $conn = null;
+
+  // var_dump($results);
+  $no = $page > 1 ? $start+1 : 1;
+
+  $i = 0;
+
+  $total_pages = $total_pages - 1;
+
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
                       from 
@@ -50,8 +176,6 @@ $images = glob( $dir );
 
 $path = $_SERVER['REQUEST_URI'];
 
-
-
 if(empty($_GET)){
   $uri = $path . '?';
 } else {
@@ -59,54 +183,7 @@ if(empty($_GET)){
 }
 
 
-
-$query = "SELECT * FROM palette";
-
 $filtered_get = array_filter($_GET); // removes empty values from $_GET
-$i = 0;
-if (count($filtered_get)) { // not empty
-    $query .= " ";
-
-    $keynames = array_keys($filtered_get); // make array of key names from $filtered_get
-    foreach($filtered_get as $key => $value)
-    {
-      $i++;
-      if($key == "block"){ 
-        $block = $value;
-        $block = " WHERE blockOne LIKE '$block' 
-                    OR blockTwo LIKE '$block' 
-                    OR blockThree LIKE '$block' 
-                    OR blockFour LIKE '$block' 
-                    OR blockFive LIKE '$block' 
-                    OR blockSix LIKE '$block'"; 
-      } elseif($key == "s"){
-        if($value == "popular"){
-          $s = "ORDER BY likes DESC";
-        } elseif($value == "old"){
-          $s = "ORDER BY date ASC";
-        } else{
-          $s = "ORDER BY date DESC";
-        }
-      }
-
-       //$query .= " $key = '$value'";  // $filtered_get keyname = $filtered_get['keyname'] value
-       if (count($filtered_get) > 1 && (count($filtered_get) > $key)) {
-          if ($i == count($filtered_get)) {
-            $query;
-          } else {
-            //$query .= " AND ";
-          }
-       }
-       if($key == "block"){
-        //$query = str_replace("block = '$value'", "", $query);
-       }
-    }
-}
-if(($key = "block") && ($key = "s")){
-  $query .= $block . ' ' . $s;
-}
-
-$query .= ";";
 
 $selected = $_GET; 
 $sblock = $selected['block'];
@@ -114,16 +191,6 @@ $stime = $selected['s'];
 
 $sFilter = array("s" => array("popular","old","new"));
 
-
-$palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC LIMIT 21");
-$palettePull->execute();
-$results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-
-if(!empty($_GET)){
-  $palettePull = $pdo->prepare($query);
-  $palettePull->execute();
-  $results = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-}
 ?>
 <!doctype html>
 <html lang="en">
@@ -226,7 +293,7 @@ if(!empty($_GET)){
             <div class="col-xl-9 col-lg-8 col-md-12">
             <div class="row" id="post-data">
               <?php foreach($results as $p): ?>
-                <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
+                <div class="col-xl-4 col-lg-6 col-md-6 paddingFix" id="<?=$p['id'];?>">
                   <div style="position: relative">
                       <div class="palette-float">
                         <a href="<?=$url?>palette/<?=$p['id']?>">
@@ -292,6 +359,71 @@ if(!empty($_GET)){
                 </div>
               <?php endforeach; ?>
             </div>
+
+            <?php
+              $pgStart = 1;
+              $pg = $_GET['p'] - 2;
+              $pgStart = $pg + 5 > $total_pages ? $total_pages - 4 : $pg; //EDIT fix when reach pages end
+              $pgStart = $pg < 1 ? 1 : $pg; // This must be after ending correction (previous line)
+            ?>
+            
+              <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                      <?php if ($pgStart > 1) { // show 1 ?>
+                      <?php
+                          if(empty($_GET)){
+                            $uri = $path . '?';
+                          } else {
+                            $current_page = $_GET['p'];
+                            $uri = $path . '&';
+                          }
+  
+                          if(strpos($uri, '?p=') !== false){
+                            $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                          } elseif(strpos($uri, "&p=") !== false){
+                            $uri = str_replace('&p=' . $current_page, "", $uri);
+                          }  
+                      ?>
+                      <li class="page-item"><a href="<?=$uri.'p=1'?>" class="page-link">1</a></li>
+                       <li class="page-item"><a href="<?=$uri.'p=1'?>" class="page-link">...</a></li>
+                      <?php } ?>
+                      <?php for($e = $pgStart; $e <= $total_pages && $e < $pgStart + 5; $e++){?>
+                      <?php 
+                        if(empty($_GET)){
+                          $uri = $path . '?';
+                        } else {
+                          $current_page = $_GET['p'];
+                          $uri = $path . '&';
+                        }
+
+                        if(strpos($uri, '?p=') !== false){
+                          $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                        } elseif(strpos($uri, "&p=") !== false){
+                          $uri = str_replace('&p=' . $current_page, "", $uri);
+                        }      
+                      ?>
+                      <li class="<?= $page == $e ? 'active' : ''; ?> page-item"><a href="<?=$uri.'p=' . $e?>" class="page-link"><?= $e; ?></a></li>
+                      <?php }?>
+                      <?php if ($e < $total_pages) { ?>
+                      <?php 
+                        if(empty($_GET)){
+                          $uri = $path . '?';
+                        } else {
+                          $current_page = $_GET['p'];
+                          $uri = $path . '&';
+                        }
+
+                        if(strpos($uri, '?p=') !== false){
+                          $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                        } elseif(strpos($uri, "&p=") !== false){
+                          $uri = str_replace('&p=' . $current_page, "", $uri);
+                        }      
+                      ?>
+                          <li class="page-item"><a href="<?=$uri.'p=' . $total_pages?>" class="page-link">...</a></li>
+                      <li class="page-item"><a href="<?=$uri.'p=' . $total_pages?>" class="page-link"><?=$total_pages?></a></li>
+                      <?php } ?>
+                  </ul> 
+              </nav>
           </div>
           <?php } ?>
          
@@ -312,12 +444,16 @@ if(!empty($_GET)){
               $i = 0;
                 $selected_filters = array_filter($_GET);
                 foreach($filtered_get as $key => $value):
-                  $filter = str_replace("_"," ",$value); 
+                  $filter = str_replace("_"," ",$value);
                   
               ?>
+              <?php if($key == "p"){ ?>
+                   
+              <?php } else { ?>
                 <span class="filter-tag">
                   <?=ucwords($filter)?>
                 </span>
+              <?php } ?>
               <?php endforeach; ?>
           
             <?php } ?>
@@ -396,7 +532,7 @@ if(!empty($_GET)){
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     -->
-
+     
     <script>
       $('select[name="block"]').on('change', function(){    
           var selectedVar = $('select[name="block"]').val();   
@@ -412,130 +548,70 @@ if(!empty($_GET)){
               $_GET[decode(arguments[1])] = decode(arguments[2]);
           });
 
-         var currentBlock = $_GET["block"];
-         var newBlock = "block=" + selectedVar;
-
-          pathname = pathname.replace("block="+currentBlock, newBlock);
+          var currentBlock = $_GET["block"];
+          var newBlock = "block=" + selectedVar;
+          if (currentBlock == null){
+            if (pathname.includes("s=")){
+              pathname = pathname + "&" + newBlock;
+            } else {
+              pathname = pathname + "?" + newBlock;
+            }
+          } else {
+            pathname = pathname.replace("block="+currentBlock, newBlock);
+          }
           console.log(pathname);
           $('#results').attr("href", pathname);
 
       });
-
-
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
-      
-      $(document).on('click', 'a', function() {
-
-      var scrollpos = $(window).scrollTop(); 
-      localStorage.setItem('scrollpos', scrollpos);
-      });
-      var scrollplan = function() {
-        var foo = true
-        if ((foo == true) && $('.palettes').length > 30) {
-            var bar = localStorage.getItem('scrollpos')
-            $("html, body").animate({ scrollTop: bar}, 500);
-        }
-
-        };
     </script>
+    
     <script>
-      $(window).scroll(function() {
-      if(($(window).scrollTop() == $(document).height() - $(window).height())) { //Add in condition
-          var last_id = $(".paddingFix:last").attr("id");
-          loadMoreData(last_id);
-      }
-      });
+        $(document).ready(function(){
+          // when the user clicks on like
+          $('.like').on('click', function(){
+            var postid = $(this).data('id');
+                $post = $(this);
 
-      function loadMoreData(last_id){
-      $.ajax({
-          url: 'showMoreData.php?last_id=' + last_id,
-          type: "get",
-          beforeSend: function()
-          {
-              $('.ajax-load').hide();
-          }
-      })
-      .done(function(data)
-      {
-              $('.ajax-load').show();
-              $("#post-data").append(data);
-          
-      })
-      .fail(function(jqXHR, ajaxOptions, thrownError)
-      {
-              alert('No response...');
+            $.ajax({
+              url: 'palettes.php',
+              type: 'post',
+              data: {
+                'liked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
 
-      });
-      }
-    </script>
+          // when the user clicks on unlike
+          $('.unlike').on('click', function(){
+            var postid = $(this).data('id');
+              $post = $(this);
 
-  <script>
-    $(document).ready(function () {
-      $(".filter").on("click",function(e){
-        var url = window.location.pathname;
-        e.preventDefault();
-        var block = $(this).attr("block");
-        var time = $(this).attr("time");
-        $.ajax({
-          url: url,
-          type: "get",
-          data: {
-            block: block,
-            time: time
-          },
-          success: function(response) {
-              
-          }
+            $.ajax({
+              url: 'palettes.php',
+              type: 'post',
+              data: {
+                'unliked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
         });
-      });
-    });
-  </script>
-
-<script>
-    $(document).ready(function(){
-      // when the user clicks on like
-      $('.like').on('click', function(){
-        var postid = $(this).data('id');
-            $post = $(this);
-
-        $.ajax({
-          url: 'palettes.php',
-          type: 'post',
-          data: {
-            'liked': 1,
-            'postid': postid
-          },
-          success: function(response){
-            $post.parent().find('span.likes_count').text(response + "");
-            $post.addClass('hide');
-            $post.siblings().removeClass('hide');
-          }
-        });
-      });
-
-      // when the user clicks on unlike
-      $('.unlike').on('click', function(){
-        var postid = $(this).data('id');
-          $post = $(this);
-
-        $.ajax({
-          url: 'palettes.php',
-          type: 'post',
-          data: {
-            'unliked': 1,
-            'postid': postid
-          },
-          success: function(response){
-            $post.parent().find('span.likes_count').text(response + "");
-            $post.addClass('hide');
-            $post.siblings().removeClass('hide');
-          }
-        });
-      });
-    });
-  </script>
-  </body>
+      </script>
+      <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+      </script>
   </body>
 </html>

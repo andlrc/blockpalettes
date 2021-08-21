@@ -80,6 +80,10 @@ $profileDataPull = $pdo->prepare("SELECT * FROM user_profile WHERE uid = $postUs
 $profileDataPull->execute();
 $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
 
+$sFilter = array("s" => array("popular","old","new"));
+$_GET = "";
+
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -291,11 +295,36 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">
               <h3 class="medium-title">Filter Palettes</h3>
-              <p style="margin-bottom:0px">Search Block</p>
-              <form method="get" style="padding-bottom:25px" action="<?=$url?>palettes">
-              <div class="input-group">
-                  <select id="select-1" name="filter" class="form-control" placeholder="Search a block..." required> 
-                  <option value="" class="cursor">Search a block...</option>
+              <?php if(!empty($_GET)){ ?>
+              <div style="padding-bottom:10px">
+                <a href="palettes">
+                  <span class="delete-tag">
+                    Clear
+                    <i class="fas fa-times"></i>
+                  </span>
+                </a>
+              </div>
+              <?php 
+              $i = 0;
+                $selected_filters = array_filter($_GET);
+                foreach($filtered_get as $key => $value):
+                  $filter = str_replace("_"," ",$value);
+                  
+              ?>
+              <?php if($key == "p"){ ?>
+                   
+              <?php } else { ?>
+                <span class="filter-tag">
+                  <?=ucwords($filter)?>
+                </span>
+              <?php } ?>
+              <?php endforeach; ?>
+          
+            <?php } ?>
+            <p style="margin-bottom:0px">Filter By Block</p>
+              <div class="input-group" style="padding-bottom:25px">
+                  <select id="select-1" name="block" class="form-control" placeholder="Search a block..." required> 
+                  <option value="" class="cursor">Select a block...</option>
                       <?php 
                         foreach( $images as $image ):
                           $extCut = str_replace(".png","","$image");
@@ -306,21 +335,22 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
                       <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
-                  <button type="submit" class="btn-filter btn"><i class="fas fa-search"></i></button>
-              </div>
-              </form>
-              <p style="margin-bottom:0px">Popular Blocks</p>
+                  <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
+                </div>
+
+            <p style="margin-bottom:0px">Sort By</p>
+              <?php foreach($sFilter['s'] as $tfilter): ?>
+                  <a class="block-pill" href="<?='../palettes?s=' . $tfilter?>">
+                    <b><?=ucwords($tfilter)?></b>
+                  </a>
+                <?php endforeach; ?>
+            <p style="margin-bottom:0px; padding-top:25px">Popular Blocks</p>
               <?php foreach($t as $popular): ?>
-                <?php $block = str_replace("_"," ",$popular['blocks']); ?>
-                <a href="<?=$url?>palettes?filter=<?=$popular['blocks']?>">
-                  <div class="block-pill">
+                <?php $block = str_replace("_"," ",$popular['blocks']); ?>   
+                  <a class="block-pill" href="<?='../palettes?block=' . $popular['blocks']?>">
                     <img src="<?=$url?>img/block/<?=$popular['blocks']?>.png"> <b><?=ucwords($block)?></b><br>
-                  </div>
-                </a>
+                  </a>
               <?php endforeach; ?>
-              <div align="center" style="padding-top:25px">
-                <i class="fas fa-bell"></i> <i class="subText">More Filters Coming Soon</i>
-              </div>
             </div>
         </div>
     </div>
@@ -332,10 +362,87 @@ $profileData = $profileDataPull->fetch(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <script>
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
+      $('select[name="block"]').on('change', function(){    
+          var selectedVar = $('select[name="block"]').val();   
+          var pathname = window.location.href;
+          var getUrl = window.location;
+          var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+          
+          var $_GET = {};
+
+          document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+              function decode(s) {
+                  return decodeURIComponent(s.split("+").join(" "));
+              }
+
+              $_GET[decode(arguments[1])] = decode(arguments[2]);
+          });
+
+          var currentBlock = $_GET["block"];
+          var newBlock = "block=" + selectedVar;
+          if (currentBlock == null){
+            if (pathname.includes("s=")){
+              pathname = baseUrl + "/palettes?" + newBlock;
+            } else {
+              pathname = baseUrl + "/palettes?" + newBlock;
+            }
+          } else {
+            pathname = pathname.replace("block="+currentBlock, newBlock);
+          }
+          console.log(pathname);
+          $('#results').attr("href", pathname);
+
+      });
     </script>
+    
+    <script>
+        $(document).ready(function(){
+          // when the user clicks on like
+          $('.like').on('click', function(){
+            var postid = $(this).data('id');
+                $post = $(this);
+
+            $.ajax({
+              url: 'palettes.php',
+              type: 'post',
+              data: {
+                'liked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
+
+          // when the user clicks on unlike
+          $('.unlike').on('click', function(){
+            var postid = $(this).data('id');
+              $post = $(this);
+
+            $.ajax({
+              url: 'palettes.php',
+              type: 'post',
+              data: {
+                'unliked': 1,
+                'postid': postid
+              },
+              success: function(response){
+                $post.parent().find('span.likes_count').text(response + "");
+                $post.addClass('hide');
+                $post.siblings().removeClass('hide');
+              }
+            });
+          });
+        });
+      </script>
+      <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+      </script>
   </body>
   
 </html>

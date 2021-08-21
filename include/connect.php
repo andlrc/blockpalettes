@@ -1,9 +1,9 @@
 <?php
 //connect.php
 //MYSQL DB Details
-define('MYSQL_USER', 'blockpalettes');
-define('MYSQL_PASSWORD', '!@LAxman12');
-define('MYSQL_HOST', 'mysql.blockpalettes.com');
+define('MYSQL_USER', 'nate');
+define('MYSQL_PASSWORD', '');
+define('MYSQL_HOST', 'localhost:8889');
 define('MYSQL_DATABASE', 'blockpalettes');
 
 //PDO Options

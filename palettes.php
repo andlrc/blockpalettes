@@ -290,7 +290,7 @@ $sFilter = array("s" => array("popular","old","new"));
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
               <div class="input-group" style="padding-bottom:25px">
-                  <select id="select-1" name="block" class="form-control" placeholder="Search a block..." required> 
+                  <select id="select-1" name="blockmobile" class="form-control" placeholder="Search a block..." required> 
                   <option value="" class="cursor">Select a block...</option>
                       <?php 
                         foreach( $images as $image ):
@@ -302,7 +302,7 @@ $sFilter = array("s" => array("popular","old","new"));
                       <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
-                  <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
+                  <a class="btn-filter btn" id="resultsmobile" href=""><i class="fas fa-search"></i></a>
                 </div>
 
             <p style="margin-bottom:0px">Sort By</p>
@@ -628,7 +628,6 @@ $sFilter = array("s" => array("popular","old","new"));
     </div>
 
     <?php include('include/footer.php') ?>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
     <script>
@@ -670,8 +669,53 @@ $sFilter = array("s" => array("popular","old","new"));
               pathname = pathname.replace("&p="+currentPage, "");
             }
           }
-          console.log(pathname);
+     
           $('#results').attr("href", pathname);
+
+      });
+    </script>
+
+<script>
+      $('select[name="blockmobile"]').on('change', function(){    
+          var selectedVar = $('select[name="block"]').val();   
+          var pathname = window.location.href;
+          
+          var $_GET = {};
+
+          document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+              function decode(s) {
+                  return decodeURIComponent(s.split("+").join(" "));
+              }
+
+              $_GET[decode(arguments[1])] = decode(arguments[2]);
+          });
+
+          var currentPage = $_GET["p"];
+          var currentBlock = $_GET["block"];
+          var newBlock = "block=" + selectedVar;
+ 
+          if (currentBlock == null){
+            if (pathname.includes("s=")){
+              pathname = pathname + "&" + newBlock;
+            } else {
+              pathname = pathname + "?" + newBlock;
+            }
+            
+            if (pathname.includes("?p=")){
+              pathname = pathname.replace("?p="+currentPage, "");
+            } else if (pathname.includes("&p=")){
+              pathname = pathname.replace("&p="+currentPage, "");
+            }
+          } else {
+            pathname = pathname.replace("block="+currentBlock, newBlock);
+            if (pathname.includes("?p=")){
+              pathname = pathname.replace("?p="+currentPage, "");
+            } else if (pathname.includes("&p=")){
+              pathname = pathname.replace("&p="+currentPage, "");
+            }
+          }
+     
+          $('#resultsmobile').attr("href", pathname);
 
       });
     </script>

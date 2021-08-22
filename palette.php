@@ -407,12 +407,12 @@ $_GET = "";
     <script>
       $('select[name="block"]').on('change', function(){    
           var selectedVar = $('select[name="block"]').val();   
-          var pathname = window.location.href;
+          var pathname = "https://www.blockpalettes.com";
           var getUrl = window.location;
           var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
           
           var $_GET = {};
-
+console.log(pathname);
           document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
               function decode(s) {
                   return decodeURIComponent(s.split("+").join(" "));
@@ -425,17 +425,14 @@ $_GET = "";
           var newBlock = "block=" + selectedVar;
           if (currentBlock == null){
             if (pathname.includes("s=")){
-              pathname = pathname.replace("/palette/", "");
-              pathname = baseUrl + "/palettes?" + newBlock;
+              pathname = pathname + "/palettes?" + newBlock;
             } else {
-              pathname = pathname.replace("/palette/", "");
-              pathname = baseUrl + "/palettes?" + newBlock;
+              pathname = pathname + "/palettes?" + newBlock;
             }
           } else {
-            pathname = pathname.replace("/palette/", "");
             pathname = pathname.replace("block="+currentBlock, newBlock);
           }
-          console.log(pathname);
+       
           $('#results').attr("href", pathname);
 
       });

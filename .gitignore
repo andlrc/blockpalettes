@@ -1,6 +1,6 @@
 .vscode/*
 
 .DS_Store
-
+include/
 # Local History for Visual Studio Code
 .history/

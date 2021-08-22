@@ -340,12 +340,15 @@ $sFilter = array("s" => array("popular","old","new"));
           <?php if($results == null){ ?>
             <?php $blockName = str_replace("_"," ",$_GET['filter']); ?>
             <div class="col-xl-9 col-lg-8 col-md-12" style="padding-bottom:200px">
-            <div class="row">
-            <div class="col-lg-12">
-              <h4 class="medium-title">Oh No!</h4>
-              There are currently no palettes that contain <?=ucwords($blockName)?>.<br>
-              Create your own <a href="submit">here</a>.
+              <div class="row">
+                <div class="col-lg-12">
+                  <h4 class="medium-title">Oh No!</h4>
+                  There are currently no palettes that contain <?=ucwords($blockName)?>.<br>
+                  Create your own <a href="submit">here</a>.
+                </div>
+              </div>
             </div>
+            
            
           <?php } else { ?>
             <div class="col-xl-9 col-lg-8 col-md-12">
@@ -417,6 +420,8 @@ $sFilter = array("s" => array("popular","old","new"));
           </div>
           <?php endforeach; ?>
           </div>
+          
+          
 
           <?php
               $pgStart = 1;
@@ -484,6 +489,7 @@ $sFilter = array("s" => array("popular","old","new"));
               </nav>
           </div>
           <?php } ?>
+          
 
           <!--Filters-->
           <div class="col-xl-3 col-lg-4 d-lg-block d-md-none d-sm-none">

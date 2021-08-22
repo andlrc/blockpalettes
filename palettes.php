@@ -683,7 +683,7 @@ $sFilter = array("s" => array("popular","old","new"));
 
 <script>
       $('select[name="blockmobile"]').on('change', function(){    
-          var selectedVar = $('select[name="block"]').val();   
+          var selectedVar = $('select[name="blockmobile"]').val();   
           var pathname = window.location.href;
           
           var $_GET = {};

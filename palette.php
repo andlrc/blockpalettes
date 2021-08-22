@@ -424,13 +424,15 @@ $_GET = "";
           var newBlock = "block=" + selectedVar;
           if (currentBlock == null){
             if (pathname.includes("s=")){
+              pathname = pathname.replace("/palette/", "");
               pathname = baseUrl + "/palettes?" + newBlock;
             } else {
+              pathname = pathname.replace("/palette/", "");
               pathname = baseUrl + "/palettes?" + newBlock;
             }
           } else {
-            testname = baseUrl + "/palettes?" + currentBlock;
-            pathname = testname.replace("block="+currentBlock, newBlock);
+            pathname = pathname.replace("/palette/", "");
+            pathname = pathname.replace("block="+currentBlock, newBlock);
           }
           console.log(pathname);
           $('#results').attr("href", pathname);

@@ -429,7 +429,8 @@ $_GET = "";
               pathname = baseUrl + "/palettes?" + newBlock;
             }
           } else {
-            pathname = pathname.replace("block="+currentBlock, newBlock);
+            testname = baseUrl + "/palettes?" + currentBlock;
+            pathname = testname.replace("block="+currentBlock, newBlock);
           }
           console.log(pathname);
           $('#results').attr("href", pathname);

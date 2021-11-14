@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(1);
 session_start();
 
     require "include/logic.php";
@@ -23,23 +23,13 @@ session_start();
         }
 
         //pagination
-        $limit = 12;
+        $limit = 18;
         //pull palettes
         $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC");
         $palettePull->execute();
         $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-        $total_results = $palettePull->rowCount();
-        $total_pages = ceil($total_results/$limit);
-            
-        if (!isset($_GET['page'])) {
-            $page = 1;
-        } else{
-            $page = $_GET['page'];
-        }
 
-        $start = ($page-1)*$limit;
-
-        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC LIMIT $start, $limit");
+        $stmt = $pdo->prepare("SELECT * FROM palette ORDER BY date DESC LIMIT $limit");
         $stmt->execute();
 
         // set the resulting array to associative
@@ -47,12 +37,6 @@ session_start();
             
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-        $conn = null;
-
-        // var_dump($results);
-        $no = $page > 1 ? $start+1 : 1;
-
-        $i = 0;
 
         //Pull blogs
         $blogPull = $pdo->prepare("SELECT * FROM blog LIMIT 5");
@@ -158,23 +142,6 @@ session_start();
                     <span>Palettes</span></a>
             </li>
 
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-pencil-alt"></i>
-                    <span>Blog</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Blog Components:</h6>
-                        <a class="collapse-item" href="dashboard/new-post">New Post</a>
-                        <a class="collapse-item" href="dashboard/all-posts">View Posts</a>
-                    </div>
-                </div>
-            </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -211,16 +178,16 @@ session_start();
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column bg-white">
 
             <!-- Main Content -->
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top" style="border-bottom: #ededed solid 1px">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3" >
                         <i class="fa fa-bars"></i>
                     </button>
 
@@ -291,7 +258,7 @@ session_start();
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card border-left-dark  h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -309,7 +276,7 @@ session_start();
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card border-left-dark  h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -327,7 +294,7 @@ session_start();
 
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card border-left-dark h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -345,7 +312,7 @@ session_start();
 
                         <!-- Pending Requests Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-dark shadow h-100 py-2">
+                            <div class="card border-left-dark h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
@@ -367,8 +334,8 @@ session_start();
                     <div class="row">
 
                         <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
+                        <div class="col-xl-12">
+                            <div class="card mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -378,7 +345,7 @@ session_start();
                                 <div class="card-body">
                                     <div class="row">
                                 <?php foreach($results as $p) : ?>
-                                    <div class="col-xl-3 col-lg-6 col-sm-6 col-6" style="margin-bottom:15px">
+                                    <div class="col-xl-2 col-lg-4 col-sm-6 col-6" style="margin-bottom:15px">
                                         <?php if($p['featured'] == 1) {?>
                                             <div class="feature-pill">
                                                 <div class="award shine" style="font-size:12px">
@@ -404,36 +371,6 @@ session_start();
                             </div>
                         </div>
 
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-dark">Recent Blog Posts</h6>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body" style="margin-top:-20px">
-                                    <?php foreach($blog as $b): ?>
-                                        <?php 
-                                            $d = date_create($b['date']);
-                                            $date = date_format($d,"Y/m/d"); 
-                                            $uid = $b['uid'];
-                                            $blogUser = $pdo->prepare("SELECT username as uname FROM user WHERE id = $uid");
-                                            $blogUser->execute();
-                                            $bUser = $blogUser->fetch(PDO::FETCH_ASSOC);
-                                        ?>
-                                        <a href="dashboard/edit?p=<?=$b['id']?>">
-                                            <div class="blogSnip">
-                                                <span class="role-pill" style="background:#e74c3c">Site Update</span>
-                                                <h5 class="small-title" style="font-size:16px"><?=ucwords($b['title'])?></h5>
-                                                <p class="subText" style="margin-bottom:0px; font-size:12px"><i class="fas fa-user"></i> <b><?=ucwords($bUser['uname'])?></b> • <?=$date?></p>
-                                            </div>
-                                        </a>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Content Row -->
@@ -442,7 +379,7 @@ session_start();
 
                      <!-- Area Chart -->
                      <div class="col-xl-12 col-lg-12">
-                            <div class="card shadow mb-4">
+                            <div class="card mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -464,6 +401,13 @@ session_start();
                                             ?>
                                             <div class="col-xl-3">
                                                 <div class="user-pill">
+                                                    <div class="small-pic" style="float: left;height: 100px;margin-right: 15px;margin-top: 6px;">
+                                                    <?php if($u['minecraft_ign'] == null) { ?>
+                                                        <img src="<?=$url?>img/default.jpg" class="profile-pic" style="margin-left: 10px; width:65px; height:65px">
+                                                    <?php } else { ?>
+                                                        <img src="<?=$url?>include/face.php?u=<?=$u['minecraft_ign']?>&s=48&v=front" class="profile-pic" style="margin-left: 10px">
+                                                    <?php } ?>
+                                                    </div>
                                                     <div class="role-pill" style="background:<?=$rank['rank_color']?>">
                                                         <?=ucwords($rank['rank_name'])?>
                                                     </div>

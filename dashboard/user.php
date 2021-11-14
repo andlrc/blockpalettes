@@ -137,21 +137,6 @@ if (isset($_SESSION['user_id'])) {
                 <span>Palettes</span></a>
         </li>
 
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-               aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-pencil-alt"></i>
-                <span>Blog</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Blog Components:</h6>
-                    <a class="collapse-item" href="../new-post">New Post</a>
-                    <a class="collapse-item" href="../all-posts">View Posts</a>
-                </div>
-            </div>
-        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -189,13 +174,13 @@ if (isset($_SESSION['user_id'])) {
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content-wrapper" class="d-flex flex-column bg-white">
 
         <!-- Main Content -->
         <div id="content">
 
             <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top" style="border-bottom: #ededed solid 1px">
 
                 <!-- Sidebar Toggle (Topbar) -->
                 <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -246,7 +231,7 @@ if (isset($_SESSION['user_id'])) {
 
                 <div class="row">
                     <div class="col-xl-4">
-                        <div class="card shadow mb-4">
+                        <div class="card mb-4">
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -310,7 +295,7 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                     <!-- Area Chart -->
                     <div class="col-xl-8">
-                        <div class="card shadow mb-4">
+                        <div class="card mb-4">
                             <!-- Card Header - Dropdown -->
                             <div
                                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">

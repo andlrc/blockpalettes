@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(1);
 session_start();
 
     require "../include/logic.php";
@@ -21,37 +21,51 @@ session_start();
             header('Location: ' . $url);
         exit;
         }
+
+        $path = $_SERVER['REQUEST_URI'];
+
         //pagination
-        $limit = 24;
-        //pull palettes
-        $palettePull = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 ORDER BY date DESC");
-        $palettePull->execute();
-        $palette = $palettePull->fetchAll(PDO::FETCH_ASSOC);
-        $total_results = $palettePull->rowCount();
-        $total_pages = ceil($total_results/$limit);
-            
-        if (!isset($_GET['page'])) {
-            $page = 1;
-        } else{
-            $page = $_GET['page'];
-        }
 
-        $start = ($page-1)*$limit;
+        $limit = 28;
 
-        $stmt = $pdo->prepare("SELECT * FROM palette WHERE featured = 0 AND hidden = 0 ORDER BY date DESC LIMIT $start, $limit");
-        $stmt->execute();
+        if(empty($_GET)){
+            $uri = $path . '?';
+          } else {
+            $uri = $path . '&';
+          }
+          
 
+          $palettePull = $pdo->prepare("SELECT * FROM palette ORDER BY id DESC");
+          $palettePull->execute();
+
+
+          $total_results = $palettePull->rowCount();
+          $total_pages = ceil($total_results/$limit);
+              
+          if (!isset($_GET['p'])) {
+              $page = 1;
+          } else{
+              $page = htmlspecialchars(addslashes($_GET['p']));
+          }
+
+          $start = ($page-1)*$limit;
+
+          $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 ORDER BY id DESC LIMIT $start, $limit");
+          $stmt->execute();
+       
         // set the resulting array to associative
         $stmt->setFetchMode(PDO::FETCH_OBJ);
-            
+                
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+                
         $conn = null;
 
         // var_dump($results);
         $no = $page > 1 ? $start+1 : 1;
 
         $i = 0;
+
+        $total_pages = $total_pages - 1;
 
 
         $hiddenPalettes = $pdo->prepare("SELECT * FROM palette WHERE hidden = 1");
@@ -136,22 +150,6 @@ session_start();
                     <span>Palettes</span></a>
             </li>
 
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-pencil-alt"></i>
-                    <span>Blog</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Blog Components:</h6>
-                        <a class="collapse-item" href="../dashboard/new-post">New Post</a>
-                        <a class="collapse-item" href="../dashboard/all-posts">View Posts</a>
-                    </div>
-                </div>
-            </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -188,13 +186,13 @@ session_start();
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column bg-white">
 
             <!-- Main Content -->
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top"style="border-bottom: #ededed solid 1px">
 
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -246,8 +244,8 @@ session_start();
                     <div class="row">
 
                         <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
+                        <div class="col-xl-8">
+                            <div class="card mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -291,24 +289,80 @@ session_start();
                                     </div>
                                     <?php if(isset($_GET['filter'])){ ?>
                                     <?php } else { ?>
+                                        <?php
+                                        $pgStart = 1;
+                                        $pg = $_GET['p'] - 2;
+                                        $pgStart = $pg + 5 > $total_pages ? $total_pages - 4 : $pg; //EDIT fix when reach pages end
+                                        $pgStart = $pg < 1 ? 1 : $pg; // This must be after ending correction (previous line)
+                                        ?>
+                                        
                                         <nav aria-label="Page navigation example">
                                             <ul class="pagination justify-content-center">
-                                                <li class="page-item"><a href="<?=$url?>dashboard/palettes" class="page-link"><i class="fas fa-chevron-double-left"></i></a></li>
-                                                <?php for($p=1; $p<=$total_pages; $p++){?> 
-                                                <li class="<?= $page == $p ? 'active' : ''; ?> page-item"><a href="<?=$url?><?= 'dashboard/palettes/'.$p; ?>" class="page-link"><?= $p; ?></a></li>
+                                                <?php if ($pgStart > 1) { // show 1 ?>
+                                                <?php
+                                                    if(empty($_GET)){
+                                                        $uri = $path . '?';
+                                                    } else {
+                                                        $current_page = $_GET['p'];
+                                                        $uri = $path . '&';
+                                                    }
+                            
+                                                    if(strpos($uri, '?p=') !== false){
+                                                        $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                                                    } elseif(strpos($uri, "&p=") !== false){
+                                                        $uri = str_replace('&p=' . $current_page, "", $uri);
+                                                    }  
+                                                ?>
+                                                <li class="page-item"><a href="<?=$uri.'p=1'?>" class="page-link">1</a></li>
+                                                <li class="page-item"><a href="<?=$uri.'p=1'?>" class="page-link">...</a></li>
+                                                <?php } ?>
+                                                <?php for($e = $pgStart; $e <= $total_pages && $e < $pgStart + 5; $e++){?>
+                                                <?php 
+                                                    if(empty($_GET)){
+                                                    $uri = $path . '?';
+                                                    } else {
+                                                    $current_page = $_GET['p'];
+                                                    $uri = $path . '&';
+                                                    }
+
+                                                    if(strpos($uri, '?p=') !== false){
+                                                    $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                                                    } elseif(strpos($uri, "&p=") !== false){
+                                                    $uri = str_replace('&p=' . $current_page, "", $uri);
+                                                    }      
+                                                ?>
+                                                <li class="<?= $page == $e ? 'active' : ''; ?> page-item"><a href="<?=$uri.'p=' . $e?>" class="page-link"><?= $e; ?></a></li>
                                                 <?php }?>
-                                                <li class="page-item"><a href="<?=$url?>dashboard/palettes/<?= $total_pages; ?>" class="page-link"><i class="fas fa-chevron-double-right"></i></a></li>
+                                                <?php if ($e < $total_pages) { ?>
+                                                <?php 
+                                                    if(empty($_GET)){
+                                                    $uri = $path . '?';
+                                                    } else {
+                                                    $current_page = $_GET['p'];
+                                                    $uri = $path . '&';
+                                                    }
+
+                                                    if(strpos($uri, '?p=') !== false){
+                                                    $uri = str_replace('p=' . $current_page . '&', "", $uri);
+                                                    } elseif(strpos($uri, "&p=") !== false){
+                                                    $uri = str_replace('&p=' . $current_page, "", $uri);
+                                                    }      
+                                                ?>
+                                                    <li class="page-item"><a href="<?=$uri.'p=' . $total_pages?>" class="page-link">...</a></li>
+                                                <li class="page-item"><a href="<?=$uri.'p=' . $total_pages?>" class="page-link"><?=$total_pages?></a></li>
+                                                <?php } ?>
                                             </ul> 
                                         </nav>
+                                    </div>
 
                                     <?php } ?>
                                 </div>
                             </div>
-                        </div>
+        
 
                         <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
+                        <div class="col-xl-4">
+                            <div class="card mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -341,7 +395,7 @@ session_start();
                                 </div>
                             </div>
 
-                            <div class="card shadow mb-4">
+                            <div class="card mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">

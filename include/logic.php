@@ -10,7 +10,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
-$url = "http://localhost/blockpalettes/";
+$url = "https://www.blockpalettes.com/";
 
 if(isset($_REQUEST["term"])) {
 // Prepare a select statement

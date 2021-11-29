@@ -723,7 +723,7 @@ if (isset($_POST['updateprofile'])) {
     $ign = htmlspecialchars($ignIn, ENT_QUOTES, 'UTF-8');
 
     $username = $_POST['username'];
-    $uid = $_POST['uid'];
+    $uid = $user['id'];
 
     //Checking if username already exists
     //Preparing SQL statement
@@ -802,165 +802,168 @@ if (isset($_POST['updateprofile'])) {
     }
 }
 
+if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
+if($user['rank'] > 90){
+    //User updates
 
+    if(isset($_POST['updateRank'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+        $rank = !empty($_POST['rank']) ? trim($_POST['rank']) : null;
 
-//User updates
+        //Updates table
+        $edit = "UPDATE user SET rank = '$rank' WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
 
-if(isset($_POST['updateRank'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-    $rank = !empty($_POST['rank']) ? trim($_POST['rank']) : null;
-
-    //Updates table
-    $edit = "UPDATE user SET rank = '$rank' WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
-
-    $result = $stmt->execute();
-
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/user/' . $id . '');
-    }
-}
-
-if(isset($_POST['giveAward'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-    $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
-    $award_name = !empty($_POST['award_name']) ? trim($_POST['award_name']) : null;
-    $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
-    $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
-
-    //Checking if username already exists
-    //Preparing SQL statement
-    $sql = "SELECT COUNT(id) AS num FROM user_awards WHERE uid = $id AND award_id = $award";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    //Fetch the row
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    //Username already exists error
-    if($row['num'] > 0){
-        $delete = "DELETE FROM user_awards WHERE uid = :uid AND award_id = :award_id";
-        $stmt = $pdo->prepare($delete);
-        //Bind varibles
-        $stmt->bindValue(':uid', $id);
-        $stmt->bindValue(':award_id', $award);
-
-        //Execute the statement
         $result = $stmt->execute();
 
         //If successful, returns to user profile
         if($result) {
             header('Location: ' . $url . 'dashboard/user/' . $id . '');
         }
-    } else {
+    }
+
+    if(isset($_POST['giveAward'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+        $award = !empty($_POST['award']) ? trim($_POST['award']) : null;
+        $award_name = !empty($_POST['award_name']) ? trim($_POST['award_name']) : null;
+        $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
+        $username = !empty($_POST['username']) ? trim($_POST['username']) : null;
+
+        //Checking if username already exists
+        //Preparing SQL statement
+        $sql = "SELECT COUNT(id) AS num FROM user_awards WHERE uid = $id AND award_id = $award";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        //Fetch the row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        //Username already exists error
+        if($row['num'] > 0){
+            $delete = "DELETE FROM user_awards WHERE uid = :uid AND award_id = :award_id";
+            $stmt = $pdo->prepare($delete);
+            //Bind varibles
+            $stmt->bindValue(':uid', $id);
+            $stmt->bindValue(':award_id', $award);
+
+            //Execute the statement
+            $result = $stmt->execute();
+
+            //If successful, returns to user profile
+            if($result) {
+                header('Location: ' . $url . 'dashboard/user/' . $id . '');
+            }
+        } else {
+
+            //Updates table
+            $sql = "INSERT INTO user_awards (uid, award_id) VALUES (:id, :award)";
+            $stmt = $pdo->prepare($sql);
+            //Bind varibles
+            $stmt->bindValue(':id', $id);
+            $stmt->bindValue(':award', $award);
+
+            $result = $stmt->execute();
+
+            //If successful, returns to user profile
+            if ($result) {
+                $sql = "SELECT award_name AS name FROM awards WHERE id = $award";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                //Fetch the row
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $award_name = $row['name'];
+
+                // Send email to user with the token in a link they can click on
+                $to = $email;
+                $subject = "You were given an award on Block Palettes!";
+                $msg = "<h4>Congratulations on receiving the award: " . ucwords($award_name) . "<br>
+                        Check it out on your profile, <a href='". $url ."profile/". $username ."'>here</a>.</h4>
+                    <br>
+                        <i>- Block Palettes Staff</i>
+
+                    ";
+                $msg = wordwrap($msg,70);
+                $headers .= "Organization: Block Palettes\r\n";
+                $headers .= "MIME-Version: 1.0\r\n";
+                $headers .= 'Content-type: text/html' . "\r\n";
+                $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
+                $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
+                $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
+                $headers .= "X-Priority: 3\r\n";
+                $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+                mail($to, $subject, $msg, $headers);
+
+
+                header('Location: ' . $url . 'dashboard/user/' . $id . '');
+            }
+        }
+    }
+
+    //Mutes user
+    if(isset($_POST['shadowBan'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
         //Updates table
-        $sql = "INSERT INTO user_awards (uid, award_id) VALUES (:id, :award)";
-        $stmt = $pdo->prepare($sql);
-        //Bind varibles
-        $stmt->bindValue(':id', $id);
-        $stmt->bindValue(':award', $award);
+        $edit = "UPDATE user SET status = 1 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
 
         $result = $stmt->execute();
 
         //If successful, returns to user profile
-        if ($result) {
-            $sql = "SELECT award_name AS name FROM awards WHERE id = $award";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
-            //Fetch the row
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $award_name = $row['name'];
-
-            // Send email to user with the token in a link they can click on
-            $to = $email;
-            $subject = "You were given an award on Block Palettes!";
-            $msg = "<h4>Congratulations on receiving the award: " . ucwords($award_name) . "<br>
-                    Check it out on your profile, <a href='". $url ."profile/". $username ."'>here</a>.</h4>
-                   <br>
-                    <i>- Block Palettes Staff</i>
-
-                   ";
-            $msg = wordwrap($msg,70);
-            $headers .= "Organization: Block Palettes\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= 'Content-type: text/html' . "\r\n";
-            $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
-            $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
-            $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
-            $headers .= "X-Priority: 3\r\n";
-            $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
-            mail($to, $subject, $msg, $headers);
-
-
+        if($result) {
             header('Location: ' . $url . 'dashboard/user/' . $id . '');
         }
     }
-}
 
-//Mutes user
-if(isset($_POST['shadowBan'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+    //Un mutes user
+    if(isset($_POST['unshadowBan'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
-    //Updates table
-    $edit = "UPDATE user SET status = 1 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
+        //Updates table
+        $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
 
-    $result = $stmt->execute();
+        $result = $stmt->execute();
 
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        }
     }
-}
 
-//Un mutes user
-if(isset($_POST['unshadowBan'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+    //Bans user
+    if(isset($_POST['ban'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
-    //Updates table
-    $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
+        //Updates table
+        $edit = "UPDATE user SET status = 2 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
 
-    $result = $stmt->execute();
+        $result = $stmt->execute();
 
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        }
     }
-}
 
-//Bans user
-if(isset($_POST['ban'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+    //Unban user
+    if(isset($_POST['unban'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
 
-    //Updates table
-    $edit = "UPDATE user SET status = 2 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
+        //Updates table
+        $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
 
-    $result = $stmt->execute();
+        $result = $stmt->execute();
 
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/user/' . $id . '');
+        }
     }
+
 }
-
-//Unban user
-if(isset($_POST['unban'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-
-    //Updates table
-    $edit = "UPDATE user SET status = 0 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
-
-    $result = $stmt->execute();
-
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/user/' . $id . '');
-    }
 }
 
 ?>

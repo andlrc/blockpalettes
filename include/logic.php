@@ -557,6 +557,17 @@ if(isset($_POST['liked'])){
 
     $n = $save['likes'];
     
+    $sql = "SELECT uid FROM saved WHERE uid='$uid' AND pid='$pid'";
+    $stmt = $pdo->prepare($sql);
+
+    //Execute the statement
+    $stmt->execute();
+    //Fetch the row
+    $check = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if($check){
+        return;
+    }
 
     //Preparing insert statement
     $sql = "INSERT INTO saved (uid, pid) VALUES (:uid, :pid)";
@@ -590,6 +601,16 @@ if(isset($_POST['unliked'])){
 
     $n = $save['likes'];
 
+    $sql = "SELECT uid FROM saved WHERE uid='$uid' AND pid='$pid'";
+    $stmt = $pdo->prepare($sql);
+
+    //Execute the statement
+    $stmt->execute();
+    //Fetch the row
+    $check = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if($check){
+       
 
     //Preparing insert statement
     $sql = "DELETE FROM saved WHERE pid = $pid AND uid = $uid";
@@ -604,6 +625,10 @@ if(isset($_POST['unliked'])){
     
         echo $n-1;
         exit();
+
+    } else {
+        return;
+    }
     
 }
 

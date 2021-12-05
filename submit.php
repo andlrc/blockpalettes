@@ -10,6 +10,11 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
   $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
+} else if(isset($_COOKIE['user_logged'])) { 
+  $_SESSION['user_id'] = $_COOKIE['user_logged'];
+  $_SESSION['logged_in'] = time();
+} else {
+    header('Location:' . $url);
 }
 
 
@@ -77,13 +82,13 @@ $i = 0;
   <body>
     <!-- Nav -->
     <?php include('include/header.php'); ?>
-    <?php if ($user['status'] >= 1){?>
+    <?php if ($user['verified'] == 0){?>
     <div class="palettes">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div class="title" style="padding-bottom:15px">Submit Palette</div>
-                    Your account has been muted! You can't create palettes during this time.<br>
+                    Your account must be verified to post palettes! Please check your email for an email from us :)<br>
                 </div>
             </div>
         </div>
@@ -94,6 +99,7 @@ $i = 0;
         <div class="row">
           <div class="col-md-12">
             <div class="title" style="padding-bottom:15px">Submit Palette</div>
+        
               <?php if($error != null) { ?>
                 <div class="delete-tag" style="margin-bottom:25px"><?=$error?><?=$error?></div>
                 
@@ -223,11 +229,6 @@ $i = 0;
                   </select>
                 </div>
                 <div class="col-xl-12 form-group">
-                  <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
-                  <input type="hidden" name="uid" value="<?=$uid?>">
-                  <?php } else { ?>
-                  <input type="hidden" name="uid" value="0">
-                  <?php } ?>
                   <?php if(isset($_SESSION['last_submit']) && ((time() - $_SESSION['last_submit']) < 60)) {
                      $time = time() - $_SESSION['last_submit'];
                     echo "You must wait 60 seconds, before submitting again. (" . $time . " seconds)";
@@ -242,6 +243,8 @@ $i = 0;
       </div>
     </div>
     <?php } ?>
+
+    
 
     <?php include('include/footer.php') ?>
     <!-- Optional JavaScript; choose one of the two! -->

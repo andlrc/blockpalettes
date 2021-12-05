@@ -8,6 +8,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
     $stmt = $pdo->prepare("SELECT * FROM user WHERE id = '$uid'");
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $userid = $user['id'];
+    $username = $user['username'];
   }
 
 $url = "https://www.blockpalettes.com/";
@@ -108,28 +111,44 @@ if(isset($_POST['register'])){
     //Execute
     $result = $stmt->execute();
 
-    //If register was successful
-    if($result) {
-
-          // Send email to user with the token in a link they can click on
-        $to = $email;
-        $subject = "Welcome to Block Palettes!";
-        $msg = "Hi there, <br>Thank you for creating an account on our website! Create your own block palettes or browse hundreds of community made palettes!<br>- Block Palettes Staff";
-        $msg = wordwrap($msg,70);
-        $headers .= "Organization: Block Palettes\r\n";
-        $headers .= "MIME-Version: 1.0\r\n";
-        $headers .= 'Content-type: text/html' . "\r\n";
-        $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
-        $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
-        $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
-        $headers .= "X-Priority: 3\r\n";
-        $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
-        mail($to, $subject, $msg, $headers);
-
-        $_SESSION['userRegister'] = "success";
-        header('Location: ' . $url . '');
-        exit;
-    }
+     //create verify path
+     $query = "SELECT email FROM user WHERE email='$email'";
+     $results = $pdo->prepare($query);
+     $results->execute();
+     //Fetch the row
+     $row = $results->fetch(PDO::FETCH_ASSOC);
+   
+     // generate a unique random token of length 100
+     $token = bin2hex(random_bytes(50));
+ 
+     // store token in the password-reset database table against the user's email
+     $sql = "INSERT INTO email_verify(email, token) VALUES ('$email', '$token')";
+     $insert = $pdo->prepare($sql);
+     $result = $insert->execute();
+   
+     if($result) {
+ 
+           // Send email to user with the token in a link they can click on
+         $to = $email;
+         $subject = "Welcome to Block Palettes! Verify Your Account";
+         $msg = "Hi there, <br>Thank you for creating an account on our website!<br>Click on this <a href=" . $url . "verify?token=" . $token . ">link</a> to verify your account.<br> Create your own block palettes or browse hundreds of community made palettes!<br>- Block Palettes Staff";
+         $msg = wordwrap($msg,70);
+         $headers .= "Organization: Block Palettes\r\n";
+         $headers .= "MIME-Version: 1.0\r\n";
+         $headers .= 'Content-type: text/html' . "\r\n";
+         $headers .= "Reply-To: Block Palettes <hello@blockpalettes>\r\n";
+         $headers .= "Return-Path: Block Palettes <hello@blockpalettes>\r\n";
+         $headers .= "From: Block Palettes <hello@blockpalettes.com>\r\n";
+         $headers .= "X-Priority: 3\r\n";
+         $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+         mail($to, $subject, $msg, $headers);
+ 
+         $_SESSION['userRegister'] = "success";
+         $_SESSION['email'] = $email;
+         $_SESSION['token'] = $token;
+         header('Location: ' . $url . '');
+         exit;
+     }
 }
 
 if(isset($_POST['login'])){
@@ -213,152 +232,165 @@ function time_elapsed_string($datetime, $full = false) {
 }
 
 
-if(isset($_POST['create'])){
+if($user['verified'] == 1) {
+    date_default_timezone_set("America/Los_Angeles");
+    $duedate = gmdate('Y-m-d h:i:s', strtotime('- 60 seconds'));
 
-    //Sanitizes data
-    $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
-    $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
-    $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
-    $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
-    $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
-    $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
+    $post = $pdo->prepare("SELECT id, MAX(date) as lastpost FROM palette WHERE uid = '$uid'");
+    $post->execute();
+    $lastpost = $post->fetch(PDO::FETCH_ASSOC);
 
+    $last = $lastpost['lastpost'];
 
-    $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
-    $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
-    $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
-    $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
-    $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
-    $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
+    if ($duedate >= $last){
+    /*  u can post */
+    if(isset($_POST['create'])){
 
-    $uid = $_POST['uid'];
-
-    // Form validation to check if blocks are in img folder
-    $dir =  "img/block/*.png";
-    $images = glob( $dir );
-    if(in_array($blockOne, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if(in_array($blockTwo, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if(in_array($blockThree, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if(in_array($blockFour, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if(in_array($blockFive, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if(in_array($blockSix, $images) == false) {
-        $_SESSION['blockError'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    }
-
-    $oneCut = str_replace(".png","","$one");
-    $oneCleanStr = str_replace("img/block/","","$oneCut");
-
-    $twoCut = str_replace(".png","","$two");
-    $twoCleanStr = str_replace("img/block/","","$twoCut");
-
-    $threeCut = str_replace(".png","","$three");
-    $threeCleanStr = str_replace("img/block/","","$threeCut");
-
-    $fourCut = str_replace(".png","","$four");
-    $fourCleanStr = str_replace("img/block/","","$fourCut");
-
-    $fiveCut = str_replace(".png","","$five");
-    $fiveCleanStr = str_replace("img/block/","","$fiveCut");
-
-    $sixCut = str_replace(".png","","$six");
-    $sixCleanStr = str_replace("img/block/","","$sixCut");
-
-    // checks to see if there are duplicate blocks
-    $check = array($oneCleanStr, $twoCleanStr, $threeCleanStr, $fourCleanStr, $fiveCleanStr, $sixCleanStr);
-    $tmp = array_count_values($check);
-    $cnt = $tmp[$oneCleanStr];
-    $cnt2 = $tmp[$twoCleanStr];
-    $cnt3 = $tmp[$threeCleanStr];
-    $cnt4 = $tmp[$fourCleanStr];
-    $cnt5 = $tmp[$fiveCleanStr];
-    $cnt6 = $tmp[$sixCleanStr];
-
-    if ($cnt !== 1){
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if ($cnt2 !== 1) {
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if ($cnt3 !== 1) {
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if ($cnt4 !== 1) {
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if ($cnt5 !== 1) {
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    } else if ($cnt6 !== 1) {
-        $_SESSION['blockDup'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    }
+        //Sanitizes data
+        $blockOne = !empty($_POST['block-one']) ? trim($_POST['block-one']) : null;
+        $blockTwo = !empty($_POST['block-two']) ? trim($_POST['block-two']) : null;
+        $blockThree = !empty($_POST['block-three']) ? trim($_POST['block-three']) : null;
+        $blockFour = !empty($_POST['block-four']) ? trim($_POST['block-four']) : null;
+        $blockFive = !empty($_POST['block-five']) ? trim($_POST['block-five']) : null;
+        $blockSix = !empty($_POST['block-six']) ? trim($_POST['block-six']) : null;
 
 
-        //Checking if the supplied username already exists
-        //Preparing SQL statement
-        $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
-                                            AND blockTwo LIKE '$twoCleanStr' 
-                                            AND blockThree LIKE '$threeCleanStr' 
-                                            AND blockFour LIKE '$fourCleanStr' 
-                                            AND blockFive LIKE '$fiveCleanStr' 
-                                            AND blockSix LIKE '$sixCleanStr'";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute();
-        //Fetch the row
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $one = htmlspecialchars($blockOne, ENT_QUOTES, 'UTF-8');
+        $two = htmlspecialchars($blockTwo, ENT_QUOTES, 'UTF-8');
+        $three = htmlspecialchars($blockThree, ENT_QUOTES, 'UTF-8');
+        $four = htmlspecialchars($blockFour, ENT_QUOTES, 'UTF-8');
+        $five = htmlspecialchars($blockFive, ENT_QUOTES, 'UTF-8');
+        $six = htmlspecialchars($blockSix, ENT_QUOTES, 'UTF-8');
 
-        //Username already exists error
-        if ($row['num'] > 0) {
-            $_SESSION['error'] = "error";
+        $uid = $userid;
+
+        // Form validation to check if blocks are in img folder
+        $dir =  "img/block/*.png";
+        $images = glob( $dir );
+        if(in_array($blockOne, $images) == false) {
+            $_SESSION['blockError'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if(in_array($blockTwo, $images) == false) {
+            $_SESSION['blockError'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if(in_array($blockThree, $images) == false) {
+            $_SESSION['blockError'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if(in_array($blockFour, $images) == false) {
+            $_SESSION['blockError'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if(in_array($blockFive, $images) == false) {
+            $_SESSION['blockError'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if(in_array($blockSix, $images) == false) {
+            $_SESSION['blockError'] = "error";
             header('Location: ' . $url . 'submit');
             exit();
         }
 
-        //Preparing insert statement
-        $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
-        $stmt = $pdo->prepare($sql);
-        //Bind varibles
-        $stmt->bindValue(':uid', $uid);
-        $stmt->bindValue(':blockOne', $oneCleanStr);
-        $stmt->bindValue(':blockTwo', $twoCleanStr);
-        $stmt->bindValue(':blockThree', $threeCleanStr);
-        $stmt->bindValue(':blockFour', $fourCleanStr);
-        $stmt->bindValue(':blockFive', $fiveCleanStr);
-        $stmt->bindValue(':blockSix', $sixCleanStr);
+        $oneCut = str_replace(".png","","$one");
+        $oneCleanStr = str_replace("img/block/","","$oneCut");
 
-        //Execute the statement
-        $result = $stmt->execute();
+        $twoCut = str_replace(".png","","$two");
+        $twoCleanStr = str_replace("img/block/","","$twoCut");
 
-        //If successful, returns to user profile
-        if ($result) {
-            $_SESSION['last_submit'] = time();
-            $_SESSION['create'] = "New Palette";
-            header('Location: ' . $url . 'palettes');
+        $threeCut = str_replace(".png","","$three");
+        $threeCleanStr = str_replace("img/block/","","$threeCut");
+
+        $fourCut = str_replace(".png","","$four");
+        $fourCleanStr = str_replace("img/block/","","$fourCut");
+
+        $fiveCut = str_replace(".png","","$five");
+        $fiveCleanStr = str_replace("img/block/","","$fiveCut");
+
+        $sixCut = str_replace(".png","","$six");
+        $sixCleanStr = str_replace("img/block/","","$sixCut");
+
+        // checks to see if there are duplicate blocks
+        $check = array($oneCleanStr, $twoCleanStr, $threeCleanStr, $fourCleanStr, $fiveCleanStr, $sixCleanStr);
+        $tmp = array_count_values($check);
+        $cnt = $tmp[$oneCleanStr];
+        $cnt2 = $tmp[$twoCleanStr];
+        $cnt3 = $tmp[$threeCleanStr];
+        $cnt4 = $tmp[$fourCleanStr];
+        $cnt5 = $tmp[$fiveCleanStr];
+        $cnt6 = $tmp[$sixCleanStr];
+
+        if ($cnt !== 1){
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if ($cnt2 !== 1) {
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if ($cnt3 !== 1) {
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if ($cnt4 !== 1) {
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if ($cnt5 !== 1) {
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
+        } else if ($cnt6 !== 1) {
+            $_SESSION['blockDup'] = "error";
+            header('Location: ' . $url . 'submit');
+            exit();
         }
 
+
+            //Checking if the supplied username already exists
+            //Preparing SQL statement
+            $sql = "SELECT COUNT(id) AS num FROM palette WHERE blockOne LIKE '$oneCleanStr' 
+                                                AND blockTwo LIKE '$twoCleanStr' 
+                                                AND blockThree LIKE '$threeCleanStr' 
+                                                AND blockFour LIKE '$fourCleanStr' 
+                                                AND blockFive LIKE '$fiveCleanStr' 
+                                                AND blockSix LIKE '$sixCleanStr'";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            //Fetch the row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            //Username already exists error
+            if ($row['num'] > 0) {
+                $_SESSION['error'] = "error";
+                header('Location: ' . $url . 'submit');
+                exit();
+            }
+
+            //Preparing insert statement
+            $sql = "INSERT INTO palette (uid, blockOne, blockTwo, blockThree, blockFour, blockFive, blockSix) VALUES (:uid, :blockOne, :blockTwo, :blockThree, :blockFour, :blockFive, :blockSix)";
+            $stmt = $pdo->prepare($sql);
+            //Bind varibles
+            $stmt->bindValue(':uid', $uid);
+            $stmt->bindValue(':blockOne', $oneCleanStr);
+            $stmt->bindValue(':blockTwo', $twoCleanStr);
+            $stmt->bindValue(':blockThree', $threeCleanStr);
+            $stmt->bindValue(':blockFour', $fourCleanStr);
+            $stmt->bindValue(':blockFive', $fiveCleanStr);
+            $stmt->bindValue(':blockSix', $sixCleanStr);
+
+            //Execute the statement
+            $result = $stmt->execute();
+
+            //If successful, returns to user profile
+            if ($result) {
+                $_SESSION['last_submit'] = time();
+                $_SESSION['create'] = "New Palette";
+                header('Location: ' . $url . 'palettes');
+            }
+        }
+    }
 }
 
 
@@ -393,157 +425,6 @@ if(isset($_POST['favorite'])){
     }  
 }
 
- // Delete
- if(isset($_POST['delete'])){
-    $id = $_POST['id'];
-    $delete = "DELETE FROM palette WHERE id = :id";
-    $stmt = $pdo->prepare($delete);
-    //Bind varibles
-    $stmt->bindValue(':id', $id);
-
-    $result = $stmt->execute();
-
-    //If follow was successful
-    if($result) {
-        header('Location: ' . $url . 'dashboard/palettes');
-    }
-}
-
-
-//hide
-if(isset($_POST['unhide'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-
-    //Updates table
-    $edit = "UPDATE palette SET hidden = 0 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
-
-    $result = $stmt->execute();
-
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/palettes');
-    }
-}
-
-if(isset($_POST['hide'])){
-    $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
-
-    //Updates table
-    $edit = "UPDATE palette SET hidden = 1 WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
-
-    $result = $stmt->execute();
-
-    //If successful, returns to user profile
-    if($result) {
-        header('Location: ' . $url . 'dashboard/palettes');
-    }
-}
-
-
-
-function custom_echo($x, $length)
-{
-  if(strlen($x)<=$length)
-  {
-    echo $x;
-  }
-  else
-  {
-    $y=substr($x,0,$length) . '...';
-    echo $y;
-  }
-}
-
-
-//Blog post
-if(isset($_POST['blog'])){
-
-    //Sanitizes data
-    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
-    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
-    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
-    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
-    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
-
-
-    $title = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
-    $article = htmlspecialchars($articleIn, ENT_QUOTES, 'UTF-8');
-    $image = htmlspecialchars($imageIn, ENT_QUOTES, 'UTF-8');
-    $meta = htmlspecialchars($metaIn, ENT_QUOTES, 'UTF-8');
-    $type = htmlspecialchars($typeIn, ENT_QUOTES, 'UTF-8');
-    $uid = $_POST['uid'];
-
-    $tLower = strtolower($title);
-
-    //Checking if the supplied username already exists
-    //Preparing SQL statement
-    $sql = "SELECT COUNT(id) AS num FROM blog WHERE title = $tLower";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    //Fetch the row
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    //Username already exists error
-    if($row['num'] > 0){
-        session_start();
-        $_SESSION['error'] = "error";
-        header('Location: ' . $url . 'submit');
-        exit();
-    }
-
-        //Preparing insert statement
-        $sql = "INSERT INTO blog (uid, title, article, image, meta, post_type) VALUES (:uid, :title, :article, :image, :meta, :type)";
-        $stmt = $pdo->prepare($sql);
-        //Bind varibles
-        $stmt->bindValue(':uid', $uid);
-        $stmt->bindValue(':title', $tlower);
-        $stmt->bindValue(':article', $article);
-        $stmt->bindValue(':image', $image);
-        $stmt->bindValue(':meta', $meta);
-        $stmt->bindValue(':type', $type);
-    
-        //Execute the statement
-        $result = $stmt->execute();
-    
-        //If successful, returns to user profile
-        if($result) {
-            header('Location: ' . $url . 'dashboard/all-posts');
-        }
-
- }
-
- if(isset($_POST['updateBlog'])){
-    $titleIn = !empty($_POST['title']) ? trim($_POST['title']) : null;
-    $articleIn = !empty($_POST['article']) ? trim($_POST['article']) : null;
-    $imageIn = !empty($_POST['image']) ? trim($_POST['image']) : null;
-    $metaIn = !empty($_POST['meta']) ? trim($_POST['meta']) : null;
-    $typeIn = !empty($_POST['type']) ? trim($_POST['type']) : null;
-
-
-    $titleTall = htmlspecialchars($titleIn, ENT_QUOTES, 'UTF-8');
-    $article = htmlspecialchars($articleIn, ENT_QUOTES, 'UTF-8');
-    $image = htmlspecialchars($imageIn, ENT_QUOTES, 'UTF-8');
-    $meta = htmlspecialchars($metaIn, ENT_QUOTES, 'UTF-8');
-    $type = htmlspecialchars($typeIn, ENT_QUOTES, 'UTF-8');
-    $id = $_POST['id'];
-
-    $title = strtolower($titleTall);
-
-    //Updates table
-    $edit = "UPDATE blog SET title = '$title', article = '$article', image = '$image', meta = '$meta', post_type = '$type' WHERE id ='$id'";
-    $stmt = $pdo->prepare($edit);
-
-    $result = $stmt->execute();
-
-    //If successful, returns to user profile
-    if($result) {
-        $_SESSION['success'] = "success";
-        header('Location: ' . $url . 'dashboard/edit?p=' . $id);
-        exit();
-    }  
-}
 
 
 if(isset($_POST['liked'])){
@@ -715,96 +596,149 @@ if (isset($_POST['reset-password'])) {
     }
   }
 
-if (isset($_POST['updateprofile'])) {
-    $bioIn = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
-    $bio = htmlspecialchars($bioIn, ENT_QUOTES, 'UTF-8');
+    if (isset($_POST['updateprofile'])) {
+        $bioIn = !empty($_POST['bio']) ? trim($_POST['bio']) : null;
+        $bio = htmlspecialchars($bioIn, ENT_QUOTES, 'UTF-8');
 
-    $ignIn = !empty($_POST['ign']) ? trim($_POST['ign']) : null;
-    $ign = htmlspecialchars($ignIn, ENT_QUOTES, 'UTF-8');
+        $ignIn = !empty($_POST['ign']) ? trim($_POST['ign']) : null;
+        $ign = htmlspecialchars($ignIn, ENT_QUOTES, 'UTF-8');
+    
 
-    $username = $_POST['username'];
-    $uid = $user['id'];
+        $userid = $_POST['uid'];
+        $username = $_POST['username'];
+           
 
-    //Checking if username already exists
-    //Preparing SQL statement
-    $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $uid";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    //Fetch the row
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if($row['num'] > 0){
-        if (isset($_POST['bio'])) {
-            $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$uid'";
-            $update = $pdo->prepare($bioUpdate);
-            $resultbio = $update->execute();
-        } else {
-            header('Location: ' . $url . 'profile/' . $username);
-        }
-        if (isset($_POST['ign'])) {
-            $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
-            $updateign = $pdo->prepare($ignUpdate);
-            $result = $updateign->execute();
-        } else {
-            header('Location: ' . $url . 'profile/' . $username);
-        }
-
-        if ($resultbio || $result) {
-            header('Location: ' . $url . 'profile/' . $username);
-        }
-    } else {
-        if ($_POST['bio'] !== "") {
-            $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
-            $stmt = $pdo->prepare($sql);
-            //Bind varibles
-            $stmt->bindValue(':uid', $uid);
-            $stmt->bindValue(':bio', $bio);
-
-            //Execute the statement
-            $resultbio = $stmt->execute();
-        } else {
-            header('Location: ' . $url . 'profile/' . $username);
-        }
-
-        $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $uid";
+        //Checking if username already exists
+        //Preparing SQL statement
+        $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $userid";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         //Fetch the row
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($row['num'] > 0) {
+        if($row['num'] > 0){
+            if (isset($_POST['bio'])) {
+                $bioUpdate = "UPDATE user_profile SET bio = '$bio' WHERE uid = '$userid'";
+                $update = $pdo->prepare($bioUpdate);
+                $resultbio = $update->execute();
+            } else {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
             if (isset($_POST['ign'])) {
-                $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$uid'";
+                $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$userid'";
                 $updateign = $pdo->prepare($ignUpdate);
                 $result = $updateign->execute();
             } else {
                 header('Location: ' . $url . 'profile/' . $username);
             }
+
+            if ($resultbio || $result) {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
         } else {
-            if ($_POST['ign'] !== "") {
-                $insertIgn = "INSERT INTO user_profile (uid, minecraft_ign) VALUES (:uid, :ign)";
-                $stmtign = $pdo->prepare($insertIgn);
+            if ($_POST['bio'] !== "") {
+                $sql = "INSERT INTO user_profile (uid, bio) VALUES (:uid, :bio)";
+                $stmt = $pdo->prepare($sql);
                 //Bind varibles
-                $stmtign->bindValue(':uid', $uid);
-                $stmtign->bindValue(':ign', $ign);
+                $stmt->bindValue(':uid', $userid);
+                $stmt->bindValue(':bio', $bio);
 
                 //Execute the statement
-                $result = $stmtign->execute();
+                $resultbio = $stmt->execute();
             } else {
                 header('Location: ' . $url . 'profile/' . $username);
             }
-        }
 
-        //If successful, returns to user profile
-        if($resultbio || $result) {
-            header('Location: ' . $url . 'profile/' . $username);
+            $sql = "SELECT COUNT(id) AS num FROM user_profile WHERE uid = $userid";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            //Fetch the row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if($row['num'] > 0) {
+                if (isset($_POST['ign'])) {
+                    $ignUpdate = "UPDATE user_profile SET minecraft_ign = '$ign' WHERE uid = '$userid'";
+                    $updateign = $pdo->prepare($ignUpdate);
+                    $result = $updateign->execute();
+                } else {
+                    header('Location: ' . $url . 'profile/' . $username);
+                }
+            } else {
+                if ($_POST['ign'] !== "") {
+                    $insertIgn = "INSERT INTO user_profile (uid, minecraft_ign) VALUES (:uid, :ign)";
+                    $stmtign = $pdo->prepare($insertIgn);
+                    //Bind varibles
+                    $stmtign->bindValue(':uid', $userid);
+                    $stmtign->bindValue(':ign', $ign);
+
+                    //Execute the statement
+                    $result = $stmtign->execute();
+                } else {
+                    header('Location: ' . $url . 'profile/' . $username);
+                }
+            }
+
+            //If successful, returns to user profile
+            if($resultbio || $result) {
+                header('Location: ' . $url . 'profile/' . $username);
+            }
         }
     }
-}
+
 
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
 if($user['rank'] > 90){
     //User updates
+
+
+    // Delete
+    if(isset($_POST['delete'])){
+        $id = $_POST['id'];
+        $delete = "DELETE FROM palette WHERE id = :id";
+        $stmt = $pdo->prepare($delete);
+        //Bind varibles
+        $stmt->bindValue(':id', $id);
+
+        $result = $stmt->execute();
+
+        //If follow was successful
+        if($result) {
+            header('Location: ' . $url . 'dashboard/palettes');
+        }
+    }
+
+
+    //hide
+    if(isset($_POST['unhide'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+        //Updates table
+        $edit = "UPDATE palette SET hidden = 0 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
+
+        $result = $stmt->execute();
+
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/palettes');
+        }
+    }
+
+    if(isset($_POST['hide'])){
+        $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
+
+        //Updates table
+        $edit = "UPDATE palette SET hidden = 1 WHERE id ='$id'";
+        $stmt = $pdo->prepare($edit);
+
+        $result = $stmt->execute();
+
+        //If successful, returns to user profile
+        if($result) {
+            header('Location: ' . $url . 'dashboard/palettes');
+        }
+    }
+
 
     if(isset($_POST['updateRank'])){
         $id = !empty($_POST['id']) ? trim($_POST['id']) : null;

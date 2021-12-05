@@ -48,6 +48,7 @@ $userAwardsPull->execute();
 $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
 
 
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -292,7 +293,7 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                         <h3 class="medium-title" id="profileModalTitle">Edit Profile</h3>
                         <p class="text">More setting coming soon!</p>
                     </div>
-                    <form action="<?=$url?>include/logic.php" method="post">
+                    <form action="" method="post">
                         <div class="form-group">
                           Bio
                           <textarea maxlength="150" rows="3" class="form-control" name="bio" style="resize: none;" placeholder="Enter some text" onkeyup="countChar(this)"><?=$profileData['bio']?></textarea>
@@ -302,8 +303,6 @@ $userAwards = $userAwardsPull->fetchAll(PDO::FETCH_ASSOC);
                             Minecraft IGN
                             <input type="text" name="ign" class="form-control" placeholder="Sets Avatar To Your Minecraft Skin" value="<?=$profileData['minecraft_ign']?>">
                         </div>
-                        <input type="hidden" name="uid" value="<?=$userProfile['id']?>">
-                        <input type="hidden" name="username" value="<?=$userProfile['username']?>">
                         <button class="btn btn-theme btn-block" type="submit" name="updateprofile"><b>Update</b></button>
                     </form>
                 </div>

@@ -1,5 +1,5 @@
 <?php  error_reporting(0); ?>
-<div class="custom-header" id="#">
+    <div class="custom-header" id="#">
         <nav class="navbar navbar-expand-lg navbar-fixed-top" >
             <div class="container-fluid">
                 <a class="navbar-brand" href="<?=$url?>">
@@ -22,9 +22,13 @@
                                 <a href="<?=$url?>saved" class="nav-link">Saved Palettes</a>
                             </li> 
                         <?php } ?>
+                        <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                         <li class="nav-item">
                             <a href="<?=$url?>submit" class="nav-link">Submit</a>
                         </li>
+                        <?php } else { ?>
+                    
+                        <?php } ?>
                     </ul>
                     <ul class="navbar-nav ml-auto custom-nav-text height-nav">
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
@@ -93,7 +97,7 @@
             <div class="modal-body" style="padding: 35px">
                 <div align="center">
                     <h3 class="medium-title" id="loginModalTitle">Join Block Palettes</h3>
-                    <p class="text">Sign up to share & collect block palettes</p>
+                    <p class="text">Sign up to submit & collect block palettes</p>
                 </div>
                 <form action="<?=$_SERVER['PHP_SELF'];?>" method="post">
                     <div class="form-group">

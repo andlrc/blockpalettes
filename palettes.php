@@ -188,7 +188,17 @@ $selected = $_GET;
 $sblock = $selected['block'];
 $stime = $selected['s'];
 
-$sFilter = array("s" => array("popular","old","new"));
+$sFilter = array("s" => array("trending","popular","old","new"));
+
+
+
+// Gets trending palettes for last 7 days
+$stmt = $pdo->prepare("SELECT * FROM palette WHERE date> now() - INTERVAL 7 day ORDER BY likes desc");
+$stmt->execute();
+$test = $stmt->fetchall(PDO::FETCH_ASSOC);
+
+print_r($test);
+
 
 ?>
 <!doctype html>

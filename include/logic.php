@@ -438,8 +438,149 @@ if(isset($_POST['register'])){
            // Send email to user with the token in a link they can click on
          $to = $email;
          $subject = "Welcome to Block Palettes! Verify Your Account";
-         $msg = "Hi there, <br>Thank you for creating an account on our website!<br>Click on this <a href=" . $url . "verify?token=" . $token . ">link</a> to verify your account.<br> Create your own block palettes or browse hundreds of community made palettes!<br>- Block Palettes Staff";
-         $msg = wordwrap($msg,70);
+         $msg = '
+         <html>
+         <style>
+                 * {
+                     box-sizing: border-box;
+                 }
+         
+                 body {
+                     margin: 0;
+                     padding: 0;
+                 }
+         
+                 a[x-apple-data-detectors] {
+                     color: inherit !important;
+                     text-decoration: inherit !important;
+                 }
+         
+                 #MessageViewBody a {
+                     color: inherit;
+                     text-decoration: none;
+                 }
+         
+                 p {
+                     line-height: inherit
+                 }
+         
+                 @media (max-width:535px) {
+                     .icons-inner {
+                         text-align: center;
+                     }
+         
+                     .icons-inner td {
+                         margin: 0 auto;
+                     }
+         
+                     .row-content {
+                         width: 100% !important;
+                     }
+         
+                     .image_block img.big {
+                         width: auto !important;
+                     }
+         
+                     .stack .column {
+                         width: 100%;
+                         display: block;
+                     }
+                 }
+             </style>
+         </head>
+         <body style="background-color: #000000; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+         <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #000000;" width="100%">
+         <tbody>
+         <tr>
+         <td>
+         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+         <tbody>
+         <tr>
+         <td>
+         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 515px;" width="515">
+         <tbody>
+         <tr>
+         <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+         <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+         <tr>
+         <td style="width:100%;padding-right:0px;padding-left:0px;">
+         <div align="center" style="line-height:10px"><img class="big" src="../img/Untitled-1.jpg" style="display: block; height: auto; border: 0; width: 515px; max-width: 100%;" width="515"/></div>
+         </td>
+         </tr>
+         </table>
+         <table border="0" cellpadding="10" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+         <tr>
+         <td>
+         <div style="font-family: Arial, sans-serif">
+         <div style="font-size: 14px; font-family: Arial, sans-serif; mso-line-height-alt: 16.8px; color: #ffffff; line-height: 1.2;">
+         <p style="margin: 0; font-size: 14px;"><span style="font-size:24px;color:#ffffff;"><strong>Welcome to Block Palettes!</strong></span></p>
+         </div>
+         </div>
+         </td>
+         </tr>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+         <tbody>
+         <tr>
+         <td>
+         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 515px;" width="515">
+         <tbody>
+         <tr>
+         <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+         <table border="0" cellpadding="10" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+         <tr>
+         <td>
+         <div style="font-family: sans-serif">
+         <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #ffffff; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
+         <p style="margin: 0; font-size: 14px;">Hi there 😀, <br/>Thank you for creating an account on our website!</p>
+         <p style="margin: 0; font-size: 14px;"><br/><strong>Click on this <a href=' . $url . 'verify?token=' . $token . '>link</a> to verify your account.</strong></p>
+         <p style="margin: 0; font-size: 14px;"><br/>Once verified create your own block palettes or browse hundreds of community made palettes!<br/><br/></p>
+         <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;"> </p>
+         <p style="margin: 0; font-size: 14px;"><em>Block Palette Staff</em></p>
+         </div>
+         </div>
+         </td>
+         </tr>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         </td>
+         </tr>
+         </table>
+         </td>
+         </tr>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table>
+         </td>
+         </tr>
+         </tbody>
+         </table><!-- End -->
+         </body>
+         </html>
+        
+         
+         ';
          $headers .= "Organization: Block Palettes\r\n";
          $headers .= "MIME-Version: 1.0\r\n";
          $headers .= 'Content-type: text/html' . "\r\n";

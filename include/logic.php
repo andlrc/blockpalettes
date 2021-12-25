@@ -1036,7 +1036,7 @@ if (isset($_POST['reset-password'])) {
         <tr>
         <td>
         <div align="center">
-        <a href="' . $url . '"new_password?token="' . $token . '" style="text-decoration:none;display:block;color:#ffffff;background-color:#000000;border-radius:4px;width:50%; width:calc(50% - 2px);border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><strong>Change Password</strong></span></span></a>
+        <a href=' . $url . 'new_password?token=' . $token . ' style="text-decoration:none;display:block;color:#ffffff;background-color:#000000;border-radius:4px;width:50%; width:calc(50% - 2px);border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><strong>Change Password</strong></span></span></a>
         </div>
         </td>
         </tr>

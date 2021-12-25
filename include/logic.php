@@ -440,146 +440,331 @@ if(isset($_POST['register'])){
          $subject = "Welcome to Block Palettes! Verify Your Account";
          $msg = '
          <html>
-         <style>
-                 * {
-                     box-sizing: border-box;
-                 }
-         
-                 body {
-                     margin: 0;
-                     padding: 0;
-                 }
-         
-                 a[x-apple-data-detectors] {
-                     color: inherit !important;
-                     text-decoration: inherit !important;
-                 }
-         
-                 #MessageViewBody a {
-                     color: inherit;
-                     text-decoration: none;
-                 }
-         
-                 p {
-                     line-height: inherit
-                 }
-         
-                 @media (max-width:535px) {
-                     .icons-inner {
-                         text-align: center;
-                     }
-         
-                     .icons-inner td {
-                         margin: 0 auto;
-                     }
-         
-                     .row-content {
-                         width: 100% !important;
-                     }
-         
-                     .image_block img.big {
-                         width: auto !important;
-                     }
-         
-                     .stack .column {
-                         width: 100%;
-                         display: block;
-                     }
-                 }
-             </style>
-         </head>
-         <body style="background-color: #000000; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-         <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #000000;" width="100%">
-         <tbody>
-         <tr>
-         <td>
-         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-         <tbody>
-         <tr>
-         <td>
-         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 515px;" width="515">
-         <tbody>
-         <tr>
-         <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-         <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-         <tr>
-         <td style="width:100%;padding-right:0px;padding-left:0px;">
-         <div align="center" style="line-height:10px"><img class="big" src="../img/Untitled-1.jpg" style="display: block; height: auto; border: 0; width: 515px; max-width: 100%;" width="515"/></div>
-         </td>
-         </tr>
-         </table>
-         <table border="0" cellpadding="10" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-         <tr>
-         <td>
-         <div style="font-family: Arial, sans-serif">
-         <div style="font-size: 14px; font-family: Arial, sans-serif; mso-line-height-alt: 16.8px; color: #ffffff; line-height: 1.2;">
-         <p style="margin: 0; font-size: 14px;"><span style="font-size:24px;color:#ffffff;"><strong>Welcome to Block Palettes!</strong></span></p>
-         </div>
-         </div>
-         </td>
-         </tr>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-         <tbody>
-         <tr>
-         <td>
-         <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 515px;" width="515">
-         <tbody>
-         <tr>
-         <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-         <table border="0" cellpadding="10" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-         <tr>
-         <td>
-         <div style="font-family: sans-serif">
-         <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #ffffff; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
-         <p style="margin: 0; font-size: 14px;">Hi there 😀, <br/>Thank you for creating an account on our website!</p>
-         <p style="margin: 0; font-size: 14px;"><br/><strong>Click on this <a href=' . $url . 'verify?token=' . $token . '>link</a> to verify your account.</strong></p>
-         <p style="margin: 0; font-size: 14px;"><br/>Once verified create your own block palettes or browse hundreds of community made palettes!<br/><br/></p>
-         <p style="margin: 0; font-size: 14px; mso-line-height-alt: 16.8px;"> </p>
-         <p style="margin: 0; font-size: 14px;"><em>Block Palette Staff</em></p>
-         </div>
-         </div>
-         </td>
-         </tr>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         </td>
-         </tr>
-         </table>
-         </td>
-         </tr>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table>
-         </td>
-         </tr>
-         </tbody>
-         </table><!-- End -->
-         </body>
-         </html>
-        
-         
+            <style>
+                    * {
+                        box-sizing: border-box;
+                    }
+
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    a[x-apple-data-detectors] {
+                        color: inherit !important;
+                        text-decoration: inherit !important;
+                    }
+
+                    #MessageViewBody a {
+                        color: inherit;
+                        text-decoration: none;
+                    }
+
+                    p {
+                        line-height: inherit
+                    }
+
+                    @media (max-width:670px) {
+                        .icons-inner {
+                            text-align: center;
+                        }
+
+                        .icons-inner td {
+                            margin: 0 auto;
+                        }
+
+                        .row-content {
+                            width: 100% !important;
+                        }
+
+                        .image_block img.big {
+                            width: auto !important;
+                        }
+
+                        .stack .column {
+                            width: 100%;
+                            display: block;
+                        }
+                    }
+                </style>
+            </head>
+            <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+            <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;padding-right:0px;padding-left:0px;">
+            <div align="center" style="line-height:10px"><img class="big" src="https://www.blockpalettes.com/img/Group_1.png" style="display: block; height: auto; border: 0; width: 650px; max-width: 100%;" width="650"/></div>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;text-align:center;padding-top:25px;">
+            <h1 style="margin: 0; color: #555555; font-size: 47px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; line-height: 120%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;">👋</h1>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;text-align:center;">
+            <h1 style="margin: 0; color: #000000; font-size: 30px; font-family:Helvetica, Arial, sans-serif; line-height: 120%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;"><strong>Welcome!</strong></h1>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+            <tr>
+            <td style="padding-top:10px;padding-right:10px;padding-left:10px;">
+            <div style="font-family: sans-serif">
+            <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #555555; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
+            <p style="margin: 0; font-size: 14px;">We help Minecraft players find eye pleasing palettes to build with as well as create a place to connect with monthly building contests and showcases of the amazing things people build! Once registered you can create and save palettes as well as win awards from your palettes being featured and by winning contests! We hope you find inspiration on our website and continue to build amazing things in Minecraft.</p>
+            </div>
+            </div>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="10" cellspacing="0" class="button_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td>
+            <div align="center">
+            <a href="' . $url . 'verify?token=' . $token . '" style="text-decoration:none;display:block;color:#ffffff;background-color:#000000;border-radius:4px;width:50%; width:calc(50% - 2px);border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><strong>Verify Your Account</strong></span></span></a>
+            </div>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+            <tr>
+            <td style="padding-right:10px;padding-bottom:10px;padding-left:10px;">
+            <div style="font-family: sans-serif">
+            <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #555555; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
+            <p style="margin: 0; font-size: 14px;">You must verify your account before using features such as posting your own palettes. This is to ensure youre not a robot.</p>
+            </div>
+            </div>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="10" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+            <tr>
+            <td>
+            <div style="font-family: sans-serif">
+            <div style="font-size: 14px; mso-line-height-alt: 16.8px; color: #555555; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
+            <p style="margin: 0; font-size: 14px;"><span style="color:#000000;"><strong>Once youre verified:</strong></span></p>
+            </div>
+            </div>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+            <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+            <div align="center" style="line-height:10px"><img src="https://www.blockpalettes.com/img/pngfind.com-heart-symbol-png-1535053.png" style="display: block; height: auto; border: 0; width: 76px; max-width: 100%;" width="76"/></div>
+            </td>
+            </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;text-align:center;padding-top:5px;padding-right:5px;padding-bottom:10px;padding-left:5px;">
+            <h3 style="margin: 0; color: #555555; font-size: 14px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; line-height: 200%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;">Save Palettes</h3>
+            </td>
+            </tr>
+            </table>
+            </td>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+            <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+            <div align="center" style="line-height:10px"><img src="https://www.blockpalettes.com/img/clipart966740.png" style="display: block; height: auto; border: 0; width: 65px; max-width: 100%;" width="65"/></div>
+            </td>
+            </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;text-align:center;padding-top:5px;padding-right:5px;padding-bottom:10px;padding-left:5px;">
+            <h3 style="margin: 0; color: #555555; font-size: 14px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; line-height: 200%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;">Create Palettes</h3>
+            </td>
+            </tr>
+            </table>
+            </td>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="33.333333333333336%">
+            <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;padding-right:0px;padding-left:0px;padding-top:5px;">
+            <div align="center" style="line-height:10px"><img src="https://www.blockpalettes.com/img/Group_2.png" style="display: block; height: auto; border: 0; width: 76px; max-width: 100%;" width="76"/></div>
+            </td>
+            </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td style="width:100%;text-align:center;padding-top:5px;padding-right:5px;padding-bottom:10px;padding-left:5px;">
+            <h3 style="margin: 0; color: #555555; font-size: 14px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; line-height: 200%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;">Earn Awards</h3>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tbody>
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+            <tbody>
+            <tr>
+            <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+            <table border="0" cellpadding="25" cellspacing="0" class="social_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+            <tr>
+            <td>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="138px">
+            <tr>
+            <td style="padding:0 7px 0 7px;"><a href="https://instagram.com/blockpalettes" target="_blank"><img alt="Instagram" height="32" src="https://www.blockpalettes.com/img/instagram2x.png" style="display: block; height: auto; border: 0;" title="Instagram" width="32"/></a></td>
+            <td style="padding:0 7px 0 7px;"><a href="https://twitter.com/blockpalettes" target="_blank"><img alt="Twitter" height="32" src="https://www.blockpalettes.com/img/twitter2x.png" style="display: block; height: auto; border: 0;" title="Twitter" width="32"/></a></td>
+            <td style="padding:0 7px 0 7px;"><a href="https://www.youtube.com/channel/UC2YaoocnMOkaLF3lIhm4hVA" target="_blank"><img alt="YouTube" height="32" src="https://www.blockpalettes.com/img/youtube2x.png" style="display: block; height: auto; border: 0;" title="YouTube" width="32"/></a></td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table>
+            </td>
+            </tr>
+            </tbody>
+            </table><!-- End -->
+            </body>
+            </html>
          ';
          $headers .= "Organization: Block Palettes\r\n";
          $headers .= "MIME-Version: 1.0\r\n";
@@ -710,8 +895,197 @@ if (isset($_POST['reset-password'])) {
       // Send email to user with the token in a link they can click on
         $to = $email;
         $subject = "Reset your password on Block Palettes";
-        $msg = "Hi there, click on this <a href=" . $url . "new_password?token=" . $token . ">link</a> to reset your password on our site.";
-        $msg = wordwrap($msg,70);
+        $msg = '
+        
+        <html>
+        <style>
+                * {
+                    box-sizing: border-box;
+                }
+
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+
+                a[x-apple-data-detectors] {
+                    color: inherit !important;
+                    text-decoration: inherit !important;
+                }
+
+                #MessageViewBody a {
+                    color: inherit;
+                    text-decoration: none;
+                }
+
+                p {
+                    line-height: inherit
+                }
+
+                @media (max-width:670px) {
+                    .icons-inner {
+                        text-align: center;
+                    }
+
+                    .icons-inner td {
+                        margin: 0 auto;
+                    }
+
+                    .row-content {
+                        width: 100% !important;
+                    }
+
+                    .image_block img.big {
+                        width: auto !important;
+                    }
+
+                    .stack .column {
+                        width: 100%;
+                        display: block;
+                    }
+                }
+            </style>
+        </head>
+        <body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+        <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+        <tbody>
+        <tr>
+        <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0" class="image_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tr>
+        <td style="width:100%;padding-right:0px;padding-left:0px;">
+        <div align="center" style="line-height:10px"><img class="big" src="https://www.blockpalettes.com/img/Group_1.png" style="display: block; height: auto; border: 0; width: 650px; max-width: 100%;" width="650"/></div>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+        <tbody>
+        <tr>
+        <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0" class="heading_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tr>
+        <td style="width:100%;text-align:center;padding-top:10px;padding-right:10px;padding-left:10px;">
+        <h1 style="margin: 0; color: #000000; font-size: 30px; font-family: Helvetica, Arial, sans-serif; line-height: 120%; text-align: center; direction: ltr; font-weight: normal; letter-spacing: normal; margin-top: 0; margin-bottom: 0;"><strong>Reset Password</strong></h1>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+        <tbody>
+        <tr>
+        <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0" class="text_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+        <tr>
+        <td style="padding-right:10px;padding-left:10px;">
+        <div style="font-family: sans-serif">
+        <div style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #555555; line-height: 1.2; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
+        <p style="margin: 0; font-size: 12px;">You have requested a password change on our website. If this was you click the button below to reset your password and get back to creating amazing palettes!</p>
+        </div>
+        </div>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+        <tbody>
+        <tr>
+        <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+        <table border="0" cellpadding="10" cellspacing="0" class="button_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tr>
+        <td>
+        <div align="center">
+        <a href="' . $url . '"new_password?token="' . $token . '" style="text-decoration:none;display:block;color:#ffffff;background-color:#000000;border-radius:4px;width:50%; width:calc(50% - 2px);border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;" target="_blank"><span style="padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;"><span style="font-size: 16px; line-height: 2; word-break: break-word; mso-line-height-alt: 32px;"><strong>Change Password</strong></span></span></a>
+        </div>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tbody>
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+        <tbody>
+        <tr>
+        <td class="column" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; vertical-align: top; padding-top: 5px; padding-bottom: 5px; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+        <table border="0" cellpadding="25" cellspacing="0" class="social_block" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+        <tr>
+        <td>
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="social-table" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="138px">
+        <tr>
+        <td style="padding:0 7px 0 7px;"><a href="https://instagram.com/blockpalettes" target="_blank"><img alt="Instagram" height="32" src="https://www.blockpalettes.com/img/instagram2x.png" style="display: block; height: auto; border: 0;" title="Instagram" width="32"/></a></td>
+        <td style="padding:0 7px 0 7px;"><a href="https://twitter.com/blockpalettes" target="_blank"><img alt="Twitter" height="32" src="https://www.blockpalettes.com/img/twitter2x.png" style="display: block; height: auto; border: 0;" title="Twitter" width="32"/></a></td>
+        <td style="padding:0 7px 0 7px;"><a href="https://www.youtube.com/channel/UC2YaoocnMOkaLF3lIhm4hVA" target="_blank"><img alt="YouTube" height="32" src="https://www.blockpalettes.com/img/youtube2x.png" style="display: block; height: auto; border: 0;" title="YouTube" width="32"/></a></td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table><!-- End -->
+        </body>
+        </html>
+
+        ';
         $headers .= "Organization: Block Palettes\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= 'Content-type: text/html' . "\r\n";

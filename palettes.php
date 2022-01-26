@@ -218,18 +218,6 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
 
 
-// Gets trending palettes for last 7 days
-
-
-
-// palette alg
-//$stmt = $pdo->prepare("SELECT *, DATEDIFF(CURRENT_TIMESTAMP,date) AS days FROM palette ORDER BY LOG10(ABS(likes - days) + 1) * SIGN(likes - days) + (UNIX_TIMESTAMP(date) / 300000) DESC LIMIT 25");
-//$stmt->execute();
-//$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-
-
 
 
 ?>

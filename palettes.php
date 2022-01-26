@@ -12,6 +12,8 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 } 
 
 
+
+
 //pagination
   $block = $_GET['block'];
   $s = $_GET['s'];
@@ -42,6 +44,8 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
       $s = "ORDER BY likes DESC";
     } elseif($s == "old"){
       $s = "ORDER BY date ASC";
+    } elseif($s == "trending"){
+      $term = "trending";
     } else{
       $s = "ORDER BY date DESC";
     }
@@ -52,7 +56,12 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
                       OR blockFive LIKE '$block' 
                       OR blockSix LIKE '$block'";
 
-    $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block $s");
+    
+    if($term == "trending"){
+      $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block");
+    } else {
+      $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block $s");
+    }
     $palettePull->execute();
 
     $total_results = $palettePull->rowCount();
@@ -66,7 +75,11 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 
     $start = ($page-1)*$limit;
 
-    $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 AND $block $s LIMIT $start, $limit");
+    if($term == "trending"){
+      $stmt = $pdo->prepare("SELECT *, DATEDIFF(CURRENT_TIMESTAMP,date) AS days FROM palette WHERE hidden = 0 AND $block ORDER BY LOG10(ABS(likes - days) + 1) * SIGN(likes - days) + (UNIX_TIMESTAMP(date) / 1000000) DESC LIMIT $start, $limit"); 
+    } else {
+      $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 AND $block $s LIMIT $start, $limit");
+    }
     $stmt->execute();
 
   } elseif(isset($block)){
@@ -92,6 +105,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 
     $start = ($page-1)*$limit;
 
+  
     $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 AND $block LIMIT $start, $limit");
     $stmt->execute();
 
@@ -100,11 +114,18 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
       $s = "ORDER BY likes DESC";
     } elseif($s == "old"){
       $s = "ORDER BY date ASC";
+    } elseif($s == "trending"){
+      $term = "trending";
+      $select = "SELECT *, DATEDIFF(CURRENT_TIMESTAMP,date) AS days FROM palette ORDER BY LOG10(ABS(likes - days) + 1) * SIGN(likes - days) + (UNIX_TIMESTAMP(date) / 1000000) DESC ";
     } else{
       $s = "ORDER BY date DESC";
     }
-
-      $palettePull = $pdo->prepare("SELECT * FROM palette $s");
+   
+      if($term == "trending"){
+        $palettePull = $pdo->prepare("SELECT * FROM palette");
+      } else {
+        $palettePull = $pdo->prepare("SELECT * FROM palette $s");
+      }
       $palettePull->execute();
 
 
@@ -119,8 +140,13 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 
       $start = ($page-1)*$limit;
 
-      $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 $s LIMIT $start, $limit");
+      if($term == "trending"){
+        $stmt = $pdo->prepare("$select LIMIT $start, $limit"); 
+      } else {
+        $stmt = $pdo->prepare("SELECT * FROM palette WHERE hidden = 0 $s LIMIT $start, $limit");
+      }
       $stmt->execute();
+
   }
 
   // set the resulting array to associative
@@ -193,11 +219,17 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
 
 // Gets trending palettes for last 7 days
-$stmt = $pdo->prepare("SELECT * FROM palette WHERE date> now() - INTERVAL 7 day ORDER BY likes desc");
-$stmt->execute();
-$test = $stmt->fetchall(PDO::FETCH_ASSOC);
 
-print_r($test);
+
+
+// palette alg
+//$stmt = $pdo->prepare("SELECT *, DATEDIFF(CURRENT_TIMESTAMP,date) AS days FROM palette ORDER BY LOG10(ABS(likes - days) + 1) * SIGN(likes - days) + (UNIX_TIMESTAMP(date) / 300000) DESC LIMIT 25");
+//$stmt->execute();
+//$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
 
 
 ?>

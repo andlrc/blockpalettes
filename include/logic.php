@@ -4,7 +4,7 @@ require "password.php";
 require "connect.php";
 
 //Change this line
-$url = "https://www.blockpalettes.com/";
+$url = "http://localhost/blockpalettes/";
 
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
     $uid = $_SESSION['user_id'];

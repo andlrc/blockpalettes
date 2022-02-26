@@ -1137,7 +1137,7 @@ if (isset($_POST['reset-password'])) {
 
 if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
 
-    if($user['rank'] > 90){
+    if($user['ranks'] > 90){
 
     // Delete
     if(isset($_POST['delete'])){
@@ -1193,7 +1193,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
         $rank = !empty($_POST['rank']) ? trim($_POST['rank']) : null;
 
         //Updates table
-        $edit = "UPDATE user SET rank = '$rank' WHERE id ='$id'";
+        $edit = "UPDATE user SET ranks = '$rank' WHERE id ='$id'";
         $stmt = $pdo->prepare($edit);
 
         $result = $stmt->execute();
@@ -1356,8 +1356,8 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
             if($result) {
                 if ($result != false) {
                     foreach ($result as $row) {
-                        $rankid = $row['rank'];
-                        $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+                        $rankid = $row['ranks'];
+                        $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
                         $rankPull ->execute();
                         $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
                         echo '<div class="col-xl-12">

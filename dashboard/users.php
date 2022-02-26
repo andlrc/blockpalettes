@@ -17,7 +17,7 @@ if (isset($_SESSION['user_id'])) {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user['rank'] < 90){
+    if ($user['ranks'] < 90){
         header('Location: ' . $url);
         exit;
     }
@@ -246,8 +246,8 @@ if (isset($_SESSION['user_id'])) {
                                 <div class="row">
                                     <?php foreach($results as $p) : ?>
                                     <?php
-                                        $rankid = $p['rank'];
-                                        $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+                                        $rankid = $p['ranks'];
+                                        $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
                                         $rankPull ->execute();
                                         $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
 

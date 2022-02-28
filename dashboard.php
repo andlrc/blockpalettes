@@ -17,7 +17,7 @@ session_start();
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user['rank'] < 90){
+        if ($user['ranks'] < 90){
             header('Location: ' . $url);
         exit;
         }
@@ -393,9 +393,9 @@ session_start();
                                                 $d = date_create($u['date']);
                                                 $uDate = date_format($d,"Y/m/d"); 
                                                 
-                                                $rankid = $u['rank'];
+                                                $rankid = $u['ranks'];
 
-                                                $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+                                                $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
                                                 $rankPull ->execute();
                                                 $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
                                             ?>

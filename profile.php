@@ -25,11 +25,11 @@ if ($userProfile == null){
     header('Location: ' . $url . '');
 }
 
-$rankid = $userProfile['rank'];
+$rankid = $userProfile['ranks'];
 
 $id = $userProfile['id'];
 
-$rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = '$rankid'");
+$rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
 $rankPull ->execute();
 $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
 

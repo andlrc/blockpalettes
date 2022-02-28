@@ -201,8 +201,8 @@ $_GET = "";
                               <?php if ($postUser > 0){ ?>
                                 <?php 
                                 
-                                $userRank = $userP['rank'];
-                                $rankPull = $pdo->prepare("SELECT * FROM rank WHERE id = $userRank");
+                                $userRank = $userP['ranks'];
+                                $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = $userRank");
                                 $rankPull->execute();
                                 $rank = $rankPull->fetch(PDO::FETCH_ASSOC);
 

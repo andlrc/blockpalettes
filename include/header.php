@@ -34,7 +34,7 @@
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                             <?php
                             $userrankid = $user['rank'];
-                            $rankPullUser = $pdo->prepare("SELECT * FROM rank WHERE id = '$userrankid'");
+                            $rankPullUser = $pdo->prepare("SELECT * FROM ranks WHERE id = '$userrankid'");
                             $rankPullUser ->execute();
                             $rankuser = $rankPullUser ->fetch(PDO::FETCH_ASSOC);
 

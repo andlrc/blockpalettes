@@ -1345,38 +1345,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
         }
     }
 
-    //searching users in dashboard
-    if(isset($_REQUEST["term"])) {
-        // Prepare a select statement
-            $param_term = $_REQUEST["term"] . '%';
-            $stmt = $pdo->prepare("SELECT * FROM user WHERE username LIKE :search");
-            $stmt->bindValue(':search', $param_term, PDO::PARAM_STR);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if($result) {
-                if ($result != false) {
-                    foreach ($result as $row) {
-                        $rankid = $row['ranks'];
-                        $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
-                        $rankPull ->execute();
-                        $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
-                        echo '<div class="col-xl-12">
-                            <a href="'.$url.'dashboard/user/'. $row['id']. '" class="nav-link">
-                                <div class="user-mgmt-float" style="margin-top:10px!important">
-                                    <div class="role-pill" style="background:'.$rank['rank_color'].'">'. ucwords(mb_substr($rank['rank_name'], 0, 1, "UTF-8")) . '</div>
-                                    '.ucwords($row['username']).'
-                                    </div>
-                            </a>
-                            </div>
-                            ';
-                    }
-                } else {
-                    echo "<p>No matches found</p>";
-                }
-            }
-        }
-    }
-
     //unfavorite
     if(isset($_POST['unfavorite'])){
         $id = !empty($_POST['id']) ? trim($_POST['id']) : null;
@@ -1406,6 +1374,38 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) {
         if($result) {
             header('Location: ' . $url . 'dashboard/palettes');
         }  
+    }
+}
+
+//searching users in dashboard
+if(isset($_REQUEST["term"])) {
+    // Prepare a select statement
+        $param_term = $_REQUEST["term"] . '%';
+        $stmt = $pdo->prepare("SELECT * FROM user WHERE username LIKE :search");
+        $stmt->bindValue(':search', $param_term, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if($result) {
+            if ($result != false) {
+                foreach ($result as $row) {
+                    $rankid = $row['ranks'];
+                    $rankPull = $pdo->prepare("SELECT * FROM ranks WHERE id = '$rankid'");
+                    $rankPull ->execute();
+                    $rank = $rankPull ->fetch(PDO::FETCH_ASSOC);
+                    echo '<div class="col-xl-12">
+                        <a href="'.$url.'dashboard/user/'. $row['id']. '" class="nav-link">
+                            <div class="user-mgmt-float" style="margin-top:10px!important">
+                                <div class="role-pill" style="background:'.$rank['rank_color'].'">'. ucwords(mb_substr($rank['rank_name'], 0, 1, "UTF-8")) . '</div>
+                                '.ucwords($row['username']).'
+                                </div>
+                        </a>
+                        </div>
+                        ';
+                }
+            } else {
+                echo "<p>No matches found</p>";
+            }
+        }
     }
 }
 

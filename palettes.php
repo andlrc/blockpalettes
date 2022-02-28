@@ -12,8 +12,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 } 
 
 
-
-
 //pagination
   $block = $_GET['block'];
   $s = $_GET['s'];

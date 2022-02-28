@@ -33,7 +33,7 @@
                     <ul class="navbar-nav ml-auto custom-nav-text height-nav">
                         <?php if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])) { ?>
                             <?php
-                            $userrankid = $user['rank'];
+                            $userrankid = $user['ranks'];
                             $rankPullUser = $pdo->prepare("SELECT * FROM ranks WHERE id = '$userrankid'");
                             $rankPullUser ->execute();
                             $rankuser = $rankPullUser ->fetch(PDO::FETCH_ASSOC);
@@ -57,7 +57,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="<?=$url?>profile/<?=$user['username']?>"><i class="fas fa-user"></i> My Profile <span class="role-pill" style="background:<?=$rankuser['rank_color']?>; float:right"><?=ucwords($rankuser['rank_name'])?></span></a>
                                     <a class="dropdown-item" href="<?=$url?>saved"><i class="fas fa-save"></i> Saved Palettes</a>
-                                    <?php if ($user['rank'] >= 90) {?>
+                                    <?php if ($user['ranks'] >= 90) {?>
                                     <a class="dropdown-item" href="<?=$url?>dashboard"><i class="fas fa-user-shield"></i> Admin Dashboard</a>
                                     <?php } ?>
                                     <div class="dropdown-divider"></div>

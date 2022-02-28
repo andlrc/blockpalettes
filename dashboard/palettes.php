@@ -17,7 +17,7 @@ session_start();
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user['rank'] < 90){
+        if ($user['ranks'] < 90){
             header('Location: ' . $url);
         exit;
         }

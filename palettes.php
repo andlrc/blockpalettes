@@ -193,11 +193,10 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 // Gets current block filters
 
 $blockString = $_GET["block"];
+
 $blocks = explode("+",$blockString);
 
-foreach($blocks as $b){
-  echo $b . '<br>';
-}
+$blockuse = str_replace("+", ",", $blockString);
 
 //string to array
 $stmt = $pdo->prepare("SELECT blockList FROM palette");
@@ -207,19 +206,30 @@ $test = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach($test as $t){
 
   $blocksArray = explode(",",$t['blockList']);
-
-
 }
 
-/*
-$stmt = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
-AND blockTwo LIKE '$block' 
-AND blockThree LIKE '$block' 
-AND blockFour LIKE '$block' 
-AND blockFive LIKE '$block' 
-AND blockSix LIKE '$block'");
+// Working sql query
+//SELECT * FROM palette WHERE blockList LIKE "%crafting_table%" AND blockList LIKE "%ancient_debris%"
 
-*/
+//$sql = array('0'); // Stop errors when $words is empty
+
+foreach($blocks as $word){
+    $sql[] = 'blockList LIKE "%'.$word.'%" AND';
+}
+
+$sql = 'SELECT * FROM palette WHERE '.implode(" ", $sql);
+
+echo $sql;
+//remove last AND
+$sql = substr($sql, 0, -3);
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$tester = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+var_dump($tester);
+
+
 
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total

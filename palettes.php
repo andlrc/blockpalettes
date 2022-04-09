@@ -13,6 +13,9 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 
 
 //pagination
+  $blockString = $_GET["block"];
+  $blocks = explode("+",$blockString);
+
   $block = $_GET['block'];
   $s = $_GET['s'];
 
@@ -215,7 +218,20 @@ $stime = $selected['s'];
 $sFilter = array("s" => array("trending","popular","old","new"));
 
 
+// Gets current block filters
 
+
+
+foreach($blocks as $b){
+  echo $b . '<br>';
+}
+
+$stmt = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
+AND blockTwo LIKE '$block' 
+AND blockThree LIKE '$block' 
+AND blockFour LIKE '$block' 
+AND blockFive LIKE '$block' 
+AND blockSix LIKE '$block'");
 
 
 ?>
@@ -300,20 +316,24 @@ $sFilter = array("s" => array("trending","popular","old","new"));
   
               <?php 
              
-              $i = 0;
-                $selected_filters = array_filter($_GET);
-                foreach($filtered_get as $key => $value):
-                  $filter = str_replace("_"," ",$value);
-                  
-              ?>
-              <?php if($key == "p"){ ?>
-                   
-              <?php } else { ?>
-                <span class="filter-tag">
-                  <?=ucwords($filter)?>
-                </span>
-              <?php } ?>
-              <?php endforeach; ?>
+             $i = 0;
+             $selected_filters = array($_GET['s']);
+             foreach($selected_filters as $key => $value):
+               $filter = str_replace("_"," ",$value); 
+      
+             ?>
+               <span class="filter-tag">
+                 <?=ucwords($filter)?>
+               </span>
+
+               <?php foreach($blocks as $b): ?>
+                 <?php $filter = str_replace("_"," ",$b);  ?>
+                 <span class="filter-tag">
+                   <?=ucwords($filter)?>
+                 </span>
+               <?php endforeach; ?>
+       
+             <?php endforeach; ?>
           
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
@@ -330,7 +350,7 @@ $sFilter = array("s" => array("trending","popular","old","new"));
                       <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
-                  <a class="btn-filter btn" id="resultsmobile" href=""><i class="fas fa-search"></i></a>
+                  <a class="btn-filter btn" id="mobileresults" href=""><i class="fas fa-search"></i></a>
                 </div>
 
             <p style="margin-bottom:0px">Sort By</p>
@@ -549,23 +569,25 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
               ?>
   
-              <?php 
-             
+              <?php    
               $i = 0;
-                $selected_filters = array_filter($_GET);
-                foreach($filtered_get as $key => $value):
-                  $filter = str_replace("_"," ",$value);
-                  
+              $selected_filters = array($_GET['s']);
+              foreach($selected_filters as $key => $value):
+                $filter = str_replace("_"," ",$value); 
+       
               ?>
-              <?php if($key == "p"){ ?>
-                   
-              <?php } else { ?>
                 <span class="filter-tag">
                   <?=ucwords($filter)?>
                 </span>
-              <?php } ?>
+
+                <?php foreach($blocks as $b): ?>
+                  <?php $filter = str_replace("_"," ",$b);  ?>
+                  <span class="filter-tag">
+                    <?=ucwords($filter)?>
+                  </span>
+                <?php endforeach; ?>
+        
               <?php endforeach; ?>
-          
             <?php } ?>
             <p style="margin-bottom:0px">Filter By Block</p>
               <div class="input-group" style="padding-bottom:25px">
@@ -576,9 +598,10 @@ $sFilter = array("s" => array("trending","popular","old","new"));
                           $extCut = str_replace(".png","","$image");
                           $cleanStr = str_replace("img/block/","","$extCut");
 
-                          $blockName = str_replace("_"," ",$cleanStr);
+                          $blockName = str_replace("_"," ",$cleanStr);  
                       ?>
-                      <option value="<?=$cleanStr?>" class="cursor"><?=ucwords($blockName)?></option>
+      
+                      <option value="<?=$cleanStr?>" class="cursor" multiple <?php if(in_array($cleanStr, $blocks)){ echo "disabled"; } ?>><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
                   <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
@@ -682,7 +705,9 @@ $sFilter = array("s" => array("trending","popular","old","new"));
           var currentPage = $_GET["p"];
           var currentBlock = $_GET["block"];
           var newBlock = "block=" + selectedVar;
- 
+          
+          console.log(currentBlock);
+
           if (currentBlock == null){
             if (pathname.includes("s=")){
               pathname = pathname + "&" + newBlock;
@@ -695,8 +720,15 @@ $sFilter = array("s" => array("trending","popular","old","new"));
             } else if (pathname.includes("&p=")){
               pathname = pathname.replace("&p="+currentPage, "");
             }
+
           } else {
-            pathname = pathname.replace("block="+currentBlock, newBlock);
+            const urlpathname = new URL(pathname);
+            current = currentBlock + "+"
+            urlpathname.searchParams.set('block', current+selectedVar);
+            pathname = urlpathname.toString();
+            
+
+          
             if (pathname.includes("?p=")){
               pathname = pathname.replace("?p="+currentPage, "");
             } else if (pathname.includes("&p=")){
@@ -708,10 +740,11 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
       });
     </script>
+    
 
 <script>
       $('select[name="blockmobile"]').on('change', function(){    
-          var selectedVar = $('select[name="blockmobile"]').val();   
+        var selectedVar = $('select[name="blockmobile"]').val();   
           var pathname = window.location.href;
           
           var $_GET = {};
@@ -727,7 +760,9 @@ $sFilter = array("s" => array("trending","popular","old","new"));
           var currentPage = $_GET["p"];
           var currentBlock = $_GET["block"];
           var newBlock = "block=" + selectedVar;
- 
+          
+          console.log(currentBlock);
+
           if (currentBlock == null){
             if (pathname.includes("s=")){
               pathname = pathname + "&" + newBlock;
@@ -740,8 +775,15 @@ $sFilter = array("s" => array("trending","popular","old","new"));
             } else if (pathname.includes("&p=")){
               pathname = pathname.replace("&p="+currentPage, "");
             }
+
           } else {
-            pathname = pathname.replace("block="+currentBlock, newBlock);
+            const urlpathname = new URL(pathname);
+            current = currentBlock + "+"
+            urlpathname.searchParams.set('block', current+selectedVar);
+            pathname = urlpathname.toString();
+            
+
+          
             if (pathname.includes("?p=")){
               pathname = pathname.replace("?p="+currentPage, "");
             } else if (pathname.includes("&p=")){
@@ -749,7 +791,7 @@ $sFilter = array("s" => array("trending","popular","old","new"));
             }
           }
      
-          $('#resultsmobile').attr("href", pathname);
+          $('#results').attr("href", pathname);
 
       });
     </script>

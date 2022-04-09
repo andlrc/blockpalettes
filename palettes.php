@@ -13,8 +13,7 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
 
 
 //pagination
-  $blockString = $_GET["block"];
-  $blocks = explode("+",$blockString);
+
 
   $block = $_GET['block'];
   $s = $_GET['s'];
@@ -165,33 +164,6 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
   $total_pages = $total_pages - 1;
 
 
-$popularPull = $pdo->prepare("SELECT blocks, count(*) total
-                      from 
-                      (
-                        select blockOne as blocks
-                        from palette
-                        union all
-                        select blockTwo
-                        from palette
-                        union all
-                        select blockThree
-                        from palette
-                        union all
-                        select blockFour
-                        from palette
-                        union all
-                        select blockFive
-                        from palette
-                        union all
-                        select blockSix
-                        from palette
-                      ) d
-                      group by blocks
-                      order by total desc LIMIT 12;
-");
-$popularPull->execute();
-$t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
-
 
 $dir = "img/block/*.png";
 //get the list of all files with .jpg extension in the directory and safe it in an array named $images
@@ -220,12 +192,26 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
 // Gets current block filters
 
-
+$blockString = $_GET["block"];
+$blocks = explode("+",$blockString);
 
 foreach($blocks as $b){
   echo $b . '<br>';
 }
 
+//string to array
+$stmt = $pdo->prepare("SELECT blockList FROM palette");
+$stmt->execute();
+$test = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach($test as $t){
+
+  $blocksArray = explode(",",$t['blockList']);
+
+
+}
+
+/*
 $stmt = $pdo->prepare("SELECT * FROM palette WHERE blockOne LIKE '$block' 
 AND blockTwo LIKE '$block' 
 AND blockThree LIKE '$block' 
@@ -233,8 +219,39 @@ AND blockFour LIKE '$block'
 AND blockFive LIKE '$block' 
 AND blockSix LIKE '$block'");
 
+*/
 
+
+$popularPull = $pdo->prepare("SELECT blocks, count(*) total
+                      from 
+                      (
+                        select blockOne as blocks
+                        from palette
+                        union all
+                        select blockTwo
+                        from palette
+                        union all
+                        select blockThree
+                        from palette
+                        union all
+                        select blockFour
+                        from palette
+                        union all
+                        select blockFive
+                        from palette
+                        union all
+                        select blockSix
+                        from palette
+                      ) d
+                      group by blocks
+                      order by total desc LIMIT 12;
+
+");
+$popularPull->execute();
+$t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -401,20 +418,22 @@ AND blockSix LIKE '$block'");
           <?php } else { ?>
             <div class="col-xl-9 col-lg-8 col-md-12">
             <div class="row">
-          <?php foreach($results as $p): ?>
+          <?php foreach($results as $p):
+            $blocksArray = explode(",",$p['blockList']);   
+          ?>
           <div class="col-xl-4 col-lg-6 col-md-6 paddingFix">
             <div style="position: relative">
                 <div class="palette-float">
                   <a href="<?=$url?>palette/<?=$p['id']?>">
                     <div class="flex-thirds">
-                      <img src="<?=$url?>img/block/<?=$p['blockOne']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockTwo']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockThree']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[0]?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[1]?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[2]?>.png" class="block">
                     </div>
                     <div class="flex-thirds">
-                      <img src="<?=$url?>img/block/<?=$p['blockFour']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockFive']?>.png" class="block">
-                      <img src="<?=$url?>img/block/<?=$p['blockSix']?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[3]?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[4]?>.png" class="block">
+                      <img src="<?=$url?>img/block/<?=$blocksArray[5]?>.png" class="block">
                     </div>
                   </a>
                   <?php 

@@ -49,12 +49,16 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
     } else{
       $s = "ORDER BY date DESC";
     }
-    $block = "blockOne LIKE '$block' 
-                      OR blockTwo LIKE '$block' 
-                      OR blockThree LIKE '$block' 
-                      OR blockFour LIKE '$block' 
-                      OR blockFive LIKE '$block' 
-                      OR blockSix LIKE '$block'";
+    $blockString = $_GET["block"];
+    $blocks = explode("+",$blockString);
+
+    foreach($blocks as $word){
+        $sql[] = 'blockList LIKE "%'.$word.'%" AND';
+    }
+
+    $block = ' '.implode(" ", $sql);
+    //remove last AND
+    $block = substr($block, 0, -3);
 
     
     if($term == "trending"){
@@ -83,12 +87,16 @@ if(isset($_SESSION['user_id']) || isset($_SESSION['logged_in'])){
     $stmt->execute();
 
   } elseif(isset($block)){
-    $block = "blockOne LIKE '$block' 
-              OR blockTwo LIKE '$block' 
-              OR blockThree LIKE '$block' 
-              OR blockFour LIKE '$block' 
-              OR blockFive LIKE '$block' 
-              OR blockSix LIKE '$block'";
+    $blockString = $_GET["block"];
+    $blocks = explode("+",$blockString);
+
+    foreach($blocks as $word){
+        $sql[] = 'blockList LIKE "%'.$word.'%" AND';
+    }
+
+    $block = ' '.implode(" ", $sql);
+    //remove last AND
+    $block = substr($block, 0, -3);
 
     $palettePull = $pdo->prepare("SELECT * FROM palette WHERE $block");
     $palettePull->execute();
@@ -192,11 +200,7 @@ $sFilter = array("s" => array("trending","popular","old","new"));
 
 // Gets current block filters
 
-$blockString = $_GET["block"];
 
-$blocks = explode("+",$blockString);
-
-$blockuse = str_replace("+", ",", $blockString);
 
 //string to array
 $stmt = $pdo->prepare("SELECT blockList FROM palette");
@@ -204,32 +208,8 @@ $stmt->execute();
 $test = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 foreach($test as $t){
-
   $blocksArray = explode(",",$t['blockList']);
 }
-
-// Working sql query
-//SELECT * FROM palette WHERE blockList LIKE "%crafting_table%" AND blockList LIKE "%ancient_debris%"
-
-//$sql = array('0'); // Stop errors when $words is empty
-
-foreach($blocks as $word){
-    $sql[] = 'blockList LIKE "%'.$word.'%" AND';
-}
-
-$sql = 'SELECT * FROM palette WHERE '.implode(" ", $sql);
-
-echo $sql;
-//remove last AND
-$sql = substr($sql, 0, -3);
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$tester = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-var_dump($tester);
-
-
 
 
 $popularPull = $pdo->prepare("SELECT blocks, count(*) total
@@ -609,6 +589,10 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
                   <?=ucwords($filter)?>
                 </span>
 
+                <span id="tooMany" class="filter-tag hide">
+                  Only Allowed To Select Up To 6 Blocks
+                </span>
+
                 <?php foreach($blocks as $b): ?>
                   <?php $filter = str_replace("_"," ",$b);  ?>
                   <span class="filter-tag">
@@ -618,7 +602,7 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
         
               <?php endforeach; ?>
             <?php } ?>
-            <p style="margin-bottom:0px">Filter By Block</p>
+            <p style="margin-bottom:0px">Filter By Block(s)</p>
               <div class="input-group" style="padding-bottom:25px">
                   <select id="select-1" name="block" class="form-control" placeholder="Search a block..." required> 
                   <option value="" class="cursor">Select a block...</option>
@@ -633,7 +617,7 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
                       <option value="<?=$cleanStr?>" class="cursor" multiple <?php if(in_array($cleanStr, $blocks)){ echo "disabled"; } ?>><?=ucwords($blockName)?></option>
                       <?php endforeach; ?>
                   </select>
-                  <a class="btn-filter btn" id="results" href=""><i class="fas fa-search"></i></a>
+                  <a class="btn-filter btn mybtn" id="results" href=""><i class="fas fa-search"></i></a>
                 </div>
 
             <p style="margin-bottom:0px">Sort By</p>
@@ -695,6 +679,8 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
                   </a>
               <?php endforeach; ?>
 
+              <?=$path?>
+
               <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9529646541661119"
               crossorigin="anonymous"></script>
               <!-- Sidebar Ad -->
@@ -734,8 +720,7 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
           var currentPage = $_GET["p"];
           var currentBlock = $_GET["block"];
           var newBlock = "block=" + selectedVar;
-          
-          console.log(currentBlock);
+        
 
           if (currentBlock == null){
             if (pathname.includes("s=")){
@@ -750,22 +735,34 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
               pathname = pathname.replace("&p="+currentPage, "");
             }
 
-          } else {
-            const urlpathname = new URL(pathname);
-            current = currentBlock + "+"
-            urlpathname.searchParams.set('block', current+selectedVar);
-            pathname = urlpathname.toString();
-            
+            $('#results').attr("href", pathname);
 
+          } else {
           
             if (pathname.includes("?p=")){
               pathname = pathname.replace("?p="+currentPage, "");
             } else if (pathname.includes("&p=")){
               pathname = pathname.replace("&p="+currentPage, "");
             }
+
+            $('#results').attr("href", pathname);
+
+            const arr = currentBlock.split('+');
+            
+            var i = 0;
+            for(const x of arr){
+              i++
+              if(i <= 5){
+                const urlpathname = new URL(pathname);
+                current = currentBlock + "+"
+                urlpathname.searchParams.set('block', current+selectedVar);
+                pathname = urlpathname.toString();  
+                $('#results').attr("href", pathname);  
+              } else {
+                $('#results').attr("href", "#");
+              }
+            }
           }
-     
-          $('#results').attr("href", pathname);
 
       });
     </script>
@@ -790,7 +787,6 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
           var currentBlock = $_GET["block"];
           var newBlock = "block=" + selectedVar;
           
-          console.log(currentBlock);
 
           if (currentBlock == null){
             if (pathname.includes("s=")){
@@ -811,6 +807,9 @@ $t = $popularPull->fetchAll(PDO::FETCH_ASSOC);
             urlpathname.searchParams.set('block', current+selectedVar);
             pathname = urlpathname.toString();
             
+            
+            const arr = currentBlock.split('+');
+            console.log(arr);
 
           
             if (pathname.includes("?p=")){

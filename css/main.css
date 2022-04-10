@@ -899,6 +899,9 @@ iframe{
 .hide {
 	display: none;
 }
+.show {
+	display: inline!important;
+}
 .button-like{
     background-color: gray;
     border-radius: 5px;
@@ -933,4 +936,8 @@ iframe{
 
 .highblock{
     background: blue!important;
+}
+
+.disablea{
+    pointer-events:none !important;
 }
